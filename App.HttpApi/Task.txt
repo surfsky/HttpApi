@@ -1,0 +1,367 @@
+﻿-------------------------------------------------------------
+Task
+-------------------------------------------------------------
+更改名称: WebApi, HttpApi, Api
+    程序集可仍用 HttpApi
+    先不改了，避免过大的影响已有代码
+
+提供 API 测试页面，可post数据
+优化路径
+    优化调用路径为：API/A.B.C/MethodName?p=x
+    代码方式：routes.MapHttpRoute(
+         name: "DefaultApi",
+         routeTemplate: "api/{controller}/{id}",
+         defaults: new { id = RouteParameter.Optional }
+         );
+    配置方式
+
+增加文件上传处理能力, 参数如：string Upload(byte[] file, string name)，处理
+增加属性：Verbs=“Get,Post"
+增加属性：AuthIPs，仅指定ip内的客户端才可以访问。这个可以用代码写死会比较麻烦，考虑用配置
+增加流量控制能力 AuthInterval，需要维护一个字典了：ClientIP, Api, LastVisitDt
+
+
+增加日志能力：结合nlog
+增加属性：SuccessInfo, FailInfo，成功及失败时返回的信息。放入全局配置中
+public HttpApiConfig
+{
+   public string SuccessInfo {get; set;}
+   public string FailInfo {get; set;}
+   public string AuthIPs {get; set;}
+   public string LoggerName {get; set;}
+}
+
+
+-------------------------------------------------------------
+已完成
+-------------------------------------------------------------
+2017-11-24
+    /IQuaryable<T> 类型数据的自动封装
+        取消，接口中常直接返回匿名对象
+        还有page、pagesSize等逻辑
+        结论：还是由用户直接在接口中处理吧
+
+2017-11-23
+    /非string、image类型，默认类型输出为 json（已有该逻辑，查看方法 HttpApiHelper.ParseDataType）
+    /增加默认参数Description
+    /去除appsetting-wrapper全局设置（不实用）
+    /删除HttpApiAttribute.IClonable接口
+    /gzip支持（算了，由iis直接提供吧）
+    /去除Format属性
+    /优化缓存
+        /CacheDuration -> CacheSeconds
+        /增加缓存位置属性 CacheLocation
+    /修改 Wrap 逻辑
+        /将Wrapper改为bool属性
+        /注：现在的Wrap只影响到 Json 类型的输出
+        /还是另外定一个 ResponseType=JsonWrap。放弃。
+        /使用单独的 Wrap 属性。并扩展到xml、imagebase64、普通text的输出
+
+
+/增加historyattribute/DescriptionAttribute
+/修正getimage错误（去掉response.end)
+/新增api参数，显示所有接口
+/部署到服务器上试试，看HttpContext.Current.User;到底是什么
+//删除                 case ResponseDataType.HTML: return new HtmlEncoder(context);
+//枚举会转化为数字输出。。。应该转化为字符串，用newtonsoft.json怎么玩？
+//简化DataRow的输出结果
+/将AuthHelper集成到HttpApi组件（2015-04-28）
+/修改JsonWrapper -> Wrapper（2015-04-28）
+/修改HttpApi，增加授权逻辑（2014-05-12）
+    - 集成DataResult类
+    - 将js文件丢到Js目录下
+    - 拆分Tools类
+    - 令其支持以下特性(attribute)：
+        - AllowAnonymous：是否允许匿名访问（默认为true）
+        - AllowUsers ：允许访问的用户
+        - AllowRoles ：允许访问的角色
+    - 若无授权访问会返回401错误或DataResult对象 （可在Web.confit中配置HttpApi-ErrorResponse=HttpError/DataResult）
+    - 使用方法
+        - 确保ASP.NET 页面实现 HttpContext.Current.User 接口（用于获取当前用户的信息）
+        - 请打开所有HttpApi的访问权限，无需登录
+        - 在需要认证的方法上加上以上标签
+    - 详细内容可参考 TestAuth.aspx 示例页面
+/修改缓存逻辑，根据有效输入参数来缓存，无效参数不予理会(2013-04-26)
+/null值处理
+/json数据转换为类实体
+    void Update(Person person)
+    json {Name:xxx, First:xxx, Last:xxx, Sex:'male'}
+    请参考asp.net WebApi
+    http://aspnetwebstack.codeplex.com/
+    return JsonConvert.DeserializeObject<T>(json, _jsonSettings); 
+    JsonSerializerSettings _jsonSettings = new JsonSerializerSettings(); 
+    _jsonSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore; 
+    _jsonSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore; 
+    _jsonSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; 
+    IsoDateTimeConverter datetimeConverter = new IsoDateTimeConverter(); 
+    datetimeConverter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss"; 
+    _jsonSettings.Converters.Add(datetimeConverter); 
+/若实现了IDisposal接口，自动调用释放资源
+/增加访问权限控制
+    [AccessUsers="xxx,xxx", AccessRoles="xxx,xxx"]
+/数据返回类型可用Accepted来控制，而非_type
+/客户端可指定js类名
+/尝试根据方法的输出类别来推断输出格式
+/增加图像输出（png、gif、base64）
+/输出服务地址
+/废除extjs和jquery两种版本的输出，没啥意义，保留原始js就好了
+/恢复HttpApiHttpHandler
+/恢复HttpApiHttpPage（客户端屏蔽了contentType:json,不建议使用）
+/支持输出extjs脚本
+/支持输出普通js脚本
+/WebMethod->HttpApi
+/考虑废除 WebMethodHandler 和 WebMethodModule
+    (1)写class，并用 [WebMethod] 标注
+    (2)注册axd:
+    (3)ashx调用：
+        注册：<script src="CallType_xxx.xxx.axd/js"></script>
+        调用：WebMethod_xxx.xxx.axd/HelloWorld?info=me
+    (4)aspx调用：
+        注册：<script src="CallPage_xxx.xxx.axd/js"></script>
+        调用：WebMethod_xxx.xxx.axd/HelloWorld?info=me
+
+
+-------------------------------------------------------------
+废弃代码
+-------------------------------------------------------------
+    // 获取ajax对象
+    GetAjaxObject : function(){
+        if (window.ActiveXObject) {
+            return new ActiveXObject('Microsoft.XMLHTTP');
+        } else if (window.XMLHttpRequest) {
+            return new XMLHttpRequest();
+        }
+    },
+            if (decoder == null) decoder = new SimpleUrlDecoder(context);
+        <li><a href="HttpApi.App.DemoClass.axd/jq">查看App_Code类映射到客户端的js文件（依赖jquery)</a></li>
+        <li><a href="HttpApi.App.DemoClass.axd/ext">查看App_Code类映射到客户端的js文件（依赖ExtJs)</a></li>
+        <li><a href="CallClass.aspx">调用App_Code类方法（依赖jquery）</a></li>
+        <li><a href="CallExt.aspx">调用App_Code类方法（依赖ExtJs）</a></li>
+
+        static ResponseDataType ParseDataType(object o)
+        {
+            if (o is string)                return ResponseDataType.Text;
+            if (o is StringBuilder)         return ResponseDataType.Text;
+            if (o is DateTime)              return ResponseDataType.Text;
+            if (o is System.Data.DataTable) return ResponseDataType.JSON;
+            if (o is System.Drawing.Image)  return ResponseDataType.Image;
+
+            return ResponseDataType.JSON;
+        }
+
+
+        private void Call(string typeName, HttpContext context)
+        {
+            // 先尝试从缓存中获取处理器
+            string cacheName = "HttpApi-" + typeName;
+            object o = Cache[cacheName];
+            if (o != null)
+            {
+                App.HttpApi.HttpApiHelper.ProcessRequest(context, o);
+                return;
+            }
+
+            // 找不到着遍历程序集去找这个类
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                // 过滤掉系统自带的程序集
+                string name = assembly.FullName;
+                if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
+                    continue;
+
+                // 尝试创建对象，且处理Web方法调用请求
+                object handler = assembly.CreateInstance(typeName, true);
+                if (handler != null)
+                {
+                    App.HttpApi.HttpApiHelper.ProcessRequest(context, handler);
+                    Cache.Add(cacheName, handler, null,
+                        Cache.NoAbsoluteExpiration, new TimeSpan(0, _cacheMinutes, 0),
+                        CacheItemPriority.Default,
+                        null);
+                    break;
+                }
+            }
+        }
+            /*
+            if (result == null)
+                HttpContext.Current.Response.Write("null");
+            else
+                encoder.Write(result);
+            */
+
+
+        /// <summary>
+        /// 列出接口清单
+        /// </summary>
+        static StringBuilder GetInterfaceText(Type type)
+        {
+            // 读取对应的模板
+            string script = "";
+            Uri uri = HttpContext.Current.Request.Url;
+            string filePath = HttpContext.Current.Request.FilePath;
+            string url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
+
+            // 依次生成函数调用脚本
+            StringBuilder scriptBuilder = new StringBuilder(script);
+            MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            foreach (MethodInfo method in methods)
+            {
+                HttpApiAttribute attr = Tool.GetWebMethodAttribute(method);
+                if (attr != null)
+                {
+                    //scriptBuilder.AppendLine("<h2>" + attr.Description + "</h2>");
+                    scriptBuilder.AppendLine(attr.Description);
+                    scriptBuilder.AppendLine("    地址  : " + GetMethodUrl(url, method));
+                    scriptBuilder.AppendLine("    缓存  : " + attr.CacheDuration.ToString() + " 秒");
+                    scriptBuilder.AppendLine("    类型  : " + ParseDataType(attr.Type, method.ReturnType).ToString());
+                    scriptBuilder.AppendLine("    备注  : " + attr.Remark);
+                    scriptBuilder.AppendLine("    限登录: " + attr.AuthLogin);
+                    scriptBuilder.AppendLine("    限用户: " + attr.AuthUsers);
+                    scriptBuilder.AppendLine("    限角色: " + attr.AuthRoles);
+                    scriptBuilder.AppendLine("");
+                }
+            }
+            return scriptBuilder;
+        }
+            public Api(string name, string description, string type, int cacheDuration, bool authLogin, string authUsers, string authRoles, string remark, string url)
+            {
+                this.Name = name;
+                this.Description = description;
+                this.Type = type;
+                this.CacheDuration = cacheDuration;
+                this.AuthLogin = authLogin;
+                this.AuthUsers = authUsers;
+                this.AuthRoles = authRoles;
+                this.Remark = remark;
+                this.Url = url;
+            }
+
+
+                    /// <summary>
+        /// 列出接口清单（考虑用GetInterfaces方法重构）
+        /// </summary>
+        static StringBuilder GetInterfaceHtml(Type type)
+        {
+            // 读取对应的模板
+            string script = "";
+            Uri uri = HttpContext.Current.Request.Url;
+            string filePath = HttpContext.Current.Request.FilePath;
+            string url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
+
+            // 依次生成函数调用脚本
+            StringBuilder sb = new StringBuilder(script);
+            MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            //sb.AppendLine("<b>" + url + "</b>");
+            sb.AppendLine("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendLine("<tr><td width='200'>接口名</td><td width='300'>说明</td><td width='70'>类型</td><td width='70'>缓存</td><td width='70'>限登录</td><td width='70'>限用户</td><td width='70'>限角色</td><td>备注</td><td>完整地址</td></tr>");
+
+            foreach (MethodInfo method in methods)
+            {
+                HttpApiAttribute attr = Tool.GetWebMethodAttribute(method);
+                if (attr != null)
+                {
+                    sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td><td>{5}&nbsp;</td><td>{6}&nbsp;</td><td>{7}&nbsp;</td><td>{8}&nbsp;</td></tr>"
+                        , method.Name
+                        , attr.Description
+                        , ParseDataType(attr.Type, method.ReturnType)
+                        , attr.CacheDuration.ToString() + " 秒"
+                        , attr.AuthLogin
+                        , attr.AuthUsers
+                        , attr.AuthRoles
+                        , attr.Remark
+                        , GetMethodUrl(url, method)
+                        );
+                }
+            }
+            return sb;
+        }
+
+
+                /// <summary>
+        /// 生成客户端调用服务器端方法的脚本（考虑用GetInterfaces方法重构）
+        /// </summary>
+        static StringBuilder GetJs(Type type, string nameSpace, string className, int cacheDuration, string scriptType="js")
+        {
+            // 读取对应的模板
+            string script = GetTemplateScript(scriptType);
+            Uri uri = HttpContext.Current.Request.Url;
+            string filePath = HttpContext.Current.Request.FilePath;
+
+            // 并进行字符串替换：描述、时间、地址、类名
+            string url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
+            script = script.Replace("%DATE%", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            script = script.Replace("%DURATION%", cacheDuration.ToString());
+            script = script.Replace("%URL%", url);
+            script = script.Replace("%NS-BUILD%", GetNamespaceScript(nameSpace));
+            script = script.Replace("%NS%", nameSpace);
+            script = script.Replace("%CLS%", className);
+
+            // 依次生成函数调用脚本
+            StringBuilder scriptBuilder = new StringBuilder(script);
+            MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            foreach (MethodInfo method in methods)
+            {
+                HttpApiAttribute attr = Tool.GetWebMethodAttribute(method);
+                if (attr != null)
+                {
+                    scriptBuilder.AppendLine("//-----------------------------------------------------------------");
+                    scriptBuilder.AppendLine("// 说明  : " + attr.Description);
+                    scriptBuilder.AppendLine("// 地址  : " + GetMethodUrl(url, method));
+                    scriptBuilder.AppendLine("// 缓存  : " + attr.CacheDuration.ToString() + " 秒");
+                    scriptBuilder.AppendLine("// 类型  : " + ParseDataType(attr.Type, method.ReturnType).ToString());
+                    scriptBuilder.AppendLine("// 备注  : " + attr.Remark);
+                    scriptBuilder.AppendLine("// 限登录: " + attr.AuthLogin);
+                    scriptBuilder.AppendLine("// 限用户: " + attr.AuthUsers);
+                    scriptBuilder.AppendLine("// 限角色: " + attr.AuthRoles);
+                    scriptBuilder.AppendLine("//-----------------------------------------------------------------");
+
+                    string func = GetFunctionScript(nameSpace, className, method, attr.Type);
+                    scriptBuilder.AppendLine(func);
+                }
+            }
+
+            // 插入json2.js并输出
+            scriptBuilder.Insert(0, GetJsonScript());
+            return scriptBuilder;
+        }
+
+        
+        //---------------------------------------------------
+        // 内部属性
+        //---------------------------------------------------
+        /// <summary>方法参数个数</summary>
+        internal int ParamsCnt { get; set; }
+
+            if (attr != null)
+            {
+                ParameterInfo[] parameters = info.GetParameters();
+                if (parameters != null)
+                    attr.ParamsCnt = parameters.Length;
+            }
+
+            
+        #region ICloneable Members
+        public object Clone()
+        {
+            HttpApiAttribute obj = new HttpApiAttribute();
+            obj.Type = this.Type;
+            obj.Description = this.Description;
+            obj.CacheDuration = this.CacheDuration;
+            obj.Description = this.Description;
+            return obj;
+        }
+        #endregion
+
+                /// <summary>字符串格式化时用的格式</summary>
+        public string Format { get; set; }
+
+
+                    //.....以后再优化，如果无数据，该输出什么？
+            //.....文本是输出null还是什么都不输出？图像呢？
+            //.....可考虑在webconfig中进行全局设置
+            if (obj == null)
+                WriteText("null"); 
+
+
+                        [System.ComponentModel.DefaultValue(ResponseType.Auto)]

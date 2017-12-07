@@ -1,0 +1,4 @@
+/App.HttpApi/obj
+/App.HttpApi/bin/Debug/*.pdb
+/Test/obj
+/Test/bin/*.pdb

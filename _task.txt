@@ -1,0 +1,133 @@
+﻿增加Wrapper特性
+    - None: 不封装，直接输出到客户端
+    - DataResult: 用DataResult类封装
+    该方案用于服务器端和客户端的适配
+    - 服务器端可能只需要直接的数据；
+    - 而对于接口而言，可能需要用统一的结构来封装（如DataResult）
+    或者使用全局appsetting设定
+    <item key=webcall-wrapper value="DataResult"/>
+
+
+
+
+
+删除                 case ResponseDataType.HTML: return new HtmlEncoder(context);
+枚举会转化为数字输出。。。应该转化为字符串，用newtonsoft.json怎么玩？
+简化DataRow的输出结果
+
+
+
+--------------------------------------------------------
+/修改WebCall，增加授权逻辑（2014-05-12）
+	- 集成DataResult类
+    - 将js文件丢到Js目录下
+	- 拆分Tools类
+	- 令其支持以下特性(attribute)：
+		- AllowAnonymous：是否允许匿名访问（默认为true）
+		- AllowUsers ：允许访问的用户
+		- AllowRoles ：允许访问的角色
+	- 若无授权访问会返回401错误或DataResult对象 （可在Web.confit中配置WebCall-ErrorResponse=HttpError/DataResult）
+	- 使用方法
+		- 确保ASP.NET 页面实现 HttpContext.Current.User 接口（用于获取当前用户的信息）
+		- 请打开所有WebCall的访问权限，无需登录
+		- 在需要认证的方法上加上以上标签
+	- 详细内容可参考 TestAuth.aspx 示例页面
+/修改缓存逻辑，根据有效输入参数来缓存，无效参数不予理会(2013-04-26)
+/null值处理
+/json数据转换为类实体
+    void Update(Person person)
+    json {Name:xxx, First:xxx, Last:xxx, Sex:'male'}
+    请参考asp.net WebApi
+    http://aspnetwebstack.codeplex.com/
+	return JsonConvert.DeserializeObject<T>(json, _jsonSettings); 
+	JsonSerializerSettings _jsonSettings = new JsonSerializerSettings(); 
+	_jsonSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore; 
+	_jsonSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore; 
+	_jsonSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; 
+	IsoDateTimeConverter datetimeConverter = new IsoDateTimeConverter(); 
+	datetimeConverter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss"; 
+	_jsonSettings.Converters.Add(datetimeConverter); 
+/若实现了IDisposal接口，自动调用释放资源
+/增加访问权限控制
+    [AccessUsers="xxx,xxx", AccessRoles="xxx,xxx"]
+/数据返回类型可用Accepted来控制，而非_type
+/客户端可指定js类名
+/尝试根据方法的输出类别来推断输出格式
+/增加图像输出（png、gif、base64）
+/输出服务地址
+/废除extjs和jquery两种版本的输出，没啥意义，保留原始js就好了
+/恢复WebCallHttpHandler
+/恢复WebCallHttpPage（客户端屏蔽了contentType:json,不建议使用）
+/支持输出extjs脚本
+/支持输出普通js脚本
+/WebMethod->WebCall
+/考虑废除 WebMethodHandler 和 WebMethodModule
+    (1)写class，并用 [WebMethod] 标注
+    (2)注册axd:
+    (3)ashx调用：
+        注册：<script src="CallType_xxx.xxx.axd/js"></script>
+        调用：WebMethod_xxx.xxx.axd/HelloWorld?info=me
+    (4)aspx调用：
+        注册：<script src="CallPage_xxx.xxx.axd/js"></script>
+        调用：WebMethod_xxx.xxx.axd/HelloWorld?info=me
+
+
+    // 获取ajax对象
+    GetAjaxObject : function(){
+        if (window.ActiveXObject) {
+            return new ActiveXObject('Microsoft.XMLHTTP');
+        } else if (window.XMLHttpRequest) {
+            return new XMLHttpRequest();
+        }
+    },
+            if (decoder == null) decoder = new SimpleUrlDecoder(context);
+        <li><a href="WebCall.App.DemoClass.axd/jq">查看App_Code类映射到客户端的js文件（依赖jquery)</a></li>
+        <li><a href="WebCall.App.DemoClass.axd/ext">查看App_Code类映射到客户端的js文件（依赖ExtJs)</a></li>
+        <li><a href="CallClass.aspx">调用App_Code类方法（依赖jquery）</a></li>
+        <li><a href="CallExt.aspx">调用App_Code类方法（依赖ExtJs）</a></li>
+
+        static ResponseDataType ParseDataType(object o)
+        {
+            if (o is string)                return ResponseDataType.Text;
+            if (o is StringBuilder)         return ResponseDataType.Text;
+            if (o is DateTime)              return ResponseDataType.Text;
+            if (o is System.Data.DataTable) return ResponseDataType.JSON;
+            if (o is System.Drawing.Image)  return ResponseDataType.Image;
+
+            return ResponseDataType.JSON;
+        }
+
+
+        private void Call(string typeName, HttpContext context)
+        {
+            // 先尝试从缓存中获取处理器
+            string cacheName = "WebCall-" + typeName;
+            object o = Cache[cacheName];
+            if (o != null)
+            {
+                Kingsoc.Web.WebCall.WebCallHelper.ProcessRequest(context, o);
+                return;
+            }
+
+            // 找不到着遍历程序集去找这个类
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                // 过滤掉系统自带的程序集
+                string name = assembly.FullName;
+                if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
+                    continue;
+
+                // 尝试创建对象，且处理Web方法调用请求
+                object handler = assembly.CreateInstance(typeName, true);
+                if (handler != null)
+                {
+                    Kingsoc.Web.WebCall.WebCallHelper.ProcessRequest(context, handler);
+                    Cache.Add(cacheName, handler, null,
+                        Cache.NoAbsoluteExpiration, new TimeSpan(0, _cacheMinutes, 0),
+                        CacheItemPriority.Default,
+						null);
+                    break;
+                }
+            }
+        }

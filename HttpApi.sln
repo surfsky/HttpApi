@@ -7,6 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.HttpApi", "App.HttpApi\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{1D132C72-95C0-4401-B2E3-19039D6EB0C3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DD772976-24A5-4C80-BBBD-655F00B8F1C2}"
+	ProjectSection(SolutionItems) = preProject
+		Nuget\Demo.cs.pp = Nuget\Demo.cs.pp
+		README.md = README.md
+		Task.txt = Task.txt
+		Nuget\Web.config.transform = Nuget\Web.config.transform
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

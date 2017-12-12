@@ -86,7 +86,6 @@
   <ItemGroup>
     <Compile Include="Component\DemoClass.cs" />
     <Compile Include="App_Code\DemoClass2.cs" />
-    <Compile Include="Component\Person.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

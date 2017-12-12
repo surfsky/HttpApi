@@ -53,6 +53,7 @@
     <Compile Include="Attributes.cs" />
     <Compile Include="AuthHelper.cs" />
     <Compile Include="DataResult.cs" />
+    <Compile Include="HttpApiConfig.cs" />
     <Compile Include="ResponseType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestDecoder.cs" />
@@ -81,12 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Js\_jsTemplate.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Task.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

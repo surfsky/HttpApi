@@ -70,8 +70,8 @@ namespace App.HttpApi
             }
             catch (Exception ex)
             {
-                object result = "Call function " + methodName + " fail. Please check parameters. Detail info : " + ex.Message;
-                WriteError(context, 400, result.ToString());
+                string result = string.Format("Api {0}() fail. Please check parameters. {1}", methodName, ex.Message);
+                WriteError(context, 400, result);
             }
         }
 
@@ -187,12 +187,9 @@ namespace App.HttpApi
         // 若为DataResult，直接输出DataResult错误信息（默认）
         static void WriteError(HttpContext context, int errorCode, string info)
         {
-            string errorResponse = System.Configuration.ConfigurationManager.AppSettings["HttpApi-ErrorResponse"];
-            if (string.IsNullOrEmpty(errorResponse))
-                errorResponse = "DataResult";
-            if (errorResponse == "HttpError")
+            ErrorResponse errorResponse = HttpApiConfig.Instance.ErrorResponse;
+            if (errorResponse ==  ErrorResponse.HttpError)
             {
-                context.Response.Write(info);
                 context.Response.StatusCode = errorCode;
                 context.Response.StatusDescription = info;
                 context.Response.End();

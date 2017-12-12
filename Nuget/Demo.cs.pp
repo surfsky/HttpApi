@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Web;
 using System.Data;
 using System.Drawing;
-using App.HttpApi;
 using System.ComponentModel;
+using App.HttpApi;
 
-namespace App
+namespace $rootnamespace$
 {
     public enum Sex
     {
         Male,
         Female
     }
+
     public class Person
     {
         public string Name { get; set; }
@@ -22,11 +23,10 @@ namespace App
     }
 
 
-    [Description("测试类 DemoClass")]
-    [History("2016-11-01", "SURFSKY", "修改了A")]
-    [History("2016-11-02", "SURFSKY", "修改了B")]
-    [History("2016-11-03", "SURFSKY", "修改了C")]
-    public class DemoClass
+    [History("2017-11-01", "SURFSKY", "修改了A")]
+    [History("2017-11-02", "SURFSKY", "修改了B")]
+    [History("2017-11-03", "SURFSKY", "修改了C")]
+    public class Demo
     {
         //---------------------------------------------
         // 静态方法
@@ -49,14 +49,13 @@ namespace App
             return new { p1 = p1, p2 = p2};
         }
 
-        [HttpApi("测试错误")]
+		[HttpApi("测试错误")]
         public static object TestError()
         {
             int n = 0;
             int m = 1 / n;
             return true;
         }
-
 
         //---------------------------------------------
         // 返回各种基础对象

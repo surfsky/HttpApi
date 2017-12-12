@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0"?>
 <configuration>
-
   <!--
   <configSections>
     <section name="httpApi" type="App.HttpApi.HttpApiConfig, App.HttpApi" />
   </configSections>
   <httpApi successInfo="Ok" failInfo="Error" authIPs="" errorResponse="DataResult" />
   -->
+  
 
   <!--
   <system.web>
@@ -22,7 +22,4 @@
       <add name="HttpApi" verb="*" path="HttpApi*.axd" type="App.HttpApi.HttpApiHandler, App.HttpApi"/>
     </handlers>
   </system.webServer>
-  <system.web>
-    <compilation debug="true"/>
-  </system.web>
 </configuration>

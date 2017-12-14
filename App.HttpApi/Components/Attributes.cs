@@ -67,6 +67,11 @@ namespace App.HttpApi
         /// <summary>是否对文本类型（Json, Text, Xml, ImageBase64)的数据进行 DataResult 封装</summary>
         public bool Wrap { get; set; } = false;
 
+        /// <summary>封装成功后显示的信息</summary>
+        public string WrapInfo { get; set; }
+
+        /// <summary>允许的访问动作（Get/Post)</summary>
+        public string Verbs { get; set; }
 
         //---------------------------------------------------
         // 访问权限控制

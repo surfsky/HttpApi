@@ -4,10 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace App.HttpApi
+namespace App.HttpApi.Components
 {
-    internal partial class Tool
+    /// <summary>
+    /// Asp.net 相关辅助方法
+    /// </summary>
+    internal class Asp
     {
+        /// <summary>获取客户端真实IP</summary>
+        public static string GetClientIP()
+        {
+            if (HttpContext.Current != null)
+            {
+                var request = HttpContext.Current.Request;
+                return (request.ServerVariables["HTTP_VIA"] != null)
+                    ? request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString()   // 使用代理，尝试去找原始地址
+                    : request.ServerVariables["REMOTE_ADDR"].ToString()            // 
+                    ;
+                //return request.UserHostAddress;
+            }
+            return "";
+        }
+
         //---------------------------------------------
         // 访问权限控制
         //---------------------------------------------

@@ -9,16 +9,20 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
 using System.Web;
+using Newtonsoft.Json;
 
-namespace App.HttpApi
+namespace App.HttpApi.Components
 {
-    internal partial class Tool
+    /// <summary>
+    /// 序列化方法类
+    /// </summary>
+    internal class SerializeHelper
     {
         //----------------------------------------------------
         // 序列化转换
         //----------------------------------------------------
         // 转化为字符串
-        public static string ToString(object obj)
+        public static string ToText(object obj)
         {
             return (obj == null) ? "" : obj.ToString();
         }
@@ -30,14 +34,23 @@ namespace App.HttpApi
                 return "{}";
             else
             {
-                Newtonsoft.Json.JsonSerializerSettings settings = new Newtonsoft.Json.JsonSerializerSettings();
-                settings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore;
-                settings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-                settings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                var settings = new JsonSerializerSettings();
+                settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                settings.NullValueHandling = NullValueHandling.Ignore;
+                settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+
+                // 时间格式
                 IsoDateTimeConverter datetimeConverter = new IsoDateTimeConverter();
                 datetimeConverter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
                 settings.Converters.Add(datetimeConverter);
-                return Newtonsoft.Json.JsonConvert.SerializeObject(obj, settings);
+
+                // 枚举格式
+                StringEnumConverter enumConverter = new StringEnumConverter();
+                if (HttpApiConfig.Instance.EnumResponse == EnumResponse.Text)
+                    settings.Converters.Add(enumConverter);
+
+                //
+                return JsonConvert.SerializeObject(obj, settings);
 
                 /*
                 // 用 JavaScriptSerializer 序列化（结构会复杂很多）

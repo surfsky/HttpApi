@@ -8,6 +8,7 @@ using System.Collections.Specialized;
 //using System.Web.Script.Serialization;
 using System.Web.SessionState;
 using System.ComponentModel;
+using App.HttpApi.Components;
 
 namespace App.HttpApi
 {
@@ -33,12 +34,12 @@ namespace App.HttpApi
             Type type = handler.GetType();
             if (type.FullName.StartsWith("ASP.") && type.BaseType != null)
                 type = type.BaseType;
-            MethodInfo method = Tool.GetMethod(type, methodName);
-            HttpApiAttribute attr = Tool.GetHttpApiAttribute(method);
+            MethodInfo method = ReflectHelper.GetMethod(type, methodName);
+            HttpApiAttribute attr = ReflectHelper.GetHttpApiAttribute(method);
 
             // 找到预留方法直接处理掉
             // 检测方法可用性
-            if (FindReservedMethod(context, type, methodName, args))
+            if (ProcessReservedMethod(context, type, methodName, args))
                 return;
             if (!CheckMethodEnable(context, method, methodName, attr))
                 return;
@@ -47,13 +48,13 @@ namespace App.HttpApi
             try
             {
                 // 获取需要的参数
-                object[] parameters = Tool.GetParameters(method, args);
-                string cacheKey = string.Format("{0}-{1}-{2}", handler, method.Name, Tool.ToJson(parameters));
+                object[] parameters = ReflectHelper.GetParameters(method, args);
+                string cacheKey = string.Format("{0}-{1}-{2}", handler, method.Name, SerializeHelper.ToJson(parameters));
                         
                 // 获取方法调用结果并依情况缓存
                 object result = (attr.CacheSeconds == 0) 
                     ? method.Invoke(handler, parameters)
-                    : Tool.GetCachedObject<object>(
+                    : CacheHelper.GetCachedObject<object>(
                         cacheKey, 
                         DateTime.Now.AddSeconds(attr.CacheSeconds), 
                         () =>{return method.Invoke(handler, parameters);}
@@ -66,7 +67,9 @@ namespace App.HttpApi
                     dataType = (ResponseType)Enum.Parse(typeof(ResponseType), args["_type"].ToString(), true);
                 if (dataType == ResponseType.Auto && result != null)
                     dataType = ParseDataType(result.GetType());
-                WriteResult(context, result, dataType, attr.MimeType, attr.FileName, attr.Wrap, attr.CacheSeconds, attr.CacheLocation);
+                var wrap = HttpApiConfig.Instance.Wrap ?? attr.Wrap;
+                var wrapInfo = attr.WrapInfo;
+                WriteResult(context, result, dataType, attr.MimeType, attr.FileName, attr.CacheSeconds, attr.CacheLocation, wrap, wrapInfo);
             }
             catch (Exception ex)
             {
@@ -76,14 +79,14 @@ namespace App.HttpApi
         }
 
         // 预处理保留方法（"js", "jq", "ext", "api", "apis"）
-        static bool FindReservedMethod(HttpContext context, Type type, string methodName, Dictionary<string, object> args)
+        static bool ProcessReservedMethod(HttpContext context, Type type, string methodName, Dictionary<string, object> args)
         {
             // 保留方法名
             string[] arr = { "js", "jq", "ext", "api", "apis" };
             string methodNameLower = methodName.ToLower();
             if (!((IList<string>)arr).Contains(methodNameLower))
                 return false;
-            int cacheDuration = Tool.GetCacheDuration(type);
+            int cacheDuration = ReflectHelper.GetCacheDuration(type);
 
             // 输出api接口页面
             if (methodNameLower == "api")
@@ -113,7 +116,7 @@ namespace App.HttpApi
             }
 
             // 处理缓存
-            Tool.SetCachePolicy(context, cacheDuration);
+            CacheHelper.SetCachePolicy(context, cacheDuration);
             return true;
         }
 
@@ -128,10 +131,27 @@ namespace App.HttpApi
                 return false;
             }
 
+            // 校验访问方式
+            if (!attr.Verbs.IsNullOrEmpty())
+            {
+                string[] verbs = attr.Verbs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                if (verbs == null || verbs.Length == 0)
+                    return true;
+                else
+                {
+                    string verb = context.Request.HttpMethod.ToLower();
+                    if (!verbs.ToLower().Contains(verb))
+                    {
+                        WriteError(context, 400, "Allowed verbs: " + attr.Verbs);
+                        return false;
+                    }
+                }
+            }
+
             // 校验登录与否
             if (attr.AuthLogin)
             {
-                if (!Tool.IsLogin())
+                if (!Asp.IsLogin())
                 {
                     WriteError(context, 401, "Need login");
                     return false;
@@ -141,7 +161,7 @@ namespace App.HttpApi
             // 校验用户
             if (!string.IsNullOrEmpty(attr.AuthUsers))
             {
-                if (!Tool.IsInUsers(attr.AuthUsers.Split(',', ';')))
+                if (!Asp.IsInUsers(attr.AuthUsers.Split(',', ';')))
                 {
                     WriteError(context, 401, "User un-authority");
                     return false;
@@ -151,7 +171,7 @@ namespace App.HttpApi
             // 校验角色
             if (!string.IsNullOrEmpty(attr.AuthRoles))
             {
-                if (!Tool.IsInRoles(attr.AuthRoles.Split(',', ';')))
+                if (!Asp.IsInRoles(attr.AuthRoles.Split(',', ';')))
                 {
                     WriteError(context, 401, "Role un-authority");
                     return false;
@@ -167,14 +187,18 @@ namespace App.HttpApi
         //-----------------------------------------------------------
         // 输出数据
         static void WriteResult(
-            HttpContext context, object result, ResponseType dataType, 
-            string mimeType = null, string fileName = null, bool wrap = false, 
-            int cacheSeconds = 0, HttpCacheability cacheLocation = HttpCacheability.NoCache)
+            HttpContext context, object result, 
+            ResponseType dataType, string mimeType = null, string fileName = null, 
+            int cacheSeconds = 0, HttpCacheability cacheLocation = HttpCacheability.NoCache, 
+            bool wrap = false, string wrapInfo = null
+            )
         {
-            // 是否需要做 DataResult 封装
+            // 是否需要做 DataResult JSON 封装
             if (wrap && (dataType == ResponseType.JSON || dataType == ResponseType.ImageBase64 || dataType == ResponseType.Text || dataType == ResponseType.XML))
             {
-                result = new DataResult("true", null, result, null);
+                result = new DataResult("true", wrapInfo, result, null);
+                if (dataType != ResponseType.XML)
+                    dataType = ResponseType.JSON;
             }
 
             var encoder = new ResponseEncoder(dataType, mimeType, fileName, cacheSeconds, cacheLocation);
@@ -243,7 +267,7 @@ namespace App.HttpApi
             MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
             foreach (MethodInfo method in methods)
             {
-                HttpApiAttribute attr = Tool.GetHttpApiAttribute(method);
+                HttpApiAttribute attr = ReflectHelper.GetHttpApiAttribute(method);
                 if (attr != null)
                 {
                     var api = new APIInfo()
@@ -264,8 +288,8 @@ namespace App.HttpApi
                 }
             }
             typeapi.Apis = apis;
-            typeapi.Desc = Tool.GetDescription(type);
-            typeapi.Histories = Tool.GetHistories(type);
+            typeapi.Desc = ReflectHelper.GetDescription(type);
+            typeapi.Histories = ReflectHelper.GetHistories(type);
             return typeapi;
         }
 
@@ -340,7 +364,7 @@ namespace App.HttpApi
                 return args["dataNamespace"].ToString();
             else
             {
-                ScriptAttribute attr = Tool.GetScriptAttribute(type);
+                ScriptAttribute attr = ReflectHelper.GetScriptAttribute(type);
                 return (attr != null && attr.NameSpace != null) ? attr.NameSpace : type.Namespace;
             }
         }
@@ -352,7 +376,7 @@ namespace App.HttpApi
                 return args["dataClassName"].ToString();
             else
             {
-                ScriptAttribute attr = Tool.GetScriptAttribute(type);
+                ScriptAttribute attr = ReflectHelper.GetScriptAttribute(type);
                 return (attr != null && attr.ClassName != null) ? attr.ClassName : type.Name;
             }
         }

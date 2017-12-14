@@ -11,9 +11,12 @@ using System.Reflection;
 using System.Web;
 using System.ComponentModel;
 
-namespace App.HttpApi
+namespace App.HttpApi.Components
 {
-    internal partial class Tool
+    /// <summary>
+    /// 反射相关辅助方法
+    /// </summary>
+    internal class ReflectHelper
     {
         // 获取DescriptionAttribute
         public static string GetDescription(Type type)
@@ -35,7 +38,7 @@ namespace App.HttpApi
         // 获取类型文件的缓存时间
         public static int GetCacheDuration(Type type)
         {
-            ScriptAttribute attr = Tool.GetScriptAttribute(type);
+            ScriptAttribute attr = ReflectHelper.GetScriptAttribute(type);
             return (attr != null) ? attr.CacheDuration : 0;
         }
 

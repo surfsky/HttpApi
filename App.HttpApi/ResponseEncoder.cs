@@ -1,28 +1,21 @@
-﻿/****************************************************************************
- *
- * 功能描述：    为了适应前端的ajax请求开发的处理机制
- * 作    者：    wzcheng
- * 修改日期：    2010/04/16,2010/04/21
- *  
-*****************************************************************************/
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Reflection;
 using System.IO;
 using System.Text;
 using System.Collections.Specialized;
-//using System.Web.Script.Serialization;
 using System.Web.SessionState;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization.Formatters.Binary;
+using App.HttpApi.Components;
 
 namespace App.HttpApi
 {
     /// <summary>
-    /// 抽象编码器
+    /// 响应编码器
     /// </summary>
     public class ResponseEncoder
     {
@@ -53,15 +46,15 @@ namespace App.HttpApi
 
             switch (this.DataType)
             {
-                case ResponseType.JavaScript:  WriteText(Tool.ToString(obj));        break;
-                case ResponseType.Text:        WriteText(Tool.ToString(obj));        break;
-                case ResponseType.JSON:        WriteText(Tool.ToJson(obj));          break;
-                case ResponseType.HTML:        WriteText(Tool.ToString(obj));        break;
-                case ResponseType.XML:         WriteText(Tool.ToXml(obj));           break;
-                case ResponseType.ImageBase64: WriteText(Tool.ToImageBase64(obj));   break;
-                case ResponseType.Image:       WriteBinary(Tool.ToImageBytes(obj));  break;
-                case ResponseType.BinaryFile:  WriteBinary(Tool.ToBinary(obj));      break;
-                default:                       WriteText(Tool.ToString(obj));        break;
+                case ResponseType.JavaScript:  WriteText(SerializeHelper.ToText(obj));        break;
+                case ResponseType.Text:        WriteText(SerializeHelper.ToText(obj));        break;
+                case ResponseType.JSON:        WriteText(SerializeHelper.ToJson(obj));          break;
+                case ResponseType.HTML:        WriteText(SerializeHelper.ToText(obj));        break;
+                case ResponseType.XML:         WriteText(SerializeHelper.ToXml(obj));           break;
+                case ResponseType.ImageBase64: WriteText(SerializeHelper.ToImageBase64(obj));   break;
+                case ResponseType.Image:       WriteBinary(SerializeHelper.ToImageBytes(obj));  break;
+                case ResponseType.BinaryFile:  WriteBinary(SerializeHelper.ToBinary(obj));      break;
+                default:                       WriteText(SerializeHelper.ToText(obj));        break;
             }
         }
 

@@ -50,19 +50,21 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes.cs" />
-    <Compile Include="AuthHelper.cs" />
+    <Compile Include="Components\Attributes.cs" />
+    <Compile Include="Components\AuthHelper.cs" />
+    <Compile Include="Components\Asp.cs" />
+    <Compile Include="Components\Enums.cs" />
+    <Compile Include="Components\Extensions.cs" />
     <Compile Include="DataResult.cs" />
-    <Compile Include="HttpApiConfig.cs" />
+    <Compile Include="Components\HttpApiConfig.cs" />
     <Compile Include="ResponseType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestDecoder.cs" />
     <Compile Include="ResourceHelper.cs" />
     <Compile Include="ResponseEncoder.cs" />
-    <Compile Include="Components\Tool.Reflect.cs" />
-    <Compile Include="Components\Tool.Cache.cs" />
-    <Compile Include="Components\Tool.Auth.cs" />
-    <Compile Include="Components\Tool.Serialization.cs" />
+    <Compile Include="Components\ReflectHelper.cs" />
+    <Compile Include="Components\CacheHelper.cs" />
+    <Compile Include="Components\SerializeHelper.cs" />
     <Compile Include="ApiInfo.cs" />
     <Compile Include="HttpApiHelper.cs" />
     <Compile Include="HttpApiHandler.cs" />

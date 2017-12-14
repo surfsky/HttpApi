@@ -31,14 +31,21 @@ namespace App
         //---------------------------------------------
         // 静态方法
         //---------------------------------------------
+        [HttpApi("HelloWorld")]
+        public static string HelloWorld(string info)
+        {
+            System.Threading.Thread.Sleep(200);
+            return string.Format("Hello world! {0} {1}", info, DateTime.Now);
+        }
+
         [HttpApi("静态方法示例", Type = ResponseType.JSON)]
         public static object GetStaticObject()
         {
             return new { h = "3", a = "1", b = "2", c = "3" };
         }
 
-        [HttpApi("Json结果包裹器示例", Wrap = true)]
-        public static object TestWrapperDataResult()
+        [HttpApi("Json结果包裹器示例", Wrap = true, WrapInfo ="获取数据成功")]
+        public static object TestWrap()
         {
             return new { h = "3", a = "1", b = "2", c = "3" };
         }
@@ -57,17 +64,21 @@ namespace App
             return true;
         }
 
+        [HttpApi("限制访问方式", Verbs ="Post")]
+        public static string TestVerbs()
+        {
+            return HttpContext.Current.Request.HttpMethod;
+        }
+
+        [HttpApi("测试枚举返回值（可在web.config中设置）")]
+        public static Sex TestEnum()
+        {
+            return Sex.Male;
+        }
 
         //---------------------------------------------
         // 返回各种基础对象
         //---------------------------------------------
-        [HttpApi("HelloWorld", CacheSeconds=30)]
-        public string HelloWorld(string info)
-        {
-            System.Threading.Thread.Sleep(200);
-            return string.Format("Hello world! {0} {1}", info, DateTime.Now);
-        }
-
         [HttpApi("plist文件下载示例", CacheSeconds = 30, MimeType="text/plist", FileName="app.plist")]
         public string GetFile(string info)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App.HttpApi.Components;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -8,30 +9,27 @@ using System.Xml.Serialization;
 namespace App.HttpApi
 {
     /// <summary>
-    /// 错误时返回方式
+    /// Web.Config 中的配置节
     /// </summary>
-    public enum ErrorResponse
-    {
-        HttpError = 0,
-        DataResult = 1
-    }
-
-    [XmlInclude(typeof(ErrorResponse))]
     public class HttpApiConfig : ConfigurationSection
     {
-        [ConfigurationProperty("successInfo")]
-        public string SuccessInfo
+        /*
+        // 成功信息移到方法特性里面去，无需全局配置
+        [ConfigurationProperty("wrapInfo")]
+        public string WrapInfo
         {
-            get { return (string)this["successInfo"]; }
-            set { this["successInfo"] = value; }
+            get { return (string)this["wrapInfo"]; }
+            set { this["wrapInfo"] = value; }
         }
 
+        // 失败信息各不同，不用统一
         [ConfigurationProperty("failInfo")]
         public string FailInfo
         {
             get { return (string)this["failInfo"]; }
             set { this["failInfo"] = value; }
         }
+        */
 
         [ConfigurationProperty("authIPs")]
         public string AuthIPs
@@ -46,6 +44,20 @@ namespace App.HttpApi
         {
             get { return (ErrorResponse)this["errorResponse"]; }
             set { this["errorResponse"] = value; }
+        }
+
+        [ConfigurationProperty("enumResponse", DefaultValue = "Text")]
+        public EnumResponse EnumResponse
+        {
+            get { return (EnumResponse)this["enumResponse"]; }
+            set { this["enumResponse"] = value; }
+        }
+
+        [ConfigurationProperty("wrap")]
+        public bool? Wrap
+        {
+            get { return (bool?)this["wrap"]; }
+            set { this["wrap"] = value; }
         }
 
         // 单例

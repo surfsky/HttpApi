@@ -5,7 +5,8 @@ using System.Web.Caching;
 using System.Web.SessionState;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using App.HttpApi;
+using App.HttpApi.Components;
+using System.Linq;
 
 namespace App.HttpApi
 {
@@ -46,76 +47,71 @@ namespace App.HttpApi
     /// </example>
     public class HttpApiHandler : IHttpHandler, IRequiresSessionState
     {
-        HttpRequest Request { get { return HttpContext.Current.Request; } }
-        Cache Cache{ get { return HttpContext.Current.Cache; } }
+        HttpRequest Request    { get { return HttpContext.Current.Request; } }
+        Cache Cache            { get { return HttpContext.Current.Cache; } }
         public bool IsReusable { get { return false; } }
         private const int _cacheMinutes = 2;
 
-        // 处理这种方式的调用
+        //----------------------------------------------
+        // 入口
+        //----------------------------------------------
+        // 处理 HttpApi 请求
         public void ProcessRequest(HttpContext context)
         {
-            string path = Request.FilePath;
+            // 检测IP
+            if (!CheckIP())
+                return;
 
             // 去掉扩展名
+            string path = Request.FilePath;
             int n = path.LastIndexOf(".");
             path = path.Substring(0, n);
 
             // 去掉前缀
-            string pre = "/HttpApi.";
             if (path.StartsWith("/HttpApi.") || path.StartsWith("/HttpApi-") || path.StartsWith("/HttpApi_"))
-                path = path.Substring(pre.Length);
+                path = path.Substring(9);
 
             // 调用
             Call(path, context);
         }
 
+        // 检测客户端IP是否在授权列表内
+        bool CheckIP()
+        {
+            string[] ips = HttpApiConfig.Instance.AuthIPs?.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            if (ips == null || ips.Length == 0)
+                return true;
+            else
+            {
+                string ip = Asp.GetClientIP();
+                return (ips.Contains(ip));
+            }
+        }
+
+
+
         // 尝试遍历程序集创建对象，并处理web方法调用请求。
-        // 注意几个 ASP.NET 动态编译生成的程序集：
-        // App_Web_*  : aspx页面生成的程序集
-        // App_Code_* : app_code下面的代码生成的程序集
         private void Call(string typeName, HttpContext context)
         {
             // 尝试从缓存中恢复对象并处理请求
             typeName = typeName.Replace('-', '.').Replace('_', '.');
             object handler = TryGetHandlerFromCache(typeName);
+            if (handler == null)
+                handler = TryCreateHandlerFromAssemblies(typeName);
+
+            //
             if (handler != null)
             {
-                App.HttpApi.HttpApiHelper.ProcessRequest(context, handler);
+                HttpApiHelper.ProcessRequest(context, handler);
                 DisposeIfNeed(handler);
                 return;
             }
-
-            // 找不到着遍历程序集去找这个类
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (Assembly assembly in assemblies)
-            {
-                // 过滤掉系统自带的程序集
-                string name = assembly.FullName;
-                if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
-                    continue;
-
-                // 尝试创建对象，且处理Web方法调用请求
-                handler = assembly.CreateInstance(typeName, true);
-                if (handler != null)
-                {
-                    App.HttpApi.HttpApiHelper.ProcessRequest(context, handler);
-                    DisposeIfNeed(handler);
-                    SaveHandlerInCache(typeName, assembly, handler);
-                    break;
-                }
-            }
         }
 
-        //----------------------------------------------
-        // 缓存处理
-        //----------------------------------------------
-        // 如果对象实现了IDisposal接口，则马上释放资源
-        private static void DisposeIfNeed(object handler)
-        {
-            if (handler is IDisposable)
-                (handler as IDisposable).Dispose();
-        }
 
+        //----------------------------------------------
+        // 辅助方法
+        //----------------------------------------------
         // 加到缓存中去（若实现了IDisposal接口，则保存assembly，否则保存对象）
         void SaveHandlerInCache(string typeName, Assembly assembly, object handler)
         {
@@ -129,7 +125,7 @@ namespace App.HttpApi
         }
 
         // 尝试从缓存中获取处理器
-        private object TryGetHandlerFromCache(string typeName)
+        object TryGetHandlerFromCache(string typeName)
         {
             string cacheName = "HttpApi-" + typeName;
             object o = Cache[cacheName];
@@ -145,5 +141,37 @@ namespace App.HttpApi
         }
 
 
+        // 注意几个 ASP.NET 动态编译生成的程序集：
+        // App_Web_*  : aspx页面生成的程序集
+        // App_Code_* : app_code下面的代码生成的程序集
+        /// <summary>尝试根据类型名称，从当前程序集中创建对象</summary>
+        object TryCreateHandlerFromAssemblies(string typeName)
+        {
+            // 遍历程序集去找这个类
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                // 过滤掉系统自带的程序集
+                string name = assembly.FullName;
+                if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
+                    continue;
+
+                // 尝试创建对象
+                var obj = assembly.CreateInstance(typeName, true);
+                if (obj != null)
+                {
+                    SaveHandlerInCache(typeName, assembly, obj);
+                    return obj;
+                }
+            }
+            return null;
+        }
+
+        // 如果对象实现了IDisposable接口，则马上释放资源
+        private static void DisposeIfNeed(object handler)
+        {
+            if (handler is IDisposable)
+                (handler as IDisposable).Dispose();
+        }
     }
 }

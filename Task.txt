@@ -1,18 +1,25 @@
 ﻿-------------------------------------------------------------
 Task
 -------------------------------------------------------------
+
 提供 API 测试页面，可post数据
-优化调用路径为：HttpAPI/A.B.C/MethodName?p=x
+优化调用路径为：HttpAPI/A.B.C/MethodName?p=x，可在示例项目中配置路由
 增加文件上传处理能力, 参数如：string Upload(byte[] file, string name)，处理
-增加属性：Verbs=“Get,Post"
-增加属性：AuthIPs，仅指定ip内的客户端才可以访问。这个可以用代码写死会比较麻烦，考虑用配置
 增加属性：AuthInterval/VisitInterval，限制访问间隔，需要维护一个字典了：ClientIP, Api, LastVisitDt
-增加属性：SuccessInfo, FailInfo，成功及失败时返回的信息。
 
 
 -------------------------------------------------------------
 已完成
 -------------------------------------------------------------
+2017-12-14
+	/重构Tool类，拆分为多个类
+	/重构HttpApiHandler类，更清晰
+	/增加全局配置：SuccessInfo 成功时返回的信息。
+	/增加全局配置：AuthIPs，仅指定ip内的客户端才可以访问。
+	/增加全局配置：EnumResponse，指定枚举类型的返回方式
+	/增加方法特性：Verbs=“Get,Post"，可限制访问的动词
+	/将SuccessInfo-》WrapInfo，移到方法特性里面去，无需全局配置
+
 2017-12-12
 	/Nuget发布: install-package App.HttpApi
 	/增加全局配置
@@ -516,3 +523,26 @@ Task
     <add key="HttpApi-ErrorResponse" value="DataResult"/>   <!-- HttpApi错误时返回的对象： HttpError 或 DataResult -->
   </appSettings>
                   object result = "Api " + methodName + "() fail. Please check parameters. " + ex.Message;
+
+				  
+            // 缓存中没有, 则遍历程序集去找这个类
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                // 过滤掉系统自带的程序集
+                string name = assembly.FullName;
+                if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
+                    continue;
+
+                // 尝试创建对象，且处理Web方法调用请求
+                handler = assembly.CreateInstance(typeName, true);
+                if (handler != null)
+                {
+                    HttpApiHelper.ProcessRequest(context, handler);
+                    DisposeIfNeed(handler);
+                    SaveHandlerInCache(typeName, assembly, handler);
+                    break;
+                }
+            }
+
+			    [XmlInclude(typeof(ErrorResponse))]

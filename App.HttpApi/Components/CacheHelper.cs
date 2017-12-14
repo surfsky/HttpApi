@@ -10,9 +10,12 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Web;
 
-namespace App.HttpApi
+namespace App.HttpApi.Components
 {
-    internal partial class Tool
+    /// <summary>
+    /// 缓存辅助类
+    /// </summary>
+    internal class CacheHelper
     {
         //-------------------------------------------------
         // 缓存相关

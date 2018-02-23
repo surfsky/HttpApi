@@ -341,7 +341,7 @@ namespace App.HttpApi
         {
             return ResourceHelper.GetResourceText(
                 Assembly.GetExecutingAssembly(),
-                typeof(HttpApiHelper).Namespace + ".Js._json2.min.js"
+                typeof(HttpApiHelper).Namespace + ".Js.json2.min.js"
                 );
         }
 
@@ -350,7 +350,7 @@ namespace App.HttpApi
         {
             return ResourceHelper.GetResourceText(
                 Assembly.GetExecutingAssembly(),
-                typeof(HttpApiHelper).Namespace + ".Js._" + scriptType + "Template.js"
+                typeof(HttpApiHelper).Namespace + ".Js." + scriptType + "Template.js"
                 );
         }
 

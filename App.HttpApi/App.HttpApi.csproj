@@ -74,16 +74,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Js\_extTemplate.js" />
+    <EmbeddedResource Include="Js\extTemplate.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Js\_jqTemplate.js" />
+    <EmbeddedResource Include="Js\jqTemplate.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Js\_json2.min.js" />
+    <EmbeddedResource Include="Js\json2.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Js\_jsTemplate.js" />
+    <EmbeddedResource Include="Js\jsTemplate.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

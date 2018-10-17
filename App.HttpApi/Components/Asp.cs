@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace App.HttpApi.Components
+namespace App.HttpApi
 {
     /// <summary>
     /// Asp.net 相关辅助方法

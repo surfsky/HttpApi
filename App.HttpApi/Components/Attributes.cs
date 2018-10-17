@@ -8,7 +8,7 @@ using System.Web.UI;
 namespace App.HttpApi
 {
     /// <summary>
-    /// WebMethod脚本特性，用于控制输出 js 脚本时的一些的命名
+    /// WebMethod脚本特性，用于控制输出 js 脚本时的一些的命名及缓存
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class ScriptAttribute : Attribute
@@ -33,6 +33,24 @@ namespace App.HttpApi
             this.Date = date;
             this.User = user;
             this.Info = info;
+        }
+    }
+
+    /// <summary>
+    /// 参数信息
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+    public class ParameterAttribute : Attribute
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string DefaultValue { get; set; }
+
+        public ParameterAttribute(string name, string description, string defaultValue="")
+        {
+            this.Name = name;
+            this.Description = description;
+            this.DefaultValue = defaultValue;
         }
     }
 
@@ -72,6 +90,9 @@ namespace App.HttpApi
 
         /// <summary>允许的访问动作（Get/Post)</summary>
         public string Verbs { get; set; }
+
+        /// <summary>状态（Testing, Published, Deprecated)</summary>
+        public ApiStatus Status { get; set; }
 
         //---------------------------------------------------
         // 访问权限控制

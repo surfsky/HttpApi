@@ -5,7 +5,6 @@ using System.Web.Caching;
 using System.Web.SessionState;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using App.HttpApi.Components;
 using System.Linq;
 
 namespace App.HttpApi

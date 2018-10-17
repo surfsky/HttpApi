@@ -10,7 +10,7 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Web;
 
-namespace App.HttpApi.Components
+namespace App.HttpApi
 {
     /// <summary>
     /// 缓存辅助类

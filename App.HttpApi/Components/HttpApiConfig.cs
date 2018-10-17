@@ -1,4 +1,4 @@
-﻿using App.HttpApi.Components;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,23 +13,35 @@ namespace App.HttpApi
     /// </summary>
     public class HttpApiConfig : ConfigurationSection
     {
+        // 序列化控制移到配置里面去
         /*
-        // 成功信息移到方法特性里面去，无需全局配置
-        [ConfigurationProperty("wrapInfo")]
-        public string WrapInfo
+        settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+        settings.NullValueHandling = NullValueHandling.Ignore;
+        settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        settings.Formatting = Formatting.Indented;
+        */
+
+        [ConfigurationProperty("jsonIndented", DefaultValue = Formatting.Indented)]
+        public Formatting JsonIndented
         {
-            get { return (string)this["wrapInfo"]; }
-            set { this["wrapInfo"] = value; }
+            get { return (Formatting)this["jsonIndented"]; }
+            set { this["jsonIndented"] = value; }
         }
 
-        // 失败信息各不同，不用统一
-        [ConfigurationProperty("failInfo")]
-        public string FailInfo
+        [ConfigurationProperty("jsonEnumFormatting", DefaultValue = EnumFomatting.Text)]
+        public EnumFomatting JsonEnumFormatting
         {
-            get { return (string)this["failInfo"]; }
-            set { this["failInfo"] = value; }
+            get { return (EnumFomatting)this["jsonEnumFormatting"]; }
+            set { this["jsonEnumFormatting"] = value; }
         }
-        */
+
+        [ConfigurationProperty("jsonDateTimeFormat", DefaultValue = "yyyy-MM-dd HH:mm:ss")]
+        public string JsonDateTimeFormat
+        {
+            get { return (string)this["jsonDateTimeFormat"]; }
+            set { this["jsonDateTimeFormat"] = value; }
+        }
+        
 
         [ConfigurationProperty("authIPs")]
         public string AuthIPs
@@ -39,19 +51,13 @@ namespace App.HttpApi
         }
 
 
-        [ConfigurationProperty("errorResponse", DefaultValue="DataResult")]
+        [ConfigurationProperty("errorResponse", DefaultValue=ErrorResponse.DataResult)]
         public ErrorResponse ErrorResponse
         {
             get { return (ErrorResponse)this["errorResponse"]; }
             set { this["errorResponse"] = value; }
         }
 
-        [ConfigurationProperty("enumResponse", DefaultValue = "Text")]
-        public EnumResponse EnumResponse
-        {
-            get { return (EnumResponse)this["enumResponse"]; }
-            set { this["enumResponse"] = value; }
-        }
 
         [ConfigurationProperty("wrap")]
         public bool? Wrap
@@ -68,8 +74,13 @@ namespace App.HttpApi
             {
                 if (_instance == null)
                 {
-                     var section = (HttpApiConfig)ConfigurationManager.GetSection("httpApi");
-                    _instance = section ?? new HttpApiConfig();
+                    _instance = (HttpApiConfig)ConfigurationManager.GetSection("httpApi");
+                    if (_instance == null)
+                    {
+                        _instance = new HttpApiConfig();
+                        _instance.JsonIndented = Formatting.Indented;
+                        _instance.JsonEnumFormatting = EnumFomatting.Text;
+                    }
                 }
                 return _instance;
             }

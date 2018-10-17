@@ -23,6 +23,7 @@ namespace App
 
 
     [Description("测试类 DemoClass")]
+    [Script(CacheDuration =0, ClassName ="Demo", NameSpace ="App")]
     [History("2016-11-01", "SURFSKY", "修改了A")]
     [History("2016-11-02", "SURFSKY", "修改了B")]
     [History("2016-11-03", "SURFSKY", "修改了C")]
@@ -50,7 +51,7 @@ namespace App
             return new { h = "3", a = "1", b = "2", c = "3" };
         }
 
-        [HttpApi("默认方法参数示例", Remark = "p2的默认值为a")]
+        [HttpApi("默认方法参数示例", Remark = "p2的默认值为a", Status = ApiStatus.Deprecated, Verbs ="GET")]
         public static object TestDefaultParameter(string p1, string p2="a")
         {
             return new { p1 = p1, p2 = p2};
@@ -134,7 +135,7 @@ namespace App
         [HttpApi("登录")]
         public string Login()
         {
-            AuthHelper.Login("Admin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
+            HttpApiAuth.Login("Admin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
             System.Threading.Thread.Sleep(200);
             return "访问成功（已登录）";
         }
@@ -142,7 +143,7 @@ namespace App
         [HttpApi("注销")]
         public string Logout()
         {
-            AuthHelper.Logout();
+            HttpApiAuth.Logout();
             System.Threading.Thread.Sleep(200);
             return "注销成功";
         }

@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization.Formatters.Binary;
-using App.HttpApi.Components;
+
 
 namespace App.HttpApi
 {

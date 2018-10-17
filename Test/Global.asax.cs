@@ -27,7 +27,7 @@ namespace Test
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)
         {
-            App.HttpApi.AuthHelper.LoadCookieTicket();
+            App.HttpApi.HttpApiAuth.LoadCookiePrincipal();
         }
 
         protected void Application_Error(object sender, EventArgs e)

@@ -14,16 +14,14 @@ namespace App.HttpApi
     /// （3）Logout 注销
     /// </summary>
     /// <remarks>参照此原理应该可以弄个基于querystring或者hidden的验票方案</remarks>
-    public class AuthHelper
+    public class HttpApiAuth
     {
         //-----------------------------------------------
         // 创建 Cookie 验票
         //-----------------------------------------------
-        /// <summary>
-        /// 创建用户验票Cookie
-        /// </summary>
+        /// <summary>创建并设置用户验票Cookie</summary>
         /// <param name="userId">用户</param>
-        /// <param name="roles"></param>
+        /// <param name="roles">角色属猪</param>
         /// <param name="expiration">验票到期时间</param>
         public static IPrincipal Login(string user, string[] roles, DateTime expiration)
         {
@@ -48,14 +46,12 @@ namespace App.HttpApi
         //-----------------------------------------------
         // 读取 Cookie 验票
         //-----------------------------------------------
-        /// <summary>
-        /// 从cookie中读取验票并设置当前用户
-        /// </summary>
-        public static IPrincipal LoadCookieTicket()
+        /// <summary>从cookie中读取验票并设置当前用户</summary>
+        public static IPrincipal LoadCookiePrincipal()
         {
-            return LoadCookieTicket(FormsAuthentication.FormsCookieName);
+            return LoadCookiePrincipal(FormsAuthentication.FormsCookieName);
         }
-        public static IPrincipal LoadCookieTicket(string cookieName)
+        internal static IPrincipal LoadCookiePrincipal(string cookieName)
         {
             string user;
             string[] roles;
@@ -124,6 +120,8 @@ namespace App.HttpApi
             FormsAuthentication.SignOut();
             HttpContext.Current.Request.Cookies[cookieName].Expires = System.DateTime.Now;
             HttpContext.Current.User = null;
+            if (HttpContext.Current.Session != null)
+                HttpContext.Current.Session.Abandon();
         }
 
         public static void RediretToLoginPage()

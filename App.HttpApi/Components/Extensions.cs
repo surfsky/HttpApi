@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace App.HttpApi.Components
+namespace App.HttpApi
 {
     /// <summary>
     /// 一些常用的扩展

@@ -10,7 +10,7 @@ namespace App.HttpApi
     /// </summary>
     public class DataResult
     {
-        /// <summary>结果（字符串类型，暂定true、false）</summary>
+        /// <summary>结果（字符串类型）</summary>
         public String Result { get; set; }
 
         /// <summary>详细信息（文本类型，一些说明性的文字）</summary>
@@ -22,12 +22,27 @@ namespace App.HttpApi
         /// <summary>附加数据（自定义类型，如分页信息DataPager）</summary>
         public object Extra { get; set; }
 
-        public DataResult(String result, String info="", object data=null, object extra=null)
+        public DataResult(object result, String info="", object data=null, object extra=null)
         {
-            Result = result;
+            Result = ToString(result);
             Info = info;
             Data = data;
             Extra = extra;
+        }
+
+        // 转化为字符串输出
+        string ToString(object o)
+        {
+            if (o == null)
+                return "";
+            if (o is bool)
+                return o.ToString().ToLower();
+            if (o.GetType().IsEnum)
+            {
+                if (HttpApiConfig.Instance.JsonEnumFormatting == EnumFomatting.Int)
+                    return ((int)o).ToString();
+            }
+            return o.ToString();
         }
     }
 
@@ -46,16 +61,16 @@ namespace App.HttpApi
         public int PageCount { get; set; }
 
         /// <summary>当前页</summary>
-        public int Page { get; set; }
+        public int PageIndex { get; set; }
 
 
-        public DataPager(int total, int pageSize, int page)
+        public DataPager(int total, int pageSize, int pageIndex)
         {
             Total = total;
             PageSize = pageSize;
             int pageCount = Convert.ToInt32(Math.Ceiling((double)Total / (double)PageSize));
             PageCount = pageCount < 1 ? 1 : pageCount;
-            Page = page;
+            PageIndex = pageIndex;
         }
 
     }

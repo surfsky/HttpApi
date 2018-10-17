@@ -1,16 +1,41 @@
 ﻿-------------------------------------------------------------
 Task
 -------------------------------------------------------------
+WrapCondition： 
+	0-text;1-text;2-text;  
+	true:text;false:text; 
+	Ok:text;Finished:text;
+增加测试页面（名称、地址、说明、参数）
+测试 int? n 参数
 
 提供 API 测试页面，可post数据
 优化调用路径为：HttpAPI/A.B.C/MethodName?p=x，可在示例项目中配置路由
 增加文件上传处理能力, 参数如：string Upload(byte[] file, string name)，处理
+增加日志能力
 增加属性：AuthInterval/VisitInterval，限制访问间隔，需要维护一个字典了：ClientIP, Api, LastVisitDt
 
 
 -------------------------------------------------------------
 已完成
 -------------------------------------------------------------
+2018-10-17
+	/增加DataResult(object) 构造函数
+    /修改分页组建参数名称：Total, PageSize, PageCount, PageIndex, 
+	/修改API清单页面
+	/增加 ParameterAttribute：Name，Description，Default
+	/AuthHelper 更名为 HttpApiAuth
+
+2018-10-11
+	/增加 ApiStatus, Verbs
+	/修改 ApiHtml 的显示
+	/增加配置：jsonEnumFormatting="Text" jsonIndented="Indented" jsonDateTimeFormat="yyyy-MM-dd"
+
+2018-10-10
+	/DataResult 构造方法第一个参数可为bool值
+	/接口排序
+	/a=xxx -> a=x
+	/升级Newtonsoft.Json -> 6.0
+
 2018-02-23
     /更改内嵌资源名称（去除下划线）
 
@@ -549,3 +574,12 @@ Task
             }
 
 			    [XmlInclude(typeof(ErrorResponse))]
+
+
+        public DataResult(bool result, String info = "", object data = null, object extra = null)
+        {
+            Result = result.ToString();
+            Info = info;
+            Data = data;
+            Extra = extra;
+        }

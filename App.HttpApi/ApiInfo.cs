@@ -11,7 +11,7 @@ namespace App.HttpApi
     /// </summary>
     public class APIInfos
     {
-        public string Desc { get; set; }
+        public string Description { get; set; }
         public object[] Histories { get; set; }
         public List<APIInfo> Apis { get; set; }
     }
@@ -28,6 +28,8 @@ namespace App.HttpApi
         public bool AuthLogin { get; set; }
         public string AuthUsers { get; set; }
         public string AuthRoles { get; set; }
+        public string Verbs { get; set; }
+        public ApiStatus Status { get; set; }
         public string Remark { get; set; }
         public string Url { get; set; }
 

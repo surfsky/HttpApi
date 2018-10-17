@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Web;
 using Newtonsoft.Json;
 
-namespace App.HttpApi.Components
+namespace App.HttpApi
 {
     /// <summary>
     /// 序列化方法类
@@ -34,31 +34,28 @@ namespace App.HttpApi.Components
                 return "{}";
             else
             {
+                var cfg = HttpApiConfig.Instance;
+
                 var settings = new JsonSerializerSettings();
                 settings.MissingMemberHandling = MissingMemberHandling.Ignore;
                 settings.NullValueHandling = NullValueHandling.Ignore;
                 settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 
+                // 递进格式
+                settings.Formatting = cfg.JsonIndented;
+
                 // 时间格式
                 IsoDateTimeConverter datetimeConverter = new IsoDateTimeConverter();
-                datetimeConverter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+                datetimeConverter.DateTimeFormat = cfg.JsonDateTimeFormat;
                 settings.Converters.Add(datetimeConverter);
 
                 // 枚举格式
                 StringEnumConverter enumConverter = new StringEnumConverter();
-                if (HttpApiConfig.Instance.EnumResponse == EnumResponse.Text)
+                if (cfg.JsonEnumFormatting == EnumFomatting.Text)
                     settings.Converters.Add(enumConverter);
 
                 //
                 return JsonConvert.SerializeObject(obj, settings);
-
-                /*
-                // 用 JavaScriptSerializer 序列化（结构会复杂很多）
-                StringBuilder sb = new StringBuilder();
-                JavaScriptSerializer jsonSer = new JavaScriptSerializer();
-                jsonSer.Serialize(obj, sb);
-                return sb.ToString();
-                */
             }
         }
 

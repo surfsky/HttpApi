@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace App.HttpApi.Components
+namespace App.HttpApi
 {
     /// <summary>
     /// 错误时返回方式
@@ -17,18 +17,19 @@ namespace App.HttpApi.Components
     /// <summary>
     /// 枚举返回方式
     /// </summary>
-    public enum EnumResponse
+    public enum EnumFomatting
     {
         Text = 0,
         Int = 1
     }
 
     /// <summary>
-    /// 包裹类型
+    /// API 状态
     /// </summary>
-    public enum WrapType
+    public enum ApiStatus : int
     {
-        None,
-        DataResult
+        Published = 0,
+        Testing = 1,
+        Deprecated = 2
     }
 }

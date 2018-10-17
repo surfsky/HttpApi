@@ -5,21 +5,21 @@ using System.Reflection;
 using System.IO;
 using System.Text;
 using System.Collections.Specialized;
-//using System.Web.Script.Serialization;
 using System.Web.SessionState;
 using System.ComponentModel;
-using App.HttpApi.Components;
+using System.Linq;
+using System.Security.Principal;
 
 namespace App.HttpApi
 {
     /// <summary>
     /// HttpApi 的逻辑实现。
     /// </summary>
-    public class HttpApiHelper
+    internal class HttpApiHelper
     {
-        /// <summary>
-        /// 处理 Web 方法调用请求
-        /// </summary>
+        //----------------------------------------------
+        //----------------------------------------------
+        /// <summary>处理 Web 方法调用请求</summary>
         /// <param name="context">Http上下文</param>
         /// <param name="handler">任何使用了[HttpApi]特性标签的对象，如Page、HttpHandler</param>
         public static void ProcessRequest(HttpContext context, object handler)
@@ -257,14 +257,14 @@ namespace App.HttpApi
         // 获取接口清单
         static APIInfos GetTypeApi(Type type)
         {
-            APIInfos typeapi = new APIInfos();
-            List<APIInfo> apis = new List<APIInfo>();
-            Uri uri = HttpContext.Current.Request.Url;
-            string filePath = HttpContext.Current.Request.FilePath;
-            string url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
+            var typeapi = new APIInfos();
+            var uri = HttpContext.Current.Request.Url;
+            var filePath = HttpContext.Current.Request.FilePath;
+            var url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
 
-            // 依次生成函数调用脚本
-            MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            // 获取接口列表
+            var apis = new List<APIInfo>();
+            var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
             foreach (MethodInfo method in methods)
             {
                 HttpApiAttribute attr = ReflectHelper.GetHttpApiAttribute(method);
@@ -279,6 +279,8 @@ namespace App.HttpApi
                         AuthLogin = attr.AuthLogin,
                         AuthUsers = attr.AuthUsers,
                         AuthRoles = attr.AuthRoles,
+                        Verbs = attr.Verbs.IsNullOrEmpty() ? "" : attr.Verbs.ToUpper(),
+                        Status = attr.Status,
                         Remark = attr.Remark,
                         Url = GetMethodUrl(url, method)
                     };
@@ -287,8 +289,11 @@ namespace App.HttpApi
                     apis.Add(api);
                 }
             }
-            typeapi.Apis = apis;
-            typeapi.Desc = ReflectHelper.GetDescription(type);
+            
+
+            //
+            typeapi.Apis = apis.OrderBy(t => t.Name).ToList();
+            typeapi.Description = ReflectHelper.GetDescription(type);
             typeapi.Histories = ReflectHelper.GetHistories(type);
             return typeapi;
         }
@@ -300,18 +305,18 @@ namespace App.HttpApi
         {
             // 概述信息
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<h1>" + typeapi.Desc + "</h1>");
+            sb.AppendLine("<h1>" + typeapi.Description + "</h1>");
             foreach (HistoryAttribute history in typeapi.Histories)
             {
-                sb.AppendFormat("<small>{0}, {1}, {2}</small><br/>", history.Info, history.User, history.Date);
+                sb.AppendFormat("<small>{0}, {1}, {2}</small><br/>", history.Date, history.User, history.Info);
             }
 
             // 接口清单
             sb.AppendLine("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendLine("<tr><td width='200'>接口名</td><td width='200'>说明</td><td width='70'>类型</td><td width='70'>缓存(秒)</td><td width='70'>限登录</td><td width='70'>限用户</td><td width='70'>限角色</td><td width='100'>备注</td><td>完整地址</td></tr>");
+            sb.AppendLine("<tr><td width='200'>接口名</td><td width='200'>说明</td><td width='70'>类型</td><td width='70'>缓存(秒)</td><td width='70'>限登录</td><td width='70'>限用户</td><td width='70'>限角色</td><td width='100'>访问方式</td><td width='100'>状态</td><td width='100'>备注</td><td>测试</td></tr>");
             foreach (var api in typeapi.Apis)
             {
-                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td><td>{5}&nbsp;</td><td>{6}&nbsp;</td><td>{7}&nbsp;</td><td><a target='_blank' href='{8}'>{8}</a>&nbsp;</td></tr>"
+                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td><td>{5}&nbsp;</td><td>{6}&nbsp;</td><td>{7}&nbsp;</td><td>{8}&nbsp;</td><td>{9}&nbsp;</td><td><a target='_blank' href='{10}'>测试</a>&nbsp;</td></tr>"
                     , api.Name
                     , api.Description
                     , api.Type
@@ -319,6 +324,8 @@ namespace App.HttpApi
                     , api.AuthLogin
                     , api.AuthUsers
                     , api.AuthRoles
+                    , api.Verbs
+                    , api.Status
                     , api.Remark
                     , api.Url
                     );
@@ -473,7 +480,7 @@ namespace App.HttpApi
             {
                 sb.Append("?");
                 foreach (ParameterInfo p in ps)
-                    sb.Append(p.Name + "=xxx&");
+                    sb.Append(p.Name + "=x&");
             }
             return sb.ToString().TrimEnd('&');
         }

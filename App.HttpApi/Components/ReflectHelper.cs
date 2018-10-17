@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Web;
 using System.ComponentModel;
 
-namespace App.HttpApi.Components
+namespace App.HttpApi
 {
     /// <summary>
     /// 反射相关辅助方法

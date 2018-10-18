@@ -337,7 +337,7 @@ namespace App.HttpApi
                 items.Add(new ParamAttribute(
                     p.Name,
                     desc,
-                    p.ParameterType.ToString(),
+                    GetTypeString(p.ParameterType),
                     GetTypeInfo(p.ParameterType),
                     p.DefaultValue?.ToString()
                     ));
@@ -345,9 +345,25 @@ namespace App.HttpApi
             return items;
         }
 
+        // 获取类型字符串
+        private static string GetTypeString(Type type)
+        {
+            if (type.IsNullable())
+            {
+                type = type.GetNullableDataType();
+                return GetTypeString(type) + "?";
+            }
+            if (type.IsValueType)
+                return type.Name.ToString();
+            return type.Name.ToString();
+        }
+
         // 获取类型的概述信息
         private static string GetTypeInfo(Type type)
         {
+            if (type.IsNullable())
+                type = type.GetNullableDataType();
+
             var sb = new StringBuilder();
             if (type.IsEnum)
             {
@@ -375,7 +391,7 @@ namespace App.HttpApi
             }
 
             // 接口清单
-            sb.AppendLine("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendLine("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
             sb.AppendLine("<tr><td width='200'>接口名</td><td width='200'>说明</td><td width='70'>类型</td><td width='70'>缓存(秒)</td><td width='70'>限登录</td><td width='70'>限用户</td><td width='70'>限角色</td><td width='100'>访问方式</td><td width='100'>状态</td><td width='100'>备注</td><td>详情</td></tr>");
             foreach (var api in typeapi.Apis)
             {
@@ -393,6 +409,7 @@ namespace App.HttpApi
                     , api.Url
                     );
             }
+            sb.AppendLine("</table>");
             return sb;
         }
 
@@ -404,27 +421,28 @@ namespace App.HttpApi
         {
             // 概述信息
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<h1>" + api.Name + "</h1>");
-            sb.AppendLine("<h3>" + api.Description + "</h3>");
+            sb.AppendFormat("<h1>{0}</h1>", api.Name);
+            sb.AppendFormat("<h3>{0}</h3>", api.Description);
+            sb.AppendFormat("<div>{0}</div></br>", api.UrlTest);
+            sb.AppendFormat("<div>{0}</div>", api.Remark);
 
             // 属性
-            sb.AppendLine("<h2>属性</h2>");
-            sb.AppendLine("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendFormat("<tr><td width='100'>名称    </td><td>值</td></tr>");
-            sb.AppendFormat("<tr><td width='100'>返回类型</td><td>{0}&nbsp;</td></tr>", api.ReturnType);
-            sb.AppendFormat("<tr><td width='100'>缓存(秒)</td><td>{0}&nbsp;</td></tr>", api.CacheDuration);
-            sb.AppendFormat("<tr><td width='100'>限登陆  </td><td>{0}&nbsp;</td></tr>", api.AuthLogin);
-            sb.AppendFormat("<tr><td width='100'>限用户  </td><td>{0}&nbsp;</td></tr>", api.AuthUsers);
-            sb.AppendFormat("<tr><td width='100'>限角色  </td><td>{0}&nbsp;</td></tr>", api.AuthRoles);
-            sb.AppendFormat("<tr><td width='100'>访问方式</td><td>{0}&nbsp;</td></tr>", api.Verbs);
-            sb.AppendFormat("<tr><td width='100'>状态    </td><td>{0}&nbsp;</td></tr>", api.Status);
-            sb.AppendFormat("<tr><td width='100'>备注    </td><td>{0}&nbsp;</td></tr>", api.Remark);
-            sb.AppendFormat("<tr><td width='100'>测试URL </td><td>{0}&nbsp;</td></tr>", api.UrlTest);
-            sb.AppendLine("</tr></table>");
+            sb.AppendFormat("<h2>属性</h2>");
+            sb.AppendLine("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendLine("<tr><td>返回类型</td><td>缓存(秒)</td><td>限登录</td><td>限用户</td><td>限角色</td><td>访问方式</td><td>状态</td></tr>");
+            sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td><td>{5}&nbsp;</td><td>{6}&nbsp;</td></tr></table>"
+                , api.ReturnType
+                , api.CacheDuration
+                , api.AuthLogin
+                , api.AuthUsers
+                , api.AuthRoles
+                , api.Verbs
+                , api.Status
+                );
 
             // 参数
-            sb.AppendLine("<h2>参数</h2>");
-            sb.AppendLine("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendFormat("<h2>参数</h2>");
+            sb.AppendFormat("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
             sb.AppendFormat("<tr><td width='100'>参数名</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr>");
             foreach (var p in api.Params)
             {
@@ -436,7 +454,7 @@ namespace App.HttpApi
                     ,p.DefaultValue
                     );
             }
-            sb.AppendLine("</tr></table>");
+            sb.AppendFormat("</tr></table>");
             return sb;
         }
 

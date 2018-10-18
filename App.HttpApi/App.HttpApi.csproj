@@ -61,7 +61,7 @@
     <Compile Include="ResponseType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestDecoder.cs" />
-    <Compile Include="ResourceHelper.cs" />
+    <Compile Include="Components\ResourceHelper.cs" />
     <Compile Include="ResponseEncoder.cs" />
     <Compile Include="Components\ReflectHelper.cs" />
     <Compile Include="Components\CacheHelper.cs" />

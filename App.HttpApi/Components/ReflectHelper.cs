@@ -18,7 +18,7 @@ namespace App.HttpApi
     /// </summary>
     internal class ReflectHelper
     {
-        // 获取DescriptionAttribute
+        /// <summary>获取DescriptionAttribute</summary>
         public static string GetDescription(Type type)
         {
             var objs = type.GetCustomAttributes(typeof(DescriptionAttribute), false);
@@ -28,14 +28,24 @@ namespace App.HttpApi
                 return type.FullName;
         }
 
-        // 获取历史信息特性元数据
+        /// <summary>获取历史信息特性元数据</summary>
         public static object[] GetHistories(Type type)
         {
             var objs = type.GetCustomAttributes(typeof(HistoryAttribute), false);
             return objs;
         }
 
-        // 获取类型文件的缓存时间
+        /// <summary>获取参数信息元数据</summary>
+        public static List<ParamAttribute> GetParamAttributes(MethodInfo method)
+        {
+            var objs = method.GetCustomAttributes(typeof(ParamAttribute), false);
+            List<ParamAttribute> p = new List<ParamAttribute>();
+            foreach (object obj in objs)
+                p.Add(obj as ParamAttribute);
+            return p;
+        }
+
+        /// <summary>获取类型文件的缓存时间</summary>
         public static int GetCacheDuration(Type type)
         {
             ScriptAttribute attr = ReflectHelper.GetScriptAttribute(type);

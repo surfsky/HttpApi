@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>App.HttpApi</RootNamespace>
     <AssemblyName>App.HttpApi</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Nonshipping>true</Nonshipping>
     <TargetFrameworkProfile />
@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -64,7 +66,7 @@
     <Compile Include="Components\ReflectHelper.cs" />
     <Compile Include="Components\CacheHelper.cs" />
     <Compile Include="Components\SerializeHelper.cs" />
-    <Compile Include="ApiInfo.cs" />
+    <Compile Include="TypeAPI.cs" />
     <Compile Include="HttpApiHelper.cs" />
     <Compile Include="HttpApiHandler.cs" />
     <Compile Include="HttpApiHandlerBase.cs" />
@@ -86,6 +88,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Task.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="\\Mac\Downloads\Dev\2018\170720.小熊手机\Src\AppPlat_Bear_gitee\App.Components\App.Components.csproj">
+      <Project>{c887d0a1-20f6-44da-87df-ea8d45ace744}</Project>
+      <Name>App.Components</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

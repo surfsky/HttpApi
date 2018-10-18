@@ -37,6 +37,6 @@
 	              增加特性参数：Verbs=“Get,Post"，可限制访问的动词
 	              增加特性参数: WrapInfo，设置成功后返回的Info信息
 
-## WebAPI的限制
+## 参考：WebAPI的限制
     - http://blog.csdn.net/leeyue_1982/article/details/51305950
 

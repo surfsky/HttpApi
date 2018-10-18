@@ -9,6 +9,7 @@ using System.Web.SessionState;
 using System.ComponentModel;
 using System.Linq;
 using System.Security.Principal;
+using App.Components;
 
 namespace App.HttpApi
 {
@@ -68,7 +69,7 @@ namespace App.HttpApi
                 if (dataType == ResponseType.Auto && result != null)
                     dataType = ParseDataType(result.GetType());
                 var wrap = HttpApiConfig.Instance.Wrap ?? attr.Wrap;
-                var wrapInfo = attr.WrapInfo;
+                var wrapInfo = attr.WrapCondition;
                 WriteResult(context, result, dataType, attr.MimeType, attr.FileName, attr.CacheSeconds, attr.CacheLocation, wrap, wrapInfo);
             }
             catch (Exception ex)
@@ -81,43 +82,67 @@ namespace App.HttpApi
         // 预处理保留方法（"js", "jq", "ext", "api", "apis"）
         static bool ProcessReservedMethod(HttpContext context, Type type, string methodName, Dictionary<string, object> args)
         {
-            // 保留方法名
-            string[] arr = { "js", "jq", "ext", "api", "apis" };
             string methodNameLower = methodName.ToLower();
-            if (!((IList<string>)arr).Contains(methodNameLower))
-                return false;
             int cacheDuration = ReflectHelper.GetCacheDuration(type);
 
-            // 输出api接口页面
-            if (methodNameLower == "api")
+            // 输出api接口展示页面（方法名后面跟了个_)
+            if (methodNameLower.LastIndexOf("_") != -1)
             {
-                context.Response.Clear();
+                var name = methodName.Substring(0, methodName.Length - 1);
                 var typeapi = GetTypeApi(type);
-                StringBuilder result = GetTypeApiHtml(typeapi);
+                var api = FindApi(typeapi, name);
+                var result = GetApiHtml(api);
+                context.Response.Clear();
                 context.Response.ContentType = "text/html";
                 context.Response.Write(result.ToString());
             }
-
-            // 输出api接口清单
-            else if (methodNameLower == "apis")
-            {
-                context.Response.Clear();
-                var typeapi = GetTypeApi(type);
-                WriteResult(context, typeapi, ResponseType.JSON);
-            }
-
-            // 输出js/jquery/ext脚本
             else
             {
-                string nameSpace = GetJsNamespace(type, args);
-                string className = GetJsClassName(type, args);
-                StringBuilder result = GetJs(type, nameSpace, className, cacheDuration, methodNameLower);
-                WriteResult(context, result, ResponseType.JavaScript);
+                // 保留方法名
+                string[] arr = { "js", "jq", "ext", "api", "apis" };
+                if (!((IList<string>)arr).Contains(methodNameLower))
+                    return false;
+
+                // 输出api接口页面
+                if (methodNameLower == "api")
+                {
+                    var typeapi = GetTypeApi(type);
+                    var result = GetTypeApiHtml(typeapi);
+                    context.Response.Clear();
+                    context.Response.ContentType = "text/html";
+                    context.Response.Write(result.ToString());
+                }
+                // 输出api接口清单
+                else if (methodNameLower == "apis")
+                {
+                    var typeapi = GetTypeApi(type);
+                    context.Response.Clear();
+                    WriteResult(context, typeapi, ResponseType.JSON);
+                }
+                // 输出js/jquery/ext脚本
+                else
+                {
+                    string nameSpace = GetJsNamespace(type, args);
+                    string className = GetJsClassName(type, args);
+                    StringBuilder result = GetJs(type, nameSpace, className, cacheDuration, methodNameLower);
+                    WriteResult(context, result, ResponseType.JavaScript);
+                }
             }
 
             // 处理缓存
             CacheHelper.SetCachePolicy(context, cacheDuration);
             return true;
+        }
+
+        // 查找接口方法对象
+        private static API FindApi(TypeAPI typeapi, string methodName)
+        {
+            foreach (var api in typeapi.Apis)
+            {
+                if (api.Name == methodName)
+                    return api;
+            }
+            return null;
         }
 
         // 检测方法的可用性
@@ -153,7 +178,7 @@ namespace App.HttpApi
             {
                 if (!Asp.IsLogin())
                 {
-                    WriteError(context, 401, "Need login");
+                    WriteError(context, 401, "Login auth fail");
                     return false;
                 }
             }
@@ -163,7 +188,7 @@ namespace App.HttpApi
             {
                 if (!Asp.IsInUsers(attr.AuthUsers.Split(',', ';')))
                 {
-                    WriteError(context, 401, "User un-authority");
+                    WriteError(context, 401, "User auth fail");
                     return false;
                 }
             }
@@ -173,7 +198,7 @@ namespace App.HttpApi
             {
                 if (!Asp.IsInRoles(attr.AuthRoles.Split(',', ';')))
                 {
-                    WriteError(context, 401, "Role un-authority");
+                    WriteError(context, 401, "Role auth fail");
                     return false;
                 }
             }
@@ -255,26 +280,26 @@ namespace App.HttpApi
         // 获取接口清单
         //-----------------------------------------------------------
         // 获取接口清单
-        static APIInfos GetTypeApi(Type type)
+        static TypeAPI GetTypeApi(Type type)
         {
-            var typeapi = new APIInfos();
+            var typeapi = new TypeAPI();
             var uri = HttpContext.Current.Request.Url;
             var filePath = HttpContext.Current.Request.FilePath;
-            var url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
+            var rootUrl = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
 
             // 获取接口列表
-            var apis = new List<APIInfo>();
+            var apis = new List<API>();
             var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
             foreach (MethodInfo method in methods)
             {
                 HttpApiAttribute attr = ReflectHelper.GetHttpApiAttribute(method);
                 if (attr != null)
                 {
-                    var api = new APIInfo()
+                    var api = new API()
                     {
                         Name = method.Name,
                         Description = attr.Description,
-                        Type = ParseDataType(attr.Type, method.ReturnType).ToString(),
+                        ReturnType = ParseDataType(attr.Type, method.ReturnType).ToString(),
                         CacheDuration = attr.CacheSeconds,
                         AuthLogin = attr.AuthLogin,
                         AuthUsers = attr.AuthUsers,
@@ -282,10 +307,12 @@ namespace App.HttpApi
                         Verbs = attr.Verbs.IsNullOrEmpty() ? "" : attr.Verbs.ToUpper(),
                         Status = attr.Status,
                         Remark = attr.Remark,
-                        Url = GetMethodUrl(url, method)
+                        Url = GetMethodDisplayUrl(rootUrl, method),
+                        UrlTest = GetMethodTestUrl(rootUrl, method),
+                        Params = GetMethodParams(method),
+                        Method = method,
+                        RType = attr.Type
                     };
-                    api.Method = method;
-                    api.RspType = attr.Type;
                     apis.Add(api);
                 }
             }
@@ -298,10 +325,46 @@ namespace App.HttpApi
             return typeapi;
         }
 
+        private static List<ParamAttribute> GetMethodParams(MethodInfo method)
+        {
+            var items = new List<ParamAttribute>();
+            var attrs = ReflectHelper.GetParamAttributes(method);
+            var paras = method.GetParameters();
+            foreach (var p in paras)
+            {
+                var attr = attrs.AsQueryable().FirstOrDefault(t => t.Name == p.Name);
+                string desc = attr?.Description;
+                items.Add(new ParamAttribute(
+                    p.Name,
+                    desc,
+                    p.ParameterType.ToString(),
+                    GetTypeInfo(p.ParameterType),
+                    p.DefaultValue?.ToString()
+                    ));
+            }
+            return items;
+        }
+
+        // 获取类型的概述信息
+        private static string GetTypeInfo(Type type)
+        {
+            var sb = new StringBuilder();
+            if (type.IsEnum)
+            {
+                foreach (var item in Enum.GetValues(type))
+                {
+                    sb.AppendFormat("{0}-{1}({2}); ", (int)item, item.ToString(), item.GetDescription());
+                }
+            }
+            return sb.ToString();
+        }
+
+
+
         /// <summary>
         /// 构造接口清单页面
         /// </summary>
-        static StringBuilder GetTypeApiHtml(APIInfos typeapi)
+        static StringBuilder GetTypeApiHtml(TypeAPI typeapi)
         {
             // 概述信息
             StringBuilder sb = new StringBuilder();
@@ -313,13 +376,13 @@ namespace App.HttpApi
 
             // 接口清单
             sb.AppendLine("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendLine("<tr><td width='200'>接口名</td><td width='200'>说明</td><td width='70'>类型</td><td width='70'>缓存(秒)</td><td width='70'>限登录</td><td width='70'>限用户</td><td width='70'>限角色</td><td width='100'>访问方式</td><td width='100'>状态</td><td width='100'>备注</td><td>测试</td></tr>");
+            sb.AppendLine("<tr><td width='200'>接口名</td><td width='200'>说明</td><td width='70'>类型</td><td width='70'>缓存(秒)</td><td width='70'>限登录</td><td width='70'>限用户</td><td width='70'>限角色</td><td width='100'>访问方式</td><td width='100'>状态</td><td width='100'>备注</td><td>详情</td></tr>");
             foreach (var api in typeapi.Apis)
             {
-                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td><td>{5}&nbsp;</td><td>{6}&nbsp;</td><td>{7}&nbsp;</td><td>{8}&nbsp;</td><td>{9}&nbsp;</td><td><a target='_blank' href='{10}'>测试</a>&nbsp;</td></tr>"
+                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td><td>{5}&nbsp;</td><td>{6}&nbsp;</td><td>{7}&nbsp;</td><td>{8}&nbsp;</td><td>{9}&nbsp;</td><td><a target='_blank' href='{10}'>详情</a>&nbsp;</td></tr>"
                     , api.Name
                     , api.Description
-                    , api.Type
+                    , api.ReturnType
                     , api.CacheDuration
                     , api.AuthLogin
                     , api.AuthUsers
@@ -334,10 +397,48 @@ namespace App.HttpApi
         }
 
 
+        /// <summary>
+        /// 构造接口清单页面
+        /// </summary>
+        static StringBuilder GetApiHtml(API api)
+        {
+            // 概述信息
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<h1>" + api.Name + "</h1>");
+            sb.AppendLine("<h3>" + api.Description + "</h3>");
 
+            // 属性
+            sb.AppendLine("<h2>属性</h2>");
+            sb.AppendLine("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendFormat("<tr><td width='100'>名称    </td><td>值</td></tr>");
+            sb.AppendFormat("<tr><td width='100'>返回类型</td><td>{0}&nbsp;</td></tr>", api.ReturnType);
+            sb.AppendFormat("<tr><td width='100'>缓存(秒)</td><td>{0}&nbsp;</td></tr>", api.CacheDuration);
+            sb.AppendFormat("<tr><td width='100'>限登陆  </td><td>{0}&nbsp;</td></tr>", api.AuthLogin);
+            sb.AppendFormat("<tr><td width='100'>限用户  </td><td>{0}&nbsp;</td></tr>", api.AuthUsers);
+            sb.AppendFormat("<tr><td width='100'>限角色  </td><td>{0}&nbsp;</td></tr>", api.AuthRoles);
+            sb.AppendFormat("<tr><td width='100'>访问方式</td><td>{0}&nbsp;</td></tr>", api.Verbs);
+            sb.AppendFormat("<tr><td width='100'>状态    </td><td>{0}&nbsp;</td></tr>", api.Status);
+            sb.AppendFormat("<tr><td width='100'>备注    </td><td>{0}&nbsp;</td></tr>", api.Remark);
+            sb.AppendFormat("<tr><td width='100'>测试URL </td><td>{0}&nbsp;</td></tr>", api.UrlTest);
+            sb.AppendLine("</tr></table>");
 
-
-
+            // 参数
+            sb.AppendLine("<h2>参数</h2>");
+            sb.AppendLine("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendFormat("<tr><td width='100'>参数名</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr>");
+            foreach (var p in api.Params)
+            {
+                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
+                    ,p.Name
+                    ,p.Description
+                    ,p.Type
+                    ,p.Info
+                    ,p.DefaultValue
+                    );
+            }
+            sb.AppendLine("</tr></table>");
+            return sb;
+        }
 
 
         //-----------------------------------------------------------
@@ -433,16 +534,16 @@ namespace App.HttpApi
             {
                 scriptBuilder.AppendLine("//-----------------------------------------------------------------");
                 scriptBuilder.AppendLine("// 说明  : " + api.Description);
-                scriptBuilder.AppendLine("// 地址  : " + api.Url);
+                scriptBuilder.AppendLine("// 地址  : " + api.UrlTest);
                 scriptBuilder.AppendLine("// 缓存  : " + api.CacheDuration.ToString() + " 秒");
-                scriptBuilder.AppendLine("// 类型  : " + api.Type);
+                scriptBuilder.AppendLine("// 类型  : " + api.ReturnType);
                 scriptBuilder.AppendLine("// 备注  : " + api.Remark);
                 scriptBuilder.AppendLine("// 限登录: " + api.AuthLogin);
                 scriptBuilder.AppendLine("// 限用户: " + api.AuthUsers);
                 scriptBuilder.AppendLine("// 限角色: " + api.AuthRoles);
                 scriptBuilder.AppendLine("//-----------------------------------------------------------------");
 
-                string func = GetFunctionScript(nameSpace, className, api.Method, api.RspType);
+                string func = GetFunctionScript(nameSpace, className, api.Method, api.RType);
                 scriptBuilder.AppendLine(func);
             }
 
@@ -468,10 +569,14 @@ namespace App.HttpApi
             return sb.ToString();
         }
 
+        // 获取API方法展示地址
+        static string GetMethodDisplayUrl(string rootUrl, MethodInfo method)
+        {
+            return string.Format("{0}/{1}_", rootUrl, method.Name);
+        }
 
-
-        // 获取服务地址
-        static string GetMethodUrl(string rootUrl, MethodInfo method)
+        // 获取API方法测试地址
+        static string GetMethodTestUrl(string rootUrl, MethodInfo method)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("{0}/{1}", rootUrl, method.Name);

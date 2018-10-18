@@ -36,20 +36,29 @@ namespace App.HttpApi
         }
     }
 
+
     /// <summary>
     /// 参数信息
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
-    public class ParameterAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    public class ParamAttribute : Attribute
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Type { get; set; }
         public string DefaultValue { get; set; }
+        public string Info { get; set; }
 
-        public ParameterAttribute(string name, string description, string defaultValue="")
+        public ParamAttribute(string name, string description)
+            : this(name, description, "", "", "")
+        {
+        }
+        internal ParamAttribute(string name, string description, string type, string info, string defaultValue)
         {
             this.Name = name;
             this.Description = description;
+            this.Type = type;
+            this.Info = info;
             this.DefaultValue = defaultValue;
         }
     }
@@ -85,8 +94,8 @@ namespace App.HttpApi
         /// <summary>是否对文本类型（Json, Text, Xml, ImageBase64)的数据进行 DataResult 封装</summary>
         public bool Wrap { get; set; } = false;
 
-        /// <summary>封装成功后显示的信息</summary>
-        public string WrapInfo { get; set; }
+        /// <summary>封装条件</summary>
+        public string WrapCondition { get; set; }
 
         /// <summary>允许的访问动作（Get/Post)</summary>
         public string Verbs { get; set; }

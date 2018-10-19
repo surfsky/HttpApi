@@ -60,7 +60,7 @@ namespace App.HttpApi
             // 访问鉴权
             string ip = Asp.GetClientIP();
             var principal = App.Components.AuthHelper.LoadCookiePrincipal();  // 获取身份验票
-            string securityCode = context.Request.QueryString["securityCode"];
+            string securityCode = context.Request.Params["securityCode"];
             var err = HttpApiConfig.Instance.Auth(context, method, attr, ip, securityCode);
             if (err != null)
             {
@@ -298,8 +298,8 @@ namespace App.HttpApi
         {
             var typeapi = new TypeAPI();
             var uri = HttpContext.Current.Request.Url;
-            var filePath = HttpContext.Current.Request.FilePath;
-            var rootUrl = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
+            var typeName = HttpApiHandler.GetRequestTypeName();
+            var rootUrl = string.Format("{0}://{1}/HttpApi/{2}", uri.Scheme, uri.Authority, typeName);
 
             // 获取接口列表
             var apis = new List<API>();

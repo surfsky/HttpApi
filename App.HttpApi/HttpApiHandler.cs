@@ -46,58 +46,77 @@ namespace App.HttpApi
     /// </example>
     public class HttpApiHandler : IHttpHandler, IRequiresSessionState
     {
-        HttpRequest Request    { get { return HttpContext.Current.Request; } }
-        Cache Cache            { get { return HttpContext.Current.Cache; } }
         public bool IsReusable { get { return false; } }
-        private const int _cacheMinutes = 2;
+        private const int _cacheMinutes = 600;
 
-        //----------------------------------------------
-        // 入口
-        //----------------------------------------------
         // 处理 HttpApi 请求
         public void ProcessRequest(HttpContext context)
         {
+             HandlerHttpApiRequest(context);
+        }
+
+
+        //----------------------------------------------
+        // 解析和获取处理器
+        //----------------------------------------------
+        public static void HandlerHttpApiRequest(HttpContext context)
+        {
             // 根据请求路径获取类型名：去掉扩展名；去前缀；用点运算符；
-            string path = Request.FilePath;
-            int n = path.LastIndexOf(".");
-            path = path.Substring(0, n);
-            if (path.StartsWith("/HttpApi.") || path.StartsWith("/HttpApi-") || path.StartsWith("/HttpApi_") || path.StartsWith("/HttpApi/"))
-                path = path.Substring(9);
-            var typeName = path.Replace('-', '.').Replace('_', '.');
+            string typeName = GetRequestTypeName();
 
             // 获取处理器对象（从程序集创建或从缓存获取），处理web方法调用请求。
-            object handler = TryGetHandlerFromCache(typeName);
+            var handler = TryGetHandlerFromCache(typeName);
             if (handler == null)
                 handler = TryCreateHandlerFromAssemblies(typeName);
             if (handler != null)
             {
                 HttpApiHelper.ProcessRequest(context, handler);
                 DisposeIfNeed(handler);
-                return;
             }
         }
 
+        public static string GetRequestTypeName()
+        {
+            var path = HttpContext.Current.Request.FilePath;
 
-        //----------------------------------------------
-        // 辅助方法
-        //----------------------------------------------
+            // 去头
+            if (path.StartsWith("/HttpApi.") || path.StartsWith("/HttpApi-") || path.StartsWith("/HttpApi_") || path.StartsWith("/HttpApi/"))
+                path = path.Substring(9);
+
+            // 去尾
+            int n = path.LastIndexOf("/");
+            if (n != -1)
+                path = path.Substring(0, n);
+
+            // 去扩展名
+            n = path.LastIndexOf(".axd");
+            if (n != -1)
+                path = path.Substring(0, n);
+
+            // 用点来串联
+            var typeName = path.Replace('-', '.').Replace('_', '.');
+            return typeName;
+        }
+
+
         // 加到缓存中去（若实现了IDisposal接口，则保存assembly，否则保存对象）
-        void SaveHandlerInCache(string typeName, Assembly assembly, object handler)
+        static void SaveHandlerInCache(string typeName, Assembly assembly, object handler)
         {
             string cacheName = "HttpApi-" + typeName;
             object cacheObj = (handler is IDisposable) ? assembly : handler;
-            Cache.Add(cacheName, cacheObj, 
+            HttpContext.Current.Cache.Add(cacheName, cacheObj,
                 null,
-                Cache.NoAbsoluteExpiration, new TimeSpan(0, _cacheMinutes, 0),
+                Cache.NoAbsoluteExpiration,
+                new TimeSpan(0, _cacheMinutes, 0),
                 CacheItemPriority.Default,
                 null);
         }
 
         // 尝试从缓存中获取处理器
-        object TryGetHandlerFromCache(string typeName)
+        static object TryGetHandlerFromCache(string typeName)
         {
             string cacheName = "HttpApi-" + typeName;
-            object o = Cache[cacheName];
+            object o = HttpContext.Current.Cache[cacheName];
             if (o == null)
                 return null;
             else
@@ -114,7 +133,7 @@ namespace App.HttpApi
         // App_Web_*  : aspx页面生成的程序集
         // App_Code_* : app_code下面的代码生成的程序集
         /// <summary>尝试根据类型名称，从当前程序集中创建对象</summary>
-        object TryCreateHandlerFromAssemblies(string typeName)
+        static object TryCreateHandlerFromAssemblies(string typeName)
         {
             // 遍历程序集去找这个类
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -137,10 +156,11 @@ namespace App.HttpApi
         }
 
         // 如果对象实现了IDisposable接口，则马上释放资源
-        private static void DisposeIfNeed(object handler)
+        static void DisposeIfNeed(object handler)
         {
             if (handler is IDisposable)
                 (handler as IDisposable).Dispose();
         }
+
     }
 }

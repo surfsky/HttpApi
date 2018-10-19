@@ -57,48 +57,18 @@ namespace App.HttpApi
         // 处理 HttpApi 请求
         public void ProcessRequest(HttpContext context)
         {
-            // 检测IP
-            if (!CheckIP())
-                return;
-
-            // 去掉扩展名
+            // 根据请求路径获取类型名：去掉扩展名；去前缀；用点运算符；
             string path = Request.FilePath;
             int n = path.LastIndexOf(".");
             path = path.Substring(0, n);
-
-            // 去掉前缀
-            if (path.StartsWith("/HttpApi.") || path.StartsWith("/HttpApi-") || path.StartsWith("/HttpApi_"))
+            if (path.StartsWith("/HttpApi.") || path.StartsWith("/HttpApi-") || path.StartsWith("/HttpApi_") || path.StartsWith("/HttpApi/"))
                 path = path.Substring(9);
+            var typeName = path.Replace('-', '.').Replace('_', '.');
 
-            // 调用
-            Call(path, context);
-        }
-
-        // 检测客户端IP是否在授权列表内
-        bool CheckIP()
-        {
-            string[] ips = HttpApiConfig.Instance.AuthIPs?.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
-            if (ips == null || ips.Length == 0)
-                return true;
-            else
-            {
-                string ip = Asp.GetClientIP();
-                return (ips.Contains(ip));
-            }
-        }
-
-
-
-        // 尝试遍历程序集创建对象，并处理web方法调用请求。
-        private void Call(string typeName, HttpContext context)
-        {
-            // 尝试从缓存中恢复对象并处理请求
-            typeName = typeName.Replace('-', '.').Replace('_', '.');
+            // 获取处理器对象（从程序集创建或从缓存获取），处理web方法调用请求。
             object handler = TryGetHandlerFromCache(typeName);
             if (handler == null)
                 handler = TryCreateHandlerFromAssemblies(typeName);
-
-            //
             if (handler != null)
             {
                 HttpApiHelper.ProcessRequest(context, handler);

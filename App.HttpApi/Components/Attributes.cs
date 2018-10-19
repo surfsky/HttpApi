@@ -98,7 +98,7 @@ namespace App.HttpApi
         public string WrapCondition { get; set; }
 
         /// <summary>允许的访问动作（Get/Post)</summary>
-        public string Verbs { get; set; }
+        public string AuthVerbs { get; set; }
 
         /// <summary>状态（Testing, Published, Deprecated)</summary>
         public ApiStatus Status { get; set; }
@@ -106,15 +106,34 @@ namespace App.HttpApi
         //---------------------------------------------------
         // 访问权限控制
         //---------------------------------------------------
+        /// <summary>是否校验访问 IP</summary>
+        public bool AuthIP { get; set; } = false;
+
+        /// <summary>是否校验访问安全码(存在Cookie[HttpApiSecurityCode]中)</summary>
+        public bool AuthSecurityCode { get; set; } = false;
+
+        /// <summary>是否校验登录(User.IsAuthenticated)</summary>
+        public bool AuthLogin { get; set; } = false;
+
         /// <summary>可访问的用户（用逗号隔开）</summary>
         public string AuthUsers { get; set; }
 
         /// <summary>可访问的角色（用逗号隔开）</summary>
         public string AuthRoles { get; set; }
 
-        /// <summary>是否校验登录(User.IsAuthenticated)</summary>
-        public bool AuthLogin { get; set; } = false;
 
+
+        /// <summary>访问动作列表</summary>
+        public List<string> VerbList
+        {
+            get
+            {
+                if (AuthVerbs.IsNullOrEmpty())
+                    return new List<string>();
+                else
+                    return AuthVerbs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToLower();
+            }
+        }
 
         //---------------------------------------------------
         // 构造函数

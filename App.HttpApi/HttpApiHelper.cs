@@ -14,6 +14,21 @@ using App.Components;
 namespace App.HttpApi
 {
     /// <summary>
+    /// Http 错误
+    /// </summary>
+    public class HttpError
+    {
+        public int Code { get; set; }
+        public string Info { get; set; }
+        public HttpError(int code, string info)
+        {
+            this.Code = code;
+            this.Info = info;
+        }
+    }
+
+
+    /// <summary>
     /// HttpApi 的逻辑实现。
     /// </summary>
     internal class HttpApiHelper
@@ -38,12 +53,26 @@ namespace App.HttpApi
             MethodInfo method = ReflectHelper.GetMethod(type, methodName);
             HttpApiAttribute attr = ReflectHelper.GetHttpApiAttribute(method);
 
-            // 找到预留方法直接处理掉
-            // 检测方法可用性
+            // 处理预留方法
             if (ProcessReservedMethod(context, type, methodName, args))
                 return;
-            if (!CheckMethodEnable(context, method, methodName, attr))
+
+            // 访问鉴权
+            string ip = Asp.GetClientIP();
+            var principal = App.Components.AuthHelper.LoadCookiePrincipal();  // 获取身份验票
+            string securityCode = context.Request.QueryString["securityCode"];
+            var err = HttpApiConfig.Instance.Auth(context, method, attr, ip, securityCode);
+            if (err != null)
+            {
+                WriteError(context, err.Code, err.Info);
                 return;
+            }
+            err = CheckMethodEnable(context, method, methodName, attr);
+            if (err != null)
+            {
+                WriteError(context, err.Code, err.Info);
+                return;
+            }
 
             // 普通方法调用
             try
@@ -76,6 +105,10 @@ namespace App.HttpApi
             {
                 string result = string.Format("Api {0}() fail. Please check parameters. {1}", methodName, ex.Message);
                 WriteError(context, 400, result);
+            }
+            finally
+            {
+                HttpApiConfig.Instance.End(context);
             }
         }
 
@@ -146,65 +179,46 @@ namespace App.HttpApi
         }
 
         // 检测方法的可用性
-        static bool CheckMethodEnable(HttpContext context, MethodInfo method, string methodName, HttpApiAttribute attr)
+        static HttpError CheckMethodEnable(HttpContext context, MethodInfo method, string methodName, HttpApiAttribute attr)
         {
             // 方法未找到或未公开
             if (method == null || attr == null)
-            {
-                object result = "Function " + methodName + " not found. Please check the [HttpApi] attribute.";
-                WriteError(context, 404, result.ToString());
-                return false;
-            }
+                return new HttpError(404, "Function " + methodName + " not found. Please check the [HttpApi] attribute.");
 
             // 校验访问方式
-            if (!attr.Verbs.IsNullOrEmpty())
+            if (!attr.AuthVerbs.IsNullOrEmpty())
             {
-                string[] verbs = attr.Verbs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                if (verbs == null || verbs.Length == 0)
-                    return true;
-                else
-                {
-                    string verb = context.Request.HttpMethod.ToLower();
-                    if (!verbs.ToLower().Contains(verb))
-                    {
-                        WriteError(context, 400, "Allowed verbs: " + attr.Verbs);
-                        return false;
-                    }
-                }
+                var verbs = attr.VerbList;
+                if (verbs.Count == 0)
+                    return null;
+                if (!verbs.Contains(context.Request.HttpMethod.ToLower()))
+                    return new HttpError(400, "Auth verbs fail: " + attr.AuthVerbs);
             }
 
             // 校验登录与否
             if (attr.AuthLogin)
             {
                 if (!Asp.IsLogin())
-                {
-                    WriteError(context, 401, "Login auth fail");
-                    return false;
-                }
+                    return new HttpError(401, "Auth login fail");
             }
 
             // 校验用户
             if (!string.IsNullOrEmpty(attr.AuthUsers))
             {
                 if (!Asp.IsInUsers(attr.AuthUsers.Split(',', ';')))
-                {
-                    WriteError(context, 401, "User auth fail");
-                    return false;
-                }
+                    return new HttpError(401, "Auth user fail");
             }
 
             // 校验角色
             if (!string.IsNullOrEmpty(attr.AuthRoles))
             {
                 if (!Asp.IsInRoles(attr.AuthRoles.Split(',', ';')))
-                {
-                    WriteError(context, 401, "Role auth fail");
-                    return false;
-                }
+                    return new HttpError(401, "Role auth fail");
             }
 
-            return true;
+            return null;
         }
+
 
 
         //-----------------------------------------------------------
@@ -301,15 +315,17 @@ namespace App.HttpApi
                         Description = attr.Description,
                         ReturnType = ParseDataType(attr.Type, method.ReturnType).ToString(),
                         CacheDuration = attr.CacheSeconds,
+                        AuthIP = attr.AuthIP,
+                        AuthSecurityCode = attr.AuthSecurityCode,
                         AuthLogin = attr.AuthLogin,
                         AuthUsers = attr.AuthUsers,
                         AuthRoles = attr.AuthRoles,
-                        Verbs = attr.Verbs.IsNullOrEmpty() ? "" : attr.Verbs.ToUpper(),
+                        AuthVerbs = attr.AuthVerbs.IsNullOrEmpty() ? "" : attr.AuthVerbs.ToUpper(),
                         Status = attr.Status,
                         Remark = attr.Remark,
                         Url = GetMethodDisplayUrl(rootUrl, method),
-                        UrlTest = GetMethodTestUrl(rootUrl, method),
-                        Params = GetMethodParams(method),
+                        UrlTest = GetMethodTestUrl(rootUrl, method, attr.AuthSecurityCode),
+                        Params = GetMethodParams(method, attr.AuthSecurityCode),
                         Method = method,
                         RType = attr.Type
                     };
@@ -325,7 +341,7 @@ namespace App.HttpApi
             return typeapi;
         }
 
-        private static List<ParamAttribute> GetMethodParams(MethodInfo method)
+        private static List<ParamAttribute> GetMethodParams(MethodInfo method, bool authSecurityCode)
         {
             var items = new List<ParamAttribute>();
             var attrs = ReflectHelper.GetParamAttributes(method);
@@ -342,6 +358,8 @@ namespace App.HttpApi
                     p.DefaultValue?.ToString()
                     ));
             }
+            if (authSecurityCode)
+                items.Add(new ParamAttribute("securityCode", "安全码", "String", "", ""));
             return items;
         }
 
@@ -392,22 +410,36 @@ namespace App.HttpApi
 
             // 接口清单
             sb.AppendLine("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendLine("<tr><td width='200'>接口名</td><td width='200'>说明</td><td width='70'>类型</td><td width='70'>缓存(秒)</td><td width='70'>限登录</td><td width='70'>限用户</td><td width='70'>限角色</td><td width='100'>访问方式</td><td width='100'>状态</td><td width='100'>备注</td><td>详情</td></tr>");
+            sb.AppendLine(@"<tr>
+                <td width='200'>接口名</td>
+                <td width='200'>说明</td>
+                <td width='70'>返回类型</td>
+                <td width='70'>缓存(秒)</td>
+                <td width='70'>校验IP</td>
+                <td width='80'>校验安全码</td>
+                <td width='70'>校验登录</td>
+                <td width='70'>校验用户</td>
+                <td width='70'>校验角色</td>
+                <td width='70'>校验动作</td>
+                <td width='70'>状态</td>
+                <td>备注</td>
+                </tr>");
             foreach (var api in typeapi.Apis)
             {
-                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td><td>{5}&nbsp;</td><td>{6}&nbsp;</td><td>{7}&nbsp;</td><td>{8}&nbsp;</td><td>{9}&nbsp;</td><td><a target='_blank' href='{10}'>详情</a>&nbsp;</td></tr>"
-                    , api.Name
-                    , api.Description
-                    , api.ReturnType
-                    , api.CacheDuration
-                    , api.AuthLogin
-                    , api.AuthUsers
-                    , api.AuthRoles
-                    , api.Verbs
-                    , api.Status
-                    , api.Remark
-                    , api.Url
-                    );
+                sb.AppendFormat("<tr>");
+                sb.AppendFormat("<td><a target='_blank' href='{0}'>{1}&nbsp;</a></td>", api.Url, api.Name);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Description);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.ReturnType);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.CacheDuration);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthIP);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthSecurityCode);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthLogin);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthUsers);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);
+                sb.AppendFormat("</tr>");
             }
             sb.AppendLine("</table>");
             return sb;
@@ -429,16 +461,31 @@ namespace App.HttpApi
             // 属性
             sb.AppendFormat("<h2>属性</h2>");
             sb.AppendLine("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendLine("<tr><td>返回类型</td><td>缓存(秒)</td><td>限登录</td><td>限用户</td><td>限角色</td><td>访问方式</td><td>状态</td></tr>");
-            sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td><td>{5}&nbsp;</td><td>{6}&nbsp;</td></tr></table>"
-                , api.ReturnType
-                , api.CacheDuration
-                , api.AuthLogin
-                , api.AuthUsers
-                , api.AuthRoles
-                , api.Verbs
-                , api.Status
-                );
+            sb.AppendLine(@"<tr>
+                <td width='70'>返回类型</td>
+                <td width='70'>缓存(秒)</td>
+                <td width='70'>校验IP</td>
+                <td width='80'>校验安全码</td>
+                <td width='70'>校验登录</td>
+                <td width='70'>校验用户</td>
+                <td width='70'>校验角色</td>
+                <td width='70'>校验动作</td>
+                <td width='70'>状态</td>
+                <td>备注</td>
+                </tr>");
+            sb.AppendFormat("<tr>");
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.ReturnType);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.CacheDuration);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthIP);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthSecurityCode);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthLogin);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthUsers);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);
+            sb.AppendFormat("</tr>");
+            sb.AppendLine("</table>");
 
             // 参数
             sb.AppendFormat("<h2>参数</h2>");
@@ -594,7 +641,7 @@ namespace App.HttpApi
         }
 
         // 获取API方法测试地址
-        static string GetMethodTestUrl(string rootUrl, MethodInfo method)
+        static string GetMethodTestUrl(string rootUrl, MethodInfo method, bool authSecurityCode)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("{0}/{1}", rootUrl, method.Name);
@@ -605,6 +652,8 @@ namespace App.HttpApi
                 foreach (ParameterInfo p in ps)
                     sb.Append(p.Name + "=x&");
             }
+            if (authSecurityCode)
+                sb.Append("securityCode=x");
             return sb.ToString().TrimEnd('&');
         }
 

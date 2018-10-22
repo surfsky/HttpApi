@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1" runat="server">
     <title></title>
-    <script type="text/javascript" src="HttpApi.App.DemoClass.axd/js?4"></script>
+    <script type="text/javascript" src="HttpApi/DemoClass/js?4"></script>
     <script type="text/javascript">
         function ClickMe() {
             // 同步方法

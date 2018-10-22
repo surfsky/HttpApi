@@ -1,7 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" ClassName="App.DemoPage" %>
 <%@ Import Namespace="App.HttpApi" %>
 <script runat="server">
-    [HttpApi(Description = "Hello", Type = ResponseDataType.Text)]
+    [HttpApi(Description = "Hello", Type = App.HttpApi.ResponseType.Text)]
     public static string HelloWorld(string info)
     {
         System.Threading.Thread.Sleep(200);

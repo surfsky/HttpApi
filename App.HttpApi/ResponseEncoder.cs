@@ -46,11 +46,11 @@ namespace App.HttpApi
 
             switch (this.DataType)
             {
+                case ResponseType.JSON:        WriteText(SerializeHelper.ToJson(obj), Encoding.UTF8);          break;
+                case ResponseType.XML:         WriteText(SerializeHelper.ToXml(obj),  Encoding.UTF8);           break;
                 case ResponseType.JavaScript:  WriteText(SerializeHelper.ToText(obj));        break;
                 case ResponseType.Text:        WriteText(SerializeHelper.ToText(obj));        break;
-                case ResponseType.JSON:        WriteText(SerializeHelper.ToJson(obj));          break;
                 case ResponseType.HTML:        WriteText(SerializeHelper.ToText(obj));        break;
-                case ResponseType.XML:         WriteText(SerializeHelper.ToXml(obj));           break;
                 case ResponseType.ImageBase64: WriteText(SerializeHelper.ToImageBase64(obj));   break;
                 case ResponseType.Image:       WriteBinary(SerializeHelper.ToImageBytes(obj));  break;
                 case ResponseType.BinaryFile:  WriteBinary(SerializeHelper.ToBinary(obj));      break;
@@ -79,11 +79,11 @@ namespace App.HttpApi
         }
 
         // 输出文本
-        public void WriteText(string text)
+        public void WriteText(string text, Encoding encoding=null)
         {
             var response = HttpContext.Current.Response;
             SetCache(response, this.CacheSeconds, this.CacheLocation, "*");
-            response.ContentEncoding = HttpContext.Current.Request.ContentEncoding;
+            response.ContentEncoding = encoding ?? HttpContext.Current.Request.ContentEncoding;
             response.ContentType = this.MimeType;
             if (!string.IsNullOrEmpty(this.FileName))
                 response.AddHeader("Content-Disposition", "attachment; filename=" + this.FileName);

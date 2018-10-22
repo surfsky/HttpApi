@@ -10,6 +10,7 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Web;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace App.HttpApi
 {
@@ -35,23 +36,26 @@ namespace App.HttpApi
             else
             {
                 var cfg = HttpApiConfig.Instance;
-
                 var settings = new JsonSerializerSettings();
                 settings.MissingMemberHandling = MissingMemberHandling.Ignore;
                 settings.NullValueHandling = NullValueHandling.Ignore;
                 settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 
+                // 小驼峰命名法
+                if (cfg.FormatSmallCamel)
+                    settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
                 // 递进格式
-                settings.Formatting = cfg.JsonIndented;
+                settings.Formatting = cfg.FormatIndented;
 
                 // 时间格式
                 IsoDateTimeConverter datetimeConverter = new IsoDateTimeConverter();
-                datetimeConverter.DateTimeFormat = cfg.JsonDateTimeFormat;
+                datetimeConverter.DateTimeFormat = cfg.FormatDateTime;
                 settings.Converters.Add(datetimeConverter);
 
                 // 枚举格式
                 StringEnumConverter enumConverter = new StringEnumConverter();
-                if (cfg.JsonEnumFormatting == EnumFomatting.Text)
+                if (cfg.FormatEnum == EnumFomatting.Text)
                     settings.Converters.Add(enumConverter);
 
                 //
@@ -59,21 +63,24 @@ namespace App.HttpApi
             }
         }
 
-        // 转化为xml
+        // 转化为xml（对于未知类型会转化出错，考虑用三方类库）
         public static string ToXml(object obj)
         {
             if (obj == null)
                 return "";
             else
             {
+                /*
                 MemoryStream stream = new MemoryStream();
                 using (StreamWriter writer = new StreamWriter(stream))
                 {
-                    System.Xml.Serialization.XmlSerializer xs = new System.Xml.Serialization.XmlSerializer(obj.GetType());
+                    var xs = new System.Xml.Serialization.XmlSerializer(obj.GetType());
                     xs.Serialize(writer, obj);
                     writer.Close();
                 }
                 return UnicodeEncoding.UTF8.GetString(stream.GetBuffer());
+                */
+                return new XmlSerializer().ToXml(obj);
             }
         }
 

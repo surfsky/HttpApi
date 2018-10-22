@@ -11,14 +11,14 @@ namespace App
 {
     public enum Sex
     {
-        Male,
-        Female
+        Male = 0,
+        Female = 1
     }
     public class Person
     {
         public string Name { get; set; }
-        public DateTime Birth { get; set; }
-        public Sex Sex { get; set; }
+        public DateTime? Birth { get; set; }
+        public Sex? Sex { get; set; }
         public Person Father { get; set; }
     }
 
@@ -188,31 +188,38 @@ namespace App
         }
 
         [HttpApi("null值处理")]
-        public Person CreateNull()
+        public static Person CreateNull()
         {
             return null;
         }
 
         [HttpApi("返回复杂对象")]
-        public Person GetPerson()
+        public static Person GetPerson()
+        {
+            return new Person() { Name = "Cherry" };
+        }
+
+
+        [HttpApi("返回Xml对象", Type=ResponseType.XML)]
+        public static Person GetPersonXml()
         {
             return new Person() { Name = "Cherry" };
         }
 
         [HttpApi("返回复杂对象，并用DataResult进行封装", Wrap =true)]
-        public Person GetPersonData()
+        public static Person GetPersonDataResult()
         {
             return new Person() { Name = "Kevin" };
         }
 
         [HttpApi("返回DataResult对象")]
-        public DataResult GetPersons()
+        public static DataResult GetPersons()
         {
-            List<Person> ps = new List<Person>(){
-                new Person(),
-                new Person()
+            var persons = new List<Person>(){
+                new Person(){ Name="Kevin", Sex=Sex.Male, Birth=new DateTime(2000, 01, 01)},
+                new Person(){ Name="Cherry", Sex=Sex.Female, Birth=new DateTime(2010, 01, 01)}
             };
-            return new DataResult("true", "", ps, null);
+            return new DataResult(true, "", persons);
         }
     }
 }

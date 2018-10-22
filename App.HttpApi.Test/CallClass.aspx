@@ -4,7 +4,7 @@
 <head runat="server">
     <title></title>
     <script type="text/javascript" src="js/jquery-1.8.0.js"></script>
-    <script type="text/javascript" src="HttpApi.App.DemoClass.axd/js"></script>
+    <script type="text/javascript" src="HttpApi/DemoClass/js"></script>
     <script type="text/javascript">
         $(function () {
             $("#clickMe").click(function () {

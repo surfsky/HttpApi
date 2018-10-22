@@ -16,27 +16,35 @@
     <h2>示例</h2>
     <ul>
         <h3>方法映射</h3>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/js">查看App_Code类映射到客户端的js文件</a></li>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/jq">查看App_Code类映射到客户端的js文件（依赖jquery）</a></li>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/api">查看App_Code类提供的接口清单(html)</a></li>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/apis">查看App_Code类提供的接口清单(json)</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/js">查看App_Code类映射到客户端的js文件</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/jq">查看App_Code类映射到客户端的js文件（依赖jquery）</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/api">查看App_Code类提供的接口清单(html)</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/apis">查看App_Code类提供的接口清单(json)</a></li>
         <li><a target="_blank" href="TestPage.aspx/js">查看Aspx文件映射到客户端的js文件</a></li>
         <li><a target="_blank" href="TestHandler.ashx/js">查看Ashx文件映射到客户端的js文件</a></li>
-        <li><a target="_blank" href="HttpApi.App.TestPage.axd/js">查看Aspx类映射到客户端的js文件</a></li>
-        <li><a target="_blank" href="HttpApi.App.TestHandler.axd/js">查看Ashx类映射到客户端的js文件</a></li>
+        <li><a target="_blank" href="HttpApi/TestPage/js">查看Aspx类映射到客户端的js文件</a></li>
+        <li><a target="_blank" href="HttpApi/TestHandler/js">查看Ashx类映射到客户端的js文件</a></li>
         <h3>方法调用</h3>
         <li><a target="_blank" href="CallJs.aspx">调用类方法（用映射到客户端的js函数调用）</a></li>
         <li><a target="_blank" href="CallJquery.aspx">调用类方法（用Jquery手工写调用代码）</a></li>
         <li><a target="_blank" href="CallPage.aspx">调用Aspx类方法</a></li>
         <li><a target="_blank" href="TestAuth.aspx">访问权限控制</a></li>
         <h3>输出格式</h3>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/HelloWorld?info=kevin">服务器端返回格式: text</a></li>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/GetFile?info=xxx">服务器端提供下载plist文件</a></li>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/GetStaticObject">服务器端返回格式：json</a></li>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/GetImage?text=Hello">服务器端返回格式：image</a></li>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/GetDataTable?_type=xml">客户端指定服务器端方法输出格式：xml</a></li>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/GetDataTable?_type=json">客户端指定服务器端方法输出格式：json</a></li>
-        <li><a target="_blank" href="HttpApi.App.DemoClass.axd/GetImage?text=xxx&_type=imagebase64">客户端指定服务器端方法输出格式：imagebase64</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetStaticObject">返回：匿名对象 json</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetStaticObject&_type=xml">返回：匿名对象 xml</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/HelloWorld?info=kevin">返回：text</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetFile?info=xxx">返回：plist</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetPerson">返回：object json</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetPersonXml">返回：object xml</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetPersonDataResult">返回：object DataResult</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetImage?text=Hello">返回：image</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetImage?text=xxx&_type=imagebase64">返回：image base64</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetPersons">返回：list json</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetPersons?_type=xml">返回：list xml</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetDataTable?_type=xml">返回：datatable xml</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetDataTable?_type=json">返回：datatable json</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/CreateNull">返回：null json</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/CreateNull?_type=xml">返回：null xml</a></li>
     </ul>
 
 <h2>说明</h2>

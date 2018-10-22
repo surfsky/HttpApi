@@ -8,7 +8,7 @@
         $(function () {
             $("#clickMe").click(function () {
                 $.ajax({
-                    url: "HttpApi.App.DemoClass.axd/HelloWorld",
+                    url: "HttpApi/DemoClass/HelloWorld",
                     data: { info: 'kevin' }
                 }).always(function (ret) {
                     $("#clickMe").html(ret);

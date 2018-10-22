@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Xml.Serialization;
 
 namespace App.HttpApi
 {
     /// <summary>
-    /// 标准 JSON 数据返回结果
+    /// 标准数据返回结果
     /// </summary>
     public class DataResult
     {
@@ -39,7 +40,7 @@ namespace App.HttpApi
                 return o.ToString().ToLower();
             if (o.GetType().IsEnum)
             {
-                if (HttpApiConfig.Instance.JsonEnumFormatting == EnumFomatting.Int)
+                if (HttpApiConfig.Instance.FormatEnum == EnumFomatting.Int)
                     return ((int)o).ToString();
             }
             return o.ToString();

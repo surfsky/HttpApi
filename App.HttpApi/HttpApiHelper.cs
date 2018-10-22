@@ -61,13 +61,13 @@ namespace App.HttpApi
             string ip = Asp.GetClientIP();
             var principal = App.Components.AuthHelper.LoadCookiePrincipal();  // 获取身份验票
             string securityCode = context.Request.Params["securityCode"];
-            var err = HttpApiConfig.Instance.Auth(context, method, attr, ip, securityCode);
+            var err = CheckMethodEnable(context, method, methodName, attr);
             if (err != null)
             {
                 WriteError(context, err.Code, err.Info);
                 return;
             }
-            err = CheckMethodEnable(context, method, methodName, attr);
+            err = HttpApiConfig.Instance.Auth(context, method, attr, ip, securityCode);
             if (err != null)
             {
                 WriteError(context, err.Code, err.Info);
@@ -103,7 +103,7 @@ namespace App.HttpApi
             }
             catch (Exception ex)
             {
-                string result = string.Format("Api {0}() fail. Please check parameters. {1}", methodName, ex.Message);
+                string result = string.Format("Api {0}() fail. Please check parameters. Info: {1} {2}", methodName, ex.Message, ex.InnerException?.Message);
                 WriteError(context, 400, result);
             }
             finally

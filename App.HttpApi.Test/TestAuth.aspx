@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true"  %>
+<%@ Import Namespace="App.Components" %>
 <%@ Import Namespace="App.HttpApi" %>
 <%@ Import Namespace="System.Security.Principal" %>
 <%@ Import Namespace="App" %>
@@ -12,18 +13,18 @@
 
     protected void btnLogin_Click(object sender, EventArgs e)
     {
-        IPrincipal p = App.HttpApi.AuthHelper.Login("Surfsky", null, DateTime.Now.AddDays(1));
+        IPrincipal p = AuthHelper.Login("Surfsky", null, DateTime.Now.AddDays(1));
         ShowUser(p);
     }
     protected void btnLogin2_Click(object sender, EventArgs e)
     {
-        IPrincipal p = App.HttpApi.AuthHelper.Login("Kevin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
+        IPrincipal p = AuthHelper.Login("Kevin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
         ShowUser(p);
     }
 
     protected void btnLogout_Click(object sender, EventArgs e)
     {
-        App.HttpApi.AuthHelper.Logout();
+        AuthHelper.Logout();
         ShowUser(null);
     }
 
@@ -107,9 +108,6 @@
         }
 
 （4）可在Web.confit中配置错误时返回格式（不设置的话默认为DataResult）
-    <appSettings>
-        <add key="HttpApi-ErrorResponse" value="DataResult"/> <!-- 或HttpError -->
-    </appSettings>
     // 若为HttpError，会输出标准的HTTP错误，浏览器的话会跳转到对应的错误页面
     // 若为DataResult，直接输出DataResult错误信息
 

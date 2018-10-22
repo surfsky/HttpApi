@@ -62,9 +62,8 @@ namespace App.HttpApi
         public static void HandlerHttpApiRequest(HttpContext context)
         {
             // 根据请求路径获取类型名：去掉扩展名；去前缀；用点运算符；
-            string typeName = GetRequestTypeName();
-
             // 获取处理器对象（从程序集创建或从缓存获取），处理web方法调用请求。
+            var typeName = HttpApiHelper.GetRequestTypeName();
             var handler = TryGetHandlerFromCache(typeName);
             if (handler == null)
                 handler = TryCreateHandlerFromAssemblies(typeName);
@@ -75,28 +74,6 @@ namespace App.HttpApi
             }
         }
 
-        public static string GetRequestTypeName()
-        {
-            var path = HttpContext.Current.Request.FilePath;
-
-            // 去头
-            if (path.StartsWith("/HttpApi.") || path.StartsWith("/HttpApi-") || path.StartsWith("/HttpApi_") || path.StartsWith("/HttpApi/"))
-                path = path.Substring(9);
-
-            // 去尾
-            int n = path.LastIndexOf("/");
-            if (n != -1)
-                path = path.Substring(0, n);
-
-            // 去扩展名
-            n = path.LastIndexOf(".axd");
-            if (n != -1)
-                path = path.Substring(0, n);
-
-            // 用点来串联
-            var typeName = path.Replace('-', '.').Replace('_', '.');
-            return typeName;
-        }
 
 
         // 加到缓存中去（若实现了IDisposal接口，则保存assembly，否则保存对象）

@@ -57,6 +57,7 @@
     <Compile Include="Components\Extensions.cs" />
     <Compile Include="DataResult.cs" />
     <Compile Include="HttpApiConfig.cs" />
+    <Compile Include="HttpApiHelper.Export.cs" />
     <Compile Include="HttpApiModule.cs" />
     <Compile Include="ResponseType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

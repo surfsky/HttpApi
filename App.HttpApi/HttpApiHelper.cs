@@ -31,7 +31,7 @@ namespace App.HttpApi
     /// <summary>
     /// HttpApi 的逻辑实现。
     /// </summary>
-    internal class HttpApiHelper
+    internal partial class HttpApiHelper
     {
         //----------------------------------------------
         //----------------------------------------------
@@ -219,6 +219,33 @@ namespace App.HttpApi
             return null;
         }
 
+        /// <summary>获取请求类型名</summary>
+        public static string GetRequestTypeName()
+        {
+            var path = HttpContext.Current.Request.FilePath;
+
+            // 去头
+            if (path.StartsWith("/HttpApi.") || path.StartsWith("/HttpApi-") || path.StartsWith("/HttpApi_") || path.StartsWith("/HttpApi/"))
+                path = path.Substring(9);
+
+            // 去尾
+            int n = path.LastIndexOf("/");
+            if (n != -1)
+                path = path.Substring(0, n);
+
+            // 去扩展名
+            n = path.LastIndexOf(".axd");
+            if (n != -1)
+                path = path.Substring(0, n);
+
+            // 如果类名用的是简写，加上前缀
+            if (path.IndexOf(".") == -1)
+                path = HttpApiConfig.Instance.ApiTypePrefix + path;
+
+            // 用点来串联
+            var typeName = path.Replace('-', '.').Replace('_', '.');
+            return typeName;
+        }
 
 
         //-----------------------------------------------------------
@@ -296,12 +323,9 @@ namespace App.HttpApi
         // 获取接口清单
         static TypeAPI GetTypeApi(Type type)
         {
-            var typeapi = new TypeAPI();
-            var uri = HttpContext.Current.Request.Url;
-            var typeName = HttpApiHandler.GetRequestTypeName();
-            var rootUrl = string.Format("{0}://{1}/HttpApi/{2}", uri.Scheme, uri.Authority, typeName);
-
             // 获取接口列表
+            var rootUrl = GetApiRootUrl(type);
+            var typeapi = new TypeAPI();
             var apis = new List<API>();
             var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
             foreach (MethodInfo method in methods)
@@ -332,7 +356,7 @@ namespace App.HttpApi
                     apis.Add(api);
                 }
             }
-            
+
 
             //
             typeapi.Apis = apis.OrderBy(t => t.Name).ToList();
@@ -341,6 +365,23 @@ namespace App.HttpApi
             return typeapi;
         }
 
+        private static string GetApiRootUrl(Type type)
+        {
+            var uri = HttpContext.Current.Request.Url;
+            var rootUrl = string.Format("{0}://{1}/HttpApi/{2}", uri.Scheme, uri.Authority, GetTypeTrimName(type));
+            return rootUrl;
+        }
+
+        private static string GetTypeTrimName(Type type)
+        {
+            var typeName = type.FullName;
+            var typePrefix = HttpApiConfig.Instance.ApiTypePrefix;
+            if (!typePrefix.IsNullOrEmpty() && typeName.StartsWith(typePrefix))
+                typeName = typeName.Substring(typePrefix.Length);
+            return typeName;
+        }
+
+        /// <summary>获取方法参数信息</summary>
         private static List<ParamAttribute> GetMethodParams(MethodInfo method, bool authSecurityCode)
         {
             var items = new List<ParamAttribute>();
@@ -363,8 +404,8 @@ namespace App.HttpApi
             return items;
         }
 
-        // 获取类型字符串
-        private static string GetTypeString(Type type)
+        /// <summary>获取类型字符串（可处理可空类型）</summary>
+        private static string GetTypeString(Type type, bool shortName=true)
         {
             if (type.IsNullable())
             {
@@ -373,10 +414,10 @@ namespace App.HttpApi
             }
             if (type.IsValueType)
                 return type.Name.ToString();
-            return type.Name.ToString();
+            return shortName ? type.Name.ToString() : type.FullName.ToString();
         }
 
-        // 获取类型的概述信息
+        /// <summary>获取类型的概述信息（可解析枚举类型）</summary>
         private static string GetTypeInfo(Type type)
         {
             if (type.IsNullable())
@@ -390,310 +431,6 @@ namespace App.HttpApi
                     sb.AppendFormat("{0}-{1}({2}); ", (int)item, item.ToString(), item.GetDescription());
                 }
             }
-            return sb.ToString();
-        }
-
-
-
-        /// <summary>
-        /// 构造接口清单页面
-        /// </summary>
-        static StringBuilder GetTypeApiHtml(TypeAPI typeapi)
-        {
-            // 概述信息
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<h1>" + typeapi.Description + "</h1>");
-            foreach (HistoryAttribute history in typeapi.Histories)
-            {
-                sb.AppendFormat("<small>{0}, {1}, {2}</small><br/>", history.Date, history.User, history.Info);
-            }
-
-            // 接口清单
-            sb.AppendLine("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendLine(@"<tr>
-                <td width='200'>接口名</td>
-                <td width='200'>说明</td>
-                <td width='70'>返回类型</td>
-                <td width='70'>缓存(秒)</td>
-                <td width='70'>校验IP</td>
-                <td width='80'>校验安全码</td>
-                <td width='70'>校验登录</td>
-                <td width='70'>校验用户</td>
-                <td width='70'>校验角色</td>
-                <td width='70'>校验动作</td>
-                <td width='70'>状态</td>
-                <td>备注</td>
-                </tr>");
-            foreach (var api in typeapi.Apis)
-            {
-                sb.AppendFormat("<tr>");
-                sb.AppendFormat("<td><a target='_blank' href='{0}'>{1}&nbsp;</a></td>", api.Url, api.Name);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Description);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.ReturnType);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.CacheDuration);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthIP);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthSecurityCode);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthLogin);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthUsers);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);
-                sb.AppendFormat("</tr>");
-            }
-            sb.AppendLine("</table>");
-            return sb;
-        }
-
-
-        /// <summary>
-        /// 构造接口清单页面
-        /// </summary>
-        static StringBuilder GetApiHtml(API api)
-        {
-            // 概述信息
-            StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("<h1>{0}</h1>", api.Name);
-            sb.AppendFormat("<h3>{0}</h3>", api.Description);
-            sb.AppendFormat("<div>{0}</div></br>", api.UrlTest);
-            sb.AppendFormat("<div>{0}</div>", api.Remark);
-
-            // 属性
-            sb.AppendFormat("<h2>属性</h2>");
-            sb.AppendLine("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendLine(@"<tr>
-                <td width='70'>返回类型</td>
-                <td width='70'>缓存(秒)</td>
-                <td width='70'>校验IP</td>
-                <td width='80'>校验安全码</td>
-                <td width='70'>校验登录</td>
-                <td width='70'>校验用户</td>
-                <td width='70'>校验角色</td>
-                <td width='70'>校验动作</td>
-                <td width='70'>状态</td>
-                <td>备注</td>
-                </tr>");
-            sb.AppendFormat("<tr>");
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.ReturnType);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.CacheDuration);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthIP);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthSecurityCode);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthLogin);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthUsers);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);
-            sb.AppendFormat("</tr>");
-            sb.AppendLine("</table>");
-
-            // 参数
-            sb.AppendFormat("<h2>参数</h2>");
-            sb.AppendFormat("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendFormat("<tr><td width='100'>参数名</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr>");
-            foreach (var p in api.Params)
-            {
-                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
-                    ,p.Name
-                    ,p.Description
-                    ,p.Type
-                    ,p.Info
-                    ,p.DefaultValue
-                    );
-            }
-            sb.AppendFormat("</tr></table>");
-            return sb;
-        }
-
-
-        //-----------------------------------------------------------
-        // 生成客户端可直接调用的 javascript 脚本
-        //-----------------------------------------------------------
-        // 获取json.js文件
-        static string GetJsonScript()
-        {
-            return ResourceHelper.GetResourceText(
-                Assembly.GetExecutingAssembly(),
-                typeof(HttpApiHelper).Namespace + ".Js.json2.min.js"
-                );
-        }
-
-        // 取得嵌入的脚本模版(js,jq,ext)
-        static string GetTemplateScript(string scriptType)
-        {
-            return ResourceHelper.GetResourceText(
-                Assembly.GetExecutingAssembly(),
-                typeof(HttpApiHelper).Namespace + ".Js." + scriptType + "Template.js"
-                );
-        }
-
-        // 获取js的封装的namespace
-        // （1）先尝试获取输入参数 dataNamespace
-        // （2）再尝试获取对象类的 WebMethodNamespace 特性
-        // （3）默认返回对象类的 Namespace
-        private static string GetJsNamespace(Type type, Dictionary<string, object> args)
-        {
-            if (args.ContainsKey("dataNamespace"))
-                return args["dataNamespace"].ToString();
-            else
-            {
-                ScriptAttribute attr = ReflectHelper.GetScriptAttribute(type);
-                return (attr != null && attr.NameSpace != null) ? attr.NameSpace : type.Namespace;
-            }
-        }
-
-        // 获取js的封装的className
-        private static string GetJsClassName(Type type, Dictionary<string, object> args)
-        {
-            if (args.ContainsKey("dataClassName"))
-                return args["dataClassName"].ToString();
-            else
-            {
-                ScriptAttribute attr = ReflectHelper.GetScriptAttribute(type);
-                return (attr != null && attr.ClassName != null) ? attr.ClassName : type.Name;
-            }
-        }
-
-
-        /// <summary>
-        /// 注册Js对应的Namespace（请重载ProcessRequest中调用该函数）
-        /// 太麻烦了，写webconfig吧，以后再说，先移除
-        /// </summary>
-        /// <example>
-        ///   public override void ProcessRequest(HttpContext context)
-        ///   {
-        ///       RegistJsNamespace("MyNamespace", "MyClass");
-        ///       base.ProcessRequest(context);
-        ///   }
-        /// </example>
-        public void RegistJsType(string nameSpace, string className)
-        {
-            HttpContext.Current.Request.Params["dataNamespace"] = nameSpace;
-            HttpContext.Current.Request.Params["dataClassName"] = className;
-        }
-
-
-        /// <summary>
-        /// 生成客户端调用服务器端方法的脚本
-        /// </summary>
-        static StringBuilder GetJs(Type type, string nameSpace, string className, int cacheDuration, string scriptType="js")
-        {
-            // 读取对应的模板
-            string script = GetTemplateScript(scriptType);
-            Uri uri = HttpContext.Current.Request.Url;
-            string filePath = HttpContext.Current.Request.FilePath;
-
-            // 并进行字符串替换：描述、时间、地址、类名
-            string url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
-            script = script.Replace("%DATE%", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-            script = script.Replace("%DURATION%", cacheDuration.ToString());
-            script = script.Replace("%URL%", url);
-            script = script.Replace("%NS-BUILD%", GetNamespaceScript(nameSpace));
-            script = script.Replace("%NS%", nameSpace);
-            script = script.Replace("%CLS%", className);
-
-            // 依次生成函数调用脚本
-            var typeapi = GetTypeApi(type);
-            StringBuilder scriptBuilder = new StringBuilder(script);
-            foreach (var api in typeapi.Apis)
-            {
-                scriptBuilder.AppendLine("//-----------------------------------------------------------------");
-                scriptBuilder.AppendLine("// 说明  : " + api.Description);
-                scriptBuilder.AppendLine("// 地址  : " + api.UrlTest);
-                scriptBuilder.AppendLine("// 缓存  : " + api.CacheDuration.ToString() + " 秒");
-                scriptBuilder.AppendLine("// 类型  : " + api.ReturnType);
-                scriptBuilder.AppendLine("// 备注  : " + api.Remark);
-                scriptBuilder.AppendLine("// 限登录: " + api.AuthLogin);
-                scriptBuilder.AppendLine("// 限用户: " + api.AuthUsers);
-                scriptBuilder.AppendLine("// 限角色: " + api.AuthRoles);
-                scriptBuilder.AppendLine("//-----------------------------------------------------------------");
-
-                string func = GetFunctionScript(nameSpace, className, api.Method, api.RType);
-                scriptBuilder.AppendLine(func);
-            }
-
-            // 插入json2.js并输出
-            scriptBuilder.Insert(0, GetJsonScript());
-            return scriptBuilder;
-        }
-
-
-
-
-        // 构造namespace创建语句
-        static string GetNamespaceScript(string ns)
-        {
-            StringBuilder sb = new StringBuilder();
-            string[] parts = ns.Split('.');
-            string ns2 = "";
-            foreach (string part in parts)
-            {
-                ns2 += (ns2 == "") ? part : "." + part;
-                sb.AppendFormat("\r\nif (typeof({0}) == 'undefined') {0}={{}};", ns2);
-            }
-            return sb.ToString();
-        }
-
-        // 获取API方法展示地址
-        static string GetMethodDisplayUrl(string rootUrl, MethodInfo method)
-        {
-            return string.Format("{0}/{1}_", rootUrl, method.Name);
-        }
-
-        // 获取API方法测试地址
-        static string GetMethodTestUrl(string rootUrl, MethodInfo method, bool authSecurityCode)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("{0}/{1}", rootUrl, method.Name);
-            ParameterInfo[] ps = method.GetParameters();
-            if (ps.Length > 0)
-            {
-                sb.Append("?");
-                foreach (ParameterInfo p in ps)
-                    sb.Append(p.Name + "=x&");
-            }
-            if (authSecurityCode)
-                sb.Append("securityCode=x");
-            return sb.ToString().TrimEnd('&');
-        }
-
-        /// <summary>
-        /// 取得函数调用代码段
-        /// </summary>
-        static string GetFunctionScript(string nameSpace, string className, MethodInfo method, ResponseType format)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            // 函数名和参数
-            sb.AppendFormat("{0}.{1}.{2}", nameSpace, className, method.Name);
-            sb.Append(" = function(");
-            foreach (ParameterInfo p in method.GetParameters())
-                sb.Append(p.Name + ", ");
-            sb.Append("callback, senderId)");
-
-            // 使用jquery调用服务器端的函数
-            sb.AppendLine("{");
-            sb.Append("    var args = {");
-            ParameterInfo[] parameters = method.GetParameters();
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                ParameterInfo p = parameters[i];
-                string item = (i == 0) ? p.Name + ":" + p.Name : ", " + p.Name + ":" + p.Name;
-                sb.Append(item);
-            }
-            sb.AppendLine("};");
-            switch (format)
-            {
-                case ResponseType.HTML:       sb.AppendLine("    var options = {dataType:'html'};");    break;
-                case ResponseType.XML:        sb.AppendLine("    var options = {dataType:'xml'};");     break;
-                case ResponseType.JSON:       sb.AppendLine("    var options = {dataType:'json'};");    break;
-                case ResponseType.JavaScript: sb.AppendLine("    var options = {dataType:'script'};");  break;
-                case ResponseType.Text:       sb.AppendLine("    var options = {dataType:'text'};");    break;
-                default:                          sb.AppendLine("    var options = {dataType:'text'};");    break;
-            }
-            sb.AppendFormat("    return this.CallWebMethod('{0}', args, options, callback, senderId);\r\n", method.Name);
-            sb.AppendLine("}");
-            sb.AppendLine();
             return sb.ToString();
         }
     }

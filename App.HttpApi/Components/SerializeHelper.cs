@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using App.Components;
 
 namespace App.HttpApi
 {
@@ -42,7 +43,7 @@ namespace App.HttpApi
                 settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 
                 // 小驼峰命名法
-                if (cfg.FormatSmallCamel)
+                if (cfg.FormatLowCamel)
                     settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
                 // 递进格式
@@ -70,7 +71,29 @@ namespace App.HttpApi
                 return "";
             else
             {
+                // 用自己写的xml序列化类（未完善）
+                var cfg = HttpApiConfig.Instance;
+                var txt = new XmlSerializer(
+                    cfg.FormatLowCamel, 
+                    cfg.FormatEnum, 
+                    cfg.FormatDateTime, 
+                    cfg.FormatIndented==Formatting.Indented
+                    ).ToXml(obj);
+                return txt;
+
                 /*
+                // 用 Json 转为 xml，优点是统一
+                // Bug: 数组无法正确序列化（类别信息会丢失）
+                //var str = ToJson(obj);
+                var type = obj.GetType();
+                if (type.IsNullable())
+                    type = type.GetNullableDataType();
+                var name = type.Name;
+                return JsonConvert.DeserializeXmlNode(str, name, false).OuterXml;
+                */
+
+                /*
+                // 用微软官方的序列化类: 要求写一堆的[XmlInclude][XmlIgnore]等标签，对于未知的类是无能无力的，没法玩
                 MemoryStream stream = new MemoryStream();
                 using (StreamWriter writer = new StreamWriter(stream))
                 {
@@ -80,7 +103,6 @@ namespace App.HttpApi
                 }
                 return UnicodeEncoding.UTF8.GetString(stream.GetBuffer());
                 */
-                return new XmlSerializer().ToXml(obj);
             }
         }
 

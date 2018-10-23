@@ -69,7 +69,7 @@ namespace App.HttpApi
                 case ResponseType.Text:        return @"text/plain";
                 case ResponseType.JSON:        return @"application/json";
                 case ResponseType.HTML:        return @"text/html";
-                case ResponseType.XML:         return @"application/xml";
+                case ResponseType.XML:         return @"text/xml";
                 case ResponseType.JavaScript:  return @"text/javascript";
                 case ResponseType.Image:       return @"image/png";
                 case ResponseType.ImageBase64: return @"text/plain";

@@ -32,6 +32,8 @@
         <h3>输出格式</h3>
         <li><a target="_blank" href="HttpApi/DemoClass/GetStaticObject">返回：匿名对象 json</a></li>
         <li><a target="_blank" href="HttpApi/DemoClass/GetStaticObject&_type=xml">返回：匿名对象 xml</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetDictionary">返回：字典 json</a></li>
+        <li><a target="_blank" href="HttpApi/DemoClass/GetDictionary?_type=xml">返回：字典 xml</a></li>
         <li><a target="_blank" href="HttpApi/DemoClass/HelloWorld?info=kevin">返回：text</a></li>
         <li><a target="_blank" href="HttpApi/DemoClass/GetFile?info=xxx">返回：plist</a></li>
         <li><a target="_blank" href="HttpApi/DemoClass/GetPerson">返回：object json</a></li>

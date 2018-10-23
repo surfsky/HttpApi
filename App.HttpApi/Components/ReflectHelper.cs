@@ -10,6 +10,7 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Web;
 using System.ComponentModel;
+using App.Components;
 
 namespace App.HttpApi
 {
@@ -18,6 +19,48 @@ namespace App.HttpApi
     /// </summary>
     internal class ReflectHelper
     {
+        //-------------------------------------------------
+        // 获取类型信息
+        //-------------------------------------------------
+        /// <summary>获取（可空类型的）真实类型</summary>
+        public static Type GetRealType(Type type)
+        {
+            if (type.IsNullable())
+                return GetRealType(type.GetNullableDataType());
+            return type;
+        }
+
+        /// <summary>获取类型字符串（可处理可空类型）</summary>
+        public static string GetTypeString(Type type, bool shortName = true)
+        {
+            if (type.IsNullable())
+            {
+                type = type.GetNullableDataType();
+                return GetTypeString(type) + "?";
+            }
+            if (type.IsValueType)
+                return type.Name.ToString();
+            return shortName ? type.Name.ToString() : type.FullName.ToString();
+        }
+
+        /// <summary>获取类型的概述信息（可解析枚举类型）</summary>
+        public static string GetTypeSummary(Type type)
+        {
+            if (type.IsNullable())
+                type = type.GetNullableDataType();
+
+            var sb = new StringBuilder();
+            if (type.IsEnum)
+            {
+                foreach (var item in Enum.GetValues(type))
+                    sb.AppendFormat("{0}-{1}({2}); ", (int)item, item.ToString(), item.GetDescription());
+            }
+            return sb.ToString();
+        }
+
+        //-------------------------------------------------
+        // Attribute 相关
+        //-------------------------------------------------
         /// <summary>获取DescriptionAttribute</summary>
         public static string GetDescription(Type type)
         {
@@ -52,9 +95,6 @@ namespace App.HttpApi
             return (attr != null) ? attr.CacheDuration : 0;
         }
 
-        //-------------------------------------------------
-        // 反射、方法调用相关
-        //-------------------------------------------------
         // 获取WebMethodNamespaceAttribute
         public static ScriptAttribute GetScriptAttribute(Type type)
         {
@@ -77,6 +117,14 @@ namespace App.HttpApi
             return (arr.Length == 0) ? null : arr[0];
         }
 
+        // 获取成员特性
+        public static T GetAttribute<T>(PropertyInfo property) where T : Attribute
+        {
+            T[] arr = (T[])property.GetCustomAttributes(typeof(T), true);
+            return (arr.Length == 0) ? null : arr[0];
+        }
+
+
         // 获取方法特性
         public static T GetAttribute<T>(MethodInfo info) where T : Attribute
         {
@@ -84,6 +132,9 @@ namespace App.HttpApi
             return arr.Length > 0 ? arr[0] : null;
         }
 
+        //-------------------------------------------------
+        // 方法调用相关
+        //-------------------------------------------------
         // 获取方法
         public static MethodInfo GetMethod(Type type, string methodName)
         {

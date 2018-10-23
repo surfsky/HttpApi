@@ -6,6 +6,10 @@ using System.Drawing;
 using App.HttpApi;
 using System.ComponentModel;
 using App.Components;
+using Newtonsoft.Json;
+using System.Xml.Serialization;
+using System.Web.Script.Serialization;
+using System.Collections;
 
 namespace App
 {
@@ -20,6 +24,12 @@ namespace App
         public DateTime? Birth { get; set; }
         public Sex? Sex { get; set; }
         public Person Father { get; set; }
+
+        [JsonIgnore]
+        [XmlIgnore]
+        [ScriptIgnore]
+        //[NonSerialized]
+        public Person Mather { get; set; }
     }
 
 
@@ -94,7 +104,7 @@ namespace App
             return System.DateTime.Now;
         }
 
-        [HttpApi("输出DataTable->Json")]
+        [HttpApi("输出DataTable")]
         public DataTable GetDataTable()
         {
             DataTable dt = new DataTable("test");
@@ -105,7 +115,7 @@ namespace App
             return dt;
         }
 
-        [HttpApi("输出DataRow->Json")]
+        [HttpApi("输出DataRow")]
         public DataRow GetDataRow()
         {
             DataTable dt = new DataTable("test");
@@ -114,6 +124,15 @@ namespace App
             dt.Rows.Add("a1", "b1");
             dt.Rows.Add("a2", "b2");
             return dt.Rows[0];
+        }
+
+        [HttpApi("输出Dictionary")]
+        public IDictionary GetDictionary()
+        {
+            var dict = new Dictionary<int, Person>();
+            dict.Add(0, new Person() { Name = "Marry" });
+            dict.Add(1, new Person() { Name = "Cherry" });
+            return dict;
         }
 
         [HttpApi("输出图像", CacheSeconds=60)]

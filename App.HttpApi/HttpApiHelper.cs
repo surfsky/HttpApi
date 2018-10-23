@@ -394,8 +394,8 @@ namespace App.HttpApi
                 items.Add(new ParamAttribute(
                     p.Name,
                     desc,
-                    GetTypeString(p.ParameterType),
-                    GetTypeInfo(p.ParameterType),
+                    ReflectHelper.GetTypeString(p.ParameterType),
+                    ReflectHelper.GetTypeSummary(p.ParameterType),
                     p.DefaultValue?.ToString()
                     ));
             }
@@ -404,34 +404,6 @@ namespace App.HttpApi
             return items;
         }
 
-        /// <summary>获取类型字符串（可处理可空类型）</summary>
-        private static string GetTypeString(Type type, bool shortName=true)
-        {
-            if (type.IsNullable())
-            {
-                type = type.GetNullableDataType();
-                return GetTypeString(type) + "?";
-            }
-            if (type.IsValueType)
-                return type.Name.ToString();
-            return shortName ? type.Name.ToString() : type.FullName.ToString();
-        }
 
-        /// <summary>获取类型的概述信息（可解析枚举类型）</summary>
-        private static string GetTypeInfo(Type type)
-        {
-            if (type.IsNullable())
-                type = type.GetNullableDataType();
-
-            var sb = new StringBuilder();
-            if (type.IsEnum)
-            {
-                foreach (var item in Enum.GetValues(type))
-                {
-                    sb.AppendFormat("{0}-{1}({2}); ", (int)item, item.ToString(), item.GetDescription());
-                }
-            }
-            return sb.ToString();
-        }
     }
 }

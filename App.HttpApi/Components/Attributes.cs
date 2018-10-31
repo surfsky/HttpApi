@@ -37,6 +37,8 @@ namespace App.HttpApi
     }
 
 
+
+
     /// <summary>
     /// 参数信息
     /// </summary>
@@ -71,10 +73,16 @@ namespace App.HttpApi
     public class HttpApiAttribute : Attribute
     {
         /// <summary>返回值类型</summary>
+        public Type ReturnType { get; set; }
+
+        /// <summary>响应类型</summary>
         public ResponseType Type { get; set; } = ResponseType.Auto;
 
         /// <summary>描述信息</summary>
         public string Description { get; set; }
+
+        /// <summary>示例</summary>
+        public string Example { get; set; }
 
         /// <summary>备注</summary>
         public string Remark { get; set; }

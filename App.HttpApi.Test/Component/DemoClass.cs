@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using App.HttpApi;
 using System.ComponentModel;
-using App.Components;
+using App.Core;
 using Newtonsoft.Json;
 using System.Xml.Serialization;
 using System.Web.Script.Serialization;

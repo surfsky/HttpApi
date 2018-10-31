@@ -1,19 +1,10 @@
-﻿/****************************************************************************
- *
- * 功能描述：    Web请求参数解码器
- * 作    者：    wzcheng
- * 修改日期：    2010/04/16,2010/04/21
- *  
-*****************************************************************************/
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web;
-using System.Reflection;
 using System.IO;
 using System.Text;
 using System.Collections.Specialized;
 using System.Web.Script.Serialization;
-using System.Web.SessionState;
 
 namespace App.HttpApi
 {

@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Web;
-using System.Reflection;
-using System.IO;
 using System.Text;
-using System.Collections.Specialized;
-using System.Web.SessionState;
-using System.Drawing;
-using System.Drawing.Imaging;
-using Newtonsoft.Json.Converters;
-using System.Runtime.Serialization.Formatters.Binary;
 
 
 namespace App.HttpApi

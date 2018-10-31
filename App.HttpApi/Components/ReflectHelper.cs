@@ -10,15 +10,83 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Web;
 using System.ComponentModel;
-using App.Components;
+using App.Core;
 
 namespace App.HttpApi
 {
     /// <summary>
     /// 反射相关辅助方法
     /// </summary>
-    internal class ReflectHelper
+    internal static class ReflectHelper
     {
+        //------------------------------------------------
+        // 数据集相关
+        //------------------------------------------------
+        // 获取数据集版本号
+        public static Version AssemblyVersion
+        {
+            get { return Assembly.GetExecutingAssembly().GetName().Version; }
+        }
+
+        public static string AssemblyPath
+        {
+            get { return Assembly.GetExecutingAssembly().Location; }
+        }
+
+        public static string AssemblyDirectory
+        {
+            get { return new FileInfo(AssemblyPath).DirectoryName; }
+        }
+
+        //------------------------------------------------
+        // 类型相关
+        //------------------------------------------------
+        /// <summary>是否是某个类型（或子类型）</summary>
+        public static bool IsType(this Type raw, Type match)
+        {
+            return (raw == match) ? true : raw.IsSubclassOf(match);
+        }
+
+        /// <summary>是否属于某个类型</summary>
+        public static bool IsType(this Type type, string typeName)
+        {
+            if (type.ToString() == typeName)
+                return true;
+            if (type.ToString() == "System.Object")
+                return false;
+            return IsType(type.BaseType, typeName);
+        }
+
+
+        /// <summary>是否是泛型类型</summary>
+        public static bool IsGenericType(this Type type)
+        {
+            return type.IsGenericType;
+        }
+
+        /// <summary>是否是可空类型</summary>
+        public static bool IsNullable(this Type type)
+        {
+            return (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>)));
+        }
+
+        /// <summary>获取可空类型中的值类型</summary>
+        public static Type GetNullableDataType(this Type type)
+        {
+            if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>)))
+                return type.GetGenericArguments()[0];
+            return type;
+        }
+
+        /// <summary>获取泛型中的数据类型</summary>
+        public static Type GetGenericDataType(this Type type)
+        {
+            if (type.IsGenericType)
+                return type.GetGenericArguments()[0];
+            return type;
+        }
+
+
         //-------------------------------------------------
         // 获取类型信息
         //-------------------------------------------------
@@ -153,52 +221,60 @@ namespace App.HttpApi
         }
 
 
-        /// <summary>
-        /// 构造匹配方法的参数值列表（若方法名重名怎么处理？）
-        /// </summary>
+        /// <summary>构造匹配方法的参数值列表（若方法名重名怎么处理？）</summary>
         /// <param name="methodName">方法名</param>
         /// <param name="args">参数名-值字典</param>
         /// <returns>排序后的参数值数组</returns>
         public static object[] GetParameters(MethodInfo info, Dictionary<string, object> args)
         {
             List<object> array = new List<object>();
-            if (info != null)
+            if (info == null)
+                return array.ToArray();
+
+            // 遍历方法参数，找到匹配的输入参数
+            foreach (var pi in info.GetParameters())
             {
-                ParameterInfo[] pis = info.GetParameters();
-                foreach (ParameterInfo pi in pis)
+                // 未找到匹配参数，尝试取方法的默认参数
+                if (!args.Keys.Contains(pi.Name))
                 {
-                    // 如果输入参数不足，尝试取方法的默认参数
-                    if (!args.Keys.Contains(pi.Name))
-                    {
-                        if (pi.DefaultValue != null)
-                            array.Add(pi.DefaultValue);
-                        continue;
-                    }
-
-                    // 找到匹配的输入参数
-                    object obj = args[pi.Name];
-                    object obj2 = null;
-
-                    // 字典转化为对象
-                    if (obj is Dictionary<string, object>)
-                        obj2 = DicToObj(obj as Dictionary<string, object>, pi.ParameterType);
-
-                    // 其它类型转换（先尝试用简单的Convert转换，若不行再用json转换）
-                    else if (null != obj)
-                    {
-                        try
-                        {
-                            obj2 = Convert.ChangeType(obj, pi.ParameterType);
-                        }
-                        catch
-                        {
-                            obj2 = Newtonsoft.Json.JsonConvert.DeserializeObject(obj.ToString(), pi.ParameterType);
-                        }
-                    }
-
-                    //
-                    array.Add(obj2);
+                    if (pi.HasDefaultValue)
+                        array.Add(pi.DefaultValue);
+                    continue;
                 }
+
+                // 找到匹配的输入参数
+                object obj = args[pi.Name];
+                object value = null;
+                var type = pi.ParameterType;
+                var realType = pi.ParameterType.GetRealType();
+
+                // 如果值为空字符串，尝试取方法的默认参数
+                if (obj == "" && pi.ParameterType != typeof(string) && pi.HasDefaultValue)
+                {
+                    array.Add(pi.DefaultValue);
+                    continue;
+                }
+
+                // 字典转化为对象
+                if (obj is Dictionary<string, object>)
+                    value = DicToObj(obj as Dictionary<string, object>, pi.ParameterType);
+                else if (obj != null)
+                {
+                    if (obj is string && obj != "" && realType.IsEnum)
+                        value = Enum.Parse(realType, obj.ToString(), true);
+                    else
+                    //try
+                    //{
+                    //    value = Convert.ChangeType(obj, type);// 对可空类型没办法处理，会异常
+                    //}
+                    //catch
+                    //{
+                        value = Newtonsoft.Json.JsonConvert.DeserializeObject(obj.ToString(), type);  // 无法解析可空枚举类型
+                    //}
+                }
+
+                //
+                array.Add(value);
             }
             return array.ToArray();
         }

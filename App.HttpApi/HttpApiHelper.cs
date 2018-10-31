@@ -2,14 +2,8 @@
 using System.Collections.Generic;
 using System.Web;
 using System.Reflection;
-using System.IO;
 using System.Text;
-using System.Collections.Specialized;
-using System.Web.SessionState;
-using System.ComponentModel;
 using System.Linq;
-using System.Security.Principal;
-using App.Components;
 
 namespace App.HttpApi
 {
@@ -42,7 +36,6 @@ namespace App.HttpApi
         {
             // 解析方法名和参数
             RequestDecoder decoder = RequestDecoder.CreateInstance(context);
-            string methodName = decoder.MethodName;
             Dictionary<string, object> args = decoder.ParseArguments();
 
             // 获取类型和方法信息
@@ -50,6 +43,7 @@ namespace App.HttpApi
             Type type = handler.GetType();
             if (type.FullName.StartsWith("ASP.") && type.BaseType != null)
                 type = type.BaseType;
+            string methodName = decoder.MethodName;
             MethodInfo method = ReflectHelper.GetMethod(type, methodName);
             HttpApiAttribute attr = ReflectHelper.GetHttpApiAttribute(method);
 
@@ -59,7 +53,7 @@ namespace App.HttpApi
 
             // 访问鉴权
             string ip = Asp.GetClientIP();
-            var principal = App.Components.AuthHelper.LoadCookiePrincipal();  // 获取身份验票
+            var principal = App.Core.AuthHelper.LoadCookiePrincipal();  // 获取身份验票
             string securityCode = context.Request.Params["securityCode"];
             var err = CheckMethodEnable(context, method, methodName, attr);
             if (err != null)
@@ -103,7 +97,7 @@ namespace App.HttpApi
             }
             catch (Exception ex)
             {
-                string result = string.Format("Api {0}() fail. Please check parameters. Info: {1} {2}", methodName, ex.Message, ex.InnerException?.Message);
+                string result = string.Format("Api {0}() fail, please check parameters : {1} {2}", methodName, ex.Message, ex.InnerException?.Message);
                 WriteError(context, 400, result);
             }
             finally
@@ -347,6 +341,7 @@ namespace App.HttpApi
                         AuthVerbs = attr.AuthVerbs.IsNullOrEmpty() ? "" : attr.AuthVerbs.ToUpper(),
                         Status = attr.Status,
                         Remark = attr.Remark,
+                        Example = attr.Example,
                         Url = GetMethodDisplayUrl(rootUrl, method),
                         UrlTest = GetMethodTestUrl(rootUrl, method, attr.AuthSecurityCode),
                         Params = GetMethodParams(method, attr.AuthSecurityCode),

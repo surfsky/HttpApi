@@ -91,7 +91,7 @@ namespace App.HttpApi
         // 获取类型信息
         //-------------------------------------------------
         /// <summary>获取（可空类型的）真实类型</summary>
-        public static Type GetRealType(Type type)
+        public static Type GetRealType(this Type type)
         {
             if (type.IsNullable())
                 return GetRealType(type.GetNullableDataType());
@@ -99,7 +99,7 @@ namespace App.HttpApi
         }
 
         /// <summary>获取类型字符串（可处理可空类型）</summary>
-        public static string GetTypeString(Type type, bool shortName = true)
+        public static string GetTypeString(this Type type, bool shortName = true)
         {
             if (type.IsNullable())
             {
@@ -112,7 +112,7 @@ namespace App.HttpApi
         }
 
         /// <summary>获取类型的概述信息（可解析枚举类型）</summary>
-        public static string GetTypeSummary(Type type)
+        public static string GetTypeSummary(this Type type)
         {
             if (type.IsNullable())
                 type = type.GetNullableDataType();
@@ -127,57 +127,8 @@ namespace App.HttpApi
         }
 
         //-------------------------------------------------
-        // Attribute 相关
+        // 获取类别属性
         //-------------------------------------------------
-        /// <summary>获取DescriptionAttribute</summary>
-        public static string GetDescription(Type type)
-        {
-            var objs = type.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            if (objs.Length > 0)
-                return (objs[0] as DescriptionAttribute).Description;
-            else
-                return type.FullName;
-        }
-
-        /// <summary>获取历史信息特性元数据</summary>
-        public static object[] GetHistories(Type type)
-        {
-            var objs = type.GetCustomAttributes(typeof(HistoryAttribute), false);
-            return objs;
-        }
-
-        /// <summary>获取参数信息元数据</summary>
-        public static List<ParamAttribute> GetParamAttributes(MethodInfo method)
-        {
-            var objs = method.GetCustomAttributes(typeof(ParamAttribute), false);
-            List<ParamAttribute> p = new List<ParamAttribute>();
-            foreach (object obj in objs)
-                p.Add(obj as ParamAttribute);
-            return p;
-        }
-
-        /// <summary>获取类型文件的缓存时间</summary>
-        public static int GetCacheDuration(Type type)
-        {
-            ScriptAttribute attr = ReflectHelper.GetScriptAttribute(type);
-            return (attr != null) ? attr.CacheDuration : 0;
-        }
-
-        // 获取WebMethodNamespaceAttribute
-        public static ScriptAttribute GetScriptAttribute(Type type)
-        {
-            return GetAttribute<ScriptAttribute>(type);
-        }
-
-
-        /// <summary>取得HttpApiAttribute</summary>
-        public static HttpApiAttribute GetHttpApiAttribute(MethodInfo info)
-        {
-            if (info == null) return null;
-            HttpApiAttribute attr = GetAttribute<HttpApiAttribute>(info);
-            return attr;
-        }
-
         // 获取类别特性
         public static T GetAttribute<T>(Type type) where T : Attribute
         {
@@ -199,6 +150,59 @@ namespace App.HttpApi
             T[] arr = (T[])info.GetCustomAttributes(typeof(T), true);
             return arr.Length > 0 ? arr[0] : null;
         }
+
+        //-------------------------------------------------
+        // Attribute 相关
+        //-------------------------------------------------
+        /// <summary>获取DescriptionAttribute</summary>
+        public static string GetDescription(this Type type)
+        {
+            var objs = type.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            if (objs.Length > 0)
+                return (objs[0] as DescriptionAttribute).Description;
+            else
+                return type.FullName;
+        }
+
+        /// <summary>获取历史信息特性元数据</summary>
+        public static object[] GetHistories(this Type type)
+        {
+            var objs = type.GetCustomAttributes(typeof(HistoryAttribute), false);
+            return objs;
+        }
+
+        /// <summary>获取参数信息元数据</summary>
+        public static List<ParamAttribute> GetParamAttributes(this MethodInfo method)
+        {
+            var objs = method.GetCustomAttributes(typeof(ParamAttribute), false);
+            List<ParamAttribute> p = new List<ParamAttribute>();
+            foreach (object obj in objs)
+                p.Add(obj as ParamAttribute);
+            return p;
+        }
+
+        /// <summary>获取类型文件的缓存时间</summary>
+        public static int GetCacheDuration(this Type type)
+        {
+            ScriptAttribute attr = ReflectHelper.GetScriptAttribute(type);
+            return (attr != null) ? attr.CacheDuration : 0;
+        }
+
+        // 获取WebMethodNamespaceAttribute
+        public static ScriptAttribute GetScriptAttribute(this Type type)
+        {
+            return GetAttribute<ScriptAttribute>(type);
+        }
+
+
+        /// <summary>取得HttpApiAttribute</summary>
+        public static HttpApiAttribute GetHttpApiAttribute(this MethodInfo info)
+        {
+            if (info == null) return null;
+            HttpApiAttribute attr = GetAttribute<HttpApiAttribute>(info);
+            return attr;
+        }
+
 
         //-------------------------------------------------
         // 方法调用相关
@@ -239,44 +243,51 @@ namespace App.HttpApi
                 {
                     if (pi.HasDefaultValue)
                         array.Add(pi.DefaultValue);
+                    else if (pi.ParameterType.IsNullable())
+                        array.Add(null);
                     continue;
                 }
 
                 // 找到匹配的输入参数
-                object obj = args[pi.Name];
-                object value = null;
+                var o = args[pi.Name];
                 var type = pi.ParameterType;
-                var realType = pi.ParameterType.GetRealType();
 
                 // 如果值为空字符串，尝试取方法的默认参数
-                if (obj == "" && pi.ParameterType != typeof(string) && pi.HasDefaultValue)
+                if (o == "" && type != typeof(string) && pi.HasDefaultValue)
                 {
                     array.Add(pi.DefaultValue);
                     continue;
                 }
 
-                // 字典转化为对象
-                if (obj is Dictionary<string, object>)
-                    value = DicToObj(obj as Dictionary<string, object>, pi.ParameterType);
-                else if (obj != null)
-                {
-                    if (obj is string && obj != "" && realType.IsEnum)
-                        value = Enum.Parse(realType, obj.ToString(), true);
-                    else
-                    //try
-                    //{
-                    //    value = Convert.ChangeType(obj, type);// 对可空类型没办法处理，会异常
-                    //}
-                    //catch
-                    //{
-                        value = Newtonsoft.Json.JsonConvert.DeserializeObject(obj.ToString(), type);  // 无法解析可空枚举类型
-                    //}
-                }
-
-                //
+                // 转换数据类型
+                var value = Cast(o, type);
                 array.Add(value);
             }
             return array.ToArray();
+        }
+
+        // 转换数据类型
+        private static object Cast(object o, Type type)
+        {
+            if (type.IsNullable())
+                return Cast(o, type.GetRealType());
+
+            // 字典转化为对象
+            if (o is Dictionary<string, object>)
+                return DicToObj(o as Dictionary<string, object>, type);
+            else if (o != null)
+            {
+                if (o is string && o != "" && type.IsEnum)          // 处理枚举文本类型
+                    return Enum.Parse(type, o.ToString(), true);
+                else if (type == typeof(string))                    // 处理字符串类型
+                    return o.ToString();
+                else if (type.IsValueType)                          // 处理简单值类型
+                    return Convert.ChangeType(o, type);             
+                else
+                    return Newtonsoft.Json.JsonConvert.DeserializeObject(o.ToString(), type);  // 处理对象类型。该方法可以解析可空类型，但无法解析简单数据类型
+            }
+
+            return o;
         }
 
         // 将字典转化为指定对象

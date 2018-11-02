@@ -61,7 +61,7 @@ namespace App.HttpApi
         public int PageIndex { get; set; }
 
 
-        public DataPager(int total, int pageSize, int pageIndex)
+        public DataPager(int total, int pageIndex, int pageSize)
         {
             Total = total;
             PageSize = pageSize;

@@ -8,12 +8,10 @@
 * 可将类中的方法暴露为http接口，如：
 ```
 http://.../HttpApi/TypeName/Method?p1=x&p2=x
-http://.../HttpApi/TypeName/api
-http://.../HttpApi/TypeName/apis
 ```
 * 可将页面类中的方法暴露为http接口，如：
 ```
-http://.../Handler1.aspx/GetData?page=1&rows=2&sort=abc&order=desc
+http://.../Page1.aspx/GetData?page=1&rows=2&sort=abc&order=desc
 http://.../Handler1.ashx/GetData?page=1&rows=2&sort=abc&order=desc
 ```
 * 自动生成客户端调用脚本
@@ -23,6 +21,7 @@ http://.../HttpApi/TypeName/js
 * 自动生成API清单及API接口参数展示页面
 ```
 HttpApi/TypeName/api
+HttpApi/TypeName/apis
 HttpApi/TypeName/Method_
 ```
 
@@ -127,8 +126,8 @@ public class Demo
     }
 }
 ```
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Apilist.png)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Api.png)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apis?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/api.png?raw=true)
 
 ### (4) 指定 HttpApi 方法的输出类型
 服务器端指定输出类型
@@ -439,11 +438,11 @@ public static DataResult GetPersons()
 
 
 ## 11.截图
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/01.png)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/02.png)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/03.png)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/04.png)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/05.png)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Exportxml.png)
+
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/api?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apis?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/auth?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/ExportJson.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Exportxml.png?raw=true)
 
 

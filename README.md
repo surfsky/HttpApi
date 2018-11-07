@@ -126,8 +126,8 @@ public class Demo
     }
 }
 ```
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apis?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/api.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Apis.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Api.png?raw=true)
 
 ### (4) 指定 HttpApi 方法的输出类型
 服务器端指定输出类型
@@ -439,10 +439,10 @@ public static DataResult GetPersons()
 
 ## 11.截图
 
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/api?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apis?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/auth?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Apis?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Api?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Auth?raw=true)
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/ExportJson.png?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Exportxml.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/ExportXml.png?raw=true)
 
 

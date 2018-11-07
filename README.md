@@ -26,10 +26,82 @@
 　　程建和
       http://github.com/surfsky
 
-## 使用:
+## 安装
     - Nuget: install-package App.HttpApi
-    - 用法详见示例项目
-    - 参考 http://www.cnblogs.com/wzcheng/archive/2010/05/20/1739810.html
+
+
+## 使用
+(1) 引用类库（用nuget安装的话会自动完成）
+       App.Core.dll
+       App.HttpApi.dll
+    - 修改 web.config 文件（用nuget安装的话会自动修改）
+       ```xml
+       <system.webServer>
+         <modules>
+           <add name="HttpApiModule" type="App.HttpApi.HttpApiModule" />
+         </modules>
+       </system.webServer>
+       ```
+(2) 在需要导出HttpApi的方法上写上标注
+       ```c#
+      namespace App
+      {
+          public class Demo
+          {
+              [HttpApi("HelloWorld")]
+              public static string HelloWorld(string info)
+              {
+                   System.Threading.Thread.Sleep(200);
+                   return string.Format("Hello world! {0} {1}", info, DateTime.Now);
+              }
+          }
+      }
+      '''
+(3) 客户端调用
+        http://...../HttpApi/Demo/HelloWorld?info=x
+(4) 用法详见示例项目
+
+##  高级操作
+(1) 控制 HttpApi 输出
+       ```xml
+   <httpApi 
+      formatEnum="Text" 
+      formatIndented="Indented" 
+      formatDateTime="yyyy-MM-dd" 
+      formatLowCamel="false"
+      errorResponse="DataResult" 
+      apiTypePrefix="App." 
+      wrap="" 
+      />
+  <system.webServer>
+    <modules>
+      <add name="HttpApiModule" type="App.HttpApi.HttpApiModule" />
+    </modules>
+  </system.webServer>
+    ```
+(2) 自动生成客户端调用的 javascript 脚本
+    <script src="http://.../App/Demo/js"></script>
+    可在类上附上标签，控制生成的脚本内容
+    [Script(CacheDuration =0, ClassName ="Demo", NameSpace ="App")]
+
+(3) 自动生成 Api 介绍页面
+    http://..../HttpApi/Demo/api
+    http://..../HttpApi/Demo/HelloWorld_
+    可附上标签，附加显示 Api 修改历史，参数信息等
+    ```c#
+          [History("2016-11-01", "SURFSKY", "修改了A")]
+          public class Demo
+          {
+              [HttpApi("HelloWorld")]
+              [Param("info", "信息")]
+              public static string HelloWorld(string info)
+              {
+                   System.Threading.Thread.Sleep(200);
+                   return string.Format("Hello world! {0} {1}", info, DateTime.Now);
+              }
+          }
+    ```
+      
 
 ## History
     - 2012-08  初版
@@ -38,6 +110,7 @@
     - 2017-11  简化和优化 HttpApiAttribute，可选缓存方式
     - 2017-12  Nuget发布：install-package App.HttpApi，增加 HttpApiConfig 配置节
     - 2018-10  增加自定义鉴权事件；实现Api展示页面；用配置节控制Json输出格式；简化访问路径；完善xml输出
+    - 2018-11  默认参数可为空也可不填写；可空类型参数可为空也可不填写；可在api介绍页面上输出枚举类型成员信息；
 
 ## 项目目标
     - WebAPI的一些限制：http://blog.csdn.net/leeyue_1982/article/details/51305950
@@ -48,3 +121,7 @@
 ## 任务
     - Api 测试页面（填写参数；选择方法Get/Post；发送请求；显示输出结果）
     - XML 格式控制：属性/成员、递进、大小写等
+
+
+## 参考
+    - 参考 http://www.cnblogs.com/wzcheng/archive/2010/05/20/1739810.html

@@ -8,7 +8,7 @@ namespace App.HttpApi
     public class DataResult
     {
         /// <summary>结果（字符串类型）</summary>
-        public String Result { get; set; }
+        public bool Result { get; set; }
 
         /// <summary>详细信息（文本类型，一些说明性的文字）</summary>
         public String Info { get; set; }
@@ -19,12 +19,16 @@ namespace App.HttpApi
         /// <summary>附加数据（自定义类型，如分页信息DataPager）</summary>
         public object Extra { get; set; }
 
-        public DataResult(object result, String info="", object data=null, object extra=null)
+        /// <summary>数据创建时间</summary>
+        public DateTime? CreateDt { get; set; }
+
+        public DataResult(bool result, String info="", object data=null, object extra=null)
         {
-            Result = ToString(result);
+            Result = result;
             Info = info;
             Data = data;
             Extra = extra;
+            this.CreateDt = DateTime.Now;
         }
 
         // 转化为字符串输出

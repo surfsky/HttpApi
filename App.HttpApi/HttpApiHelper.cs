@@ -25,7 +25,7 @@ namespace App.HttpApi
     /// <summary>
     /// HttpApi 的逻辑实现。
     /// </summary>
-    internal partial class HttpApiHelper
+    public partial class HttpApiHelper
     {
         //----------------------------------------------
         //----------------------------------------------
@@ -61,7 +61,7 @@ namespace App.HttpApi
                 WriteError(context, err.Code, err.Info);
                 return;
             }
-            err = HttpApiConfig.Instance.Auth(context, method, attr, ip, securityCode);
+            err = HttpApiConfig.Instance.DoAuth(context, method, attr, ip, securityCode);
             if (err != null)
             {
                 WriteError(context, err.Code, err.Info);
@@ -97,12 +97,13 @@ namespace App.HttpApi
             }
             catch (Exception ex)
             {
-                string result = string.Format("Api {0}() fail, please check parameters : {1} {2}", methodName, ex.Message, ex.InnerException?.Message);
+                HttpApiConfig.Instance.DoException(method, ex);
+                string result = string.Format("Api {0}() fail, please check parameters : {1} {2} {3}", methodName, ex.Message, ex.InnerException?.Message, ex.StackTrace);
                 WriteError(context, 400, result);
             }
             finally
             {
-                HttpApiConfig.Instance.End(context);
+                HttpApiConfig.Instance.DoEnd(context);
             }
         }
 
@@ -246,7 +247,7 @@ namespace App.HttpApi
         // 输出调用结果
         //-----------------------------------------------------------
         // 输出数据
-        static void WriteResult(
+        public static void WriteResult(
             HttpContext context, object result, 
             ResponseType dataType, string mimeType = null, string fileName = null, 
             int cacheSeconds = 0, HttpCacheability cacheLocation = HttpCacheability.NoCache, 
@@ -256,7 +257,7 @@ namespace App.HttpApi
             // 是否需要做 DataResult JSON 封装
             if (wrap && (dataType == ResponseType.JSON || dataType == ResponseType.ImageBase64 || dataType == ResponseType.Text || dataType == ResponseType.XML))
             {
-                result = new DataResult("true", wrapInfo, result, null);
+                result = new DataResult(true, wrapInfo, result, null);
                 if (dataType != ResponseType.XML)
                     dataType = ResponseType.JSON;
             }
@@ -269,7 +270,7 @@ namespace App.HttpApi
         // 输出错误（根据AppSettings）
         // 若为HttpError，浏览器会跳转到对应的错误页面
         // 若为DataResult，直接输出DataResult错误信息（默认）
-        static void WriteError(HttpContext context, int errorCode, string info)
+        public static void WriteError(HttpContext context, int errorCode, string info)
         {
             ErrorResponse errorResponse = HttpApiConfig.Instance.ErrorResponse;
             if (errorResponse ==  ErrorResponse.HttpError)
@@ -280,7 +281,7 @@ namespace App.HttpApi
             }
             else
             {
-                DataResult dr = new DataResult("false", info, errorCode, null);
+                DataResult dr = new DataResult(false, info, errorCode, null);
                 WriteResult(context, dr, ResponseType.JSON);
             }
         }

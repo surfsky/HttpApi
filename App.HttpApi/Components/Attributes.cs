@@ -147,9 +147,11 @@ namespace App.HttpApi
         // 构造函数
         //---------------------------------------------------
         public HttpApiAttribute() { }
-        public HttpApiAttribute(string description)
+        public HttpApiAttribute(string description, bool authLogin=false, int cacheSeconds=0)
         {
             this.Description = description;
+            this.AuthLogin = authLogin;
+            this.CacheSeconds = cacheSeconds;
         }
     }
 

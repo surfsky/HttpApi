@@ -108,10 +108,6 @@
       <Project>{f74d6b50-ef4d-4521-a7d5-d5cac6422f24}</Project>
       <Name>App.HttpApi</Name>
     </ProjectReference>
-    <ProjectReference Include="\\Mac\Downloads\Dev\2018\170720.小熊手机\Src\AppPlat_Bear_gitee\App.Core\App.Core.csproj">
-      <Project>{c887d0a1-20f6-44da-87df-ea8d45ace744}</Project>
-      <Name>App.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -114,7 +114,8 @@ namespace App.HttpApi
             int cacheDuration = ReflectHelper.GetCacheDuration(type);
 
             // 输出api接口展示页面（方法名后面跟了个_)
-            if (methodNameLower.LastIndexOf("_") != -1)
+            var lastChar = methodNameLower.Substring(methodNameLower.Length - 1);
+            if (lastChar == "_")
             {
                 var name = methodName.Substring(0, methodName.Length - 1);
                 var typeapi = GetTypeApi(type);

@@ -3,3 +3,4 @@
 /Test/obj
 /Test/bin/*.pdb
 /App.HttpApi.Test/obj
+/.vs

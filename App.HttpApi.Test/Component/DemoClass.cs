@@ -88,6 +88,12 @@ namespace App
             return Sex.Male;
         }
 
+        [HttpApi("测试可空枚举值")]
+        public static Sex GetNullalbeEnum(Sex? sex)
+        {
+            return sex.Value;
+        }
+
         //---------------------------------------------
         // 返回各种基础对象
         //---------------------------------------------

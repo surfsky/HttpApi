@@ -98,7 +98,7 @@ namespace App.HttpApi
             catch (Exception ex)
             {
                 HttpApiConfig.Instance.DoException(method, ex);
-                string result = string.Format("Api {0}() fail, please check parameters : {1} {2} {3}", methodName, ex.Message, ex.InnerException?.Message, ex.StackTrace);
+                string result = string.Format("Api {0}() FAIL. {1} {2}", methodName, ex.Message, ex.InnerException?.Message);
                 WriteError(context, 400, result);
             }
             finally

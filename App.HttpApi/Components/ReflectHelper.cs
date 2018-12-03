@@ -251,11 +251,19 @@ namespace App.HttpApi
                 // 找到匹配的输入参数
                 var o = args[pi.Name];
                 var type = pi.ParameterType;
+                var realType = type.GetRealType();
 
-                // 如果值为空字符串，尝试取方法的默认参数
+                // 如果值为空字符串，且不是字符串类型，尝试取方法的默认参数
                 if (o == "" && type != typeof(string) && pi.HasDefaultValue)
                 {
                     array.Add(pi.DefaultValue);
+                    continue;
+                }
+
+                // 如果值为空字符串，且为可空类型，直接设置为null
+                if (o == "" && type.IsNullable())
+                {
+                    array.Add(null);
                     continue;
                 }
 

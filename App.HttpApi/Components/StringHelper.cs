@@ -23,6 +23,11 @@ namespace App.HttpApi
                 return commaText.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
         }
 
+        /// <summary>È¥³ý¿Õ°××Ö·û</summary>
+        public static string ClearSpace(this string text)
+        {
+            return Regex.Replace(text, "\\s", "");
+        }
 
         /// <summary>È¥³ýHTML±êÇ©</summary>
         public static string ClearTag(this string html)

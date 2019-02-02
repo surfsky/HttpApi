@@ -72,18 +72,21 @@ namespace App.HttpApi
             try
             {
                 // 获取需要的参数
-                object[] parameters = ReflectHelper.GetParameters(method, args);
-                string cacheKey = string.Format("{0}-{1}-{2}", handler, method.Name, SerializeHelper.ToJson(parameters));
-                        
+                var parameters = ReflectHelper.GetParameters(method, args);
+                var p = SerializeHelper.ToJson(parameters).ClearSpace().TrimStart('[').TrimEnd(']');//.Replace("\"", "");
+                //var p = HttpContext.Current.Request.Url.Query.TrimStart('?');  // 不能用 URL，要兼容 Post 方式调用
+                var cacheKey = string.Format("{0}-{1}-{2}", handler, method.Name, p);
+                var expireDt = DateTime.Now.AddSeconds(attr.CacheSeconds);
+
                 // 获取方法调用结果并依情况缓存
-                object result = (attr.CacheSeconds == 0) 
-                    ? method.Invoke(handler, parameters)
-                    : CacheHelper.GetCachedObject<object>(
-                        cacheKey, 
-                        DateTime.Now.AddSeconds(attr.CacheSeconds), 
+                object result;
+                if (attr.CacheSeconds == 0)
+                    result = method.Invoke(handler, parameters);
+                else
+                    result = CacheHelper.GetCachedObject<object>(
+                        cacheKey, expireDt, 
                         () =>{return method.Invoke(handler, parameters);}
-                        )
-                    ;
+                        );
 
                 // 输出结果
                 ResponseType dataType = attr.Type;
@@ -221,7 +224,7 @@ namespace App.HttpApi
             var path = HttpContext.Current.Request.FilePath;
 
             // 去头
-            if (path.StartsWith("/HttpApi.") || path.StartsWith("/HttpApi-") || path.StartsWith("/HttpApi_") || path.StartsWith("/HttpApi/"))
+            if (path.StartsWith("/HttpApi") || path.StartsWith("/httpapi"))
                 path = path.Substring(9);
 
             // 去尾
@@ -230,9 +233,9 @@ namespace App.HttpApi
                 path = path.Substring(0, n);
 
             // 去扩展名
-            n = path.LastIndexOf(".axd");
-            if (n != -1)
-                path = path.Substring(0, n);
+            //n = path.LastIndexOf(".axd");
+            //if (n != -1)
+            //    path = path.Substring(0, n);
 
             // 如果类名用的是简写，加上前缀
             if (path.IndexOf(".") == -1)

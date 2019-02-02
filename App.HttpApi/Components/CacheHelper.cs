@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
 using System.Web;
+using System.Web.Caching;
 
 namespace App.HttpApi
 {
@@ -27,13 +28,14 @@ namespace App.HttpApi
         }
         public static T GetCachedObject<T>(string key, DateTime expiredTime, Func<T> func) where T : class
         {
-            if (HttpContext.Current.Cache[key] == null)
+            var cache = HttpRuntime.Cache; // 等价于 HttpContext.Current.Cache
+            if (cache[key] == null) 
             {
                 T o = func();
                 if (o != null)
-                    HttpContext.Current.Cache.Insert(key, o, null, expiredTime, System.Web.Caching.Cache.NoSlidingExpiration);
+                    cache.Insert(key, o, null, expiredTime, Cache.NoSlidingExpiration); // 如果存在则会覆盖; 使用绝对时间过期策略；
             }
-            return HttpContext.Current.Cache[key] as T;
+            return cache[key] as T;
         }
 
         /// <summary>

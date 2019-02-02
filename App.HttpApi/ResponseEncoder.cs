@@ -41,7 +41,7 @@ namespace App.HttpApi
                 case ResponseType.XML:         WriteText(SerializeHelper.ToXml(obj),  Encoding.UTF8);           break;
                 case ResponseType.JavaScript:  WriteText(SerializeHelper.ToText(obj));        break;
                 case ResponseType.Text:        WriteText(SerializeHelper.ToText(obj));        break;
-                case ResponseType.HTML:        WriteText(SerializeHelper.ToText(obj));        break;
+                case ResponseType.HTML:        WriteText(SerializeHelper.ToText(obj), null, true);        break;
                 case ResponseType.ImageBase64: WriteText(SerializeHelper.ToImageBase64(obj));   break;
                 case ResponseType.Image:       WriteBinary(SerializeHelper.ToImageBytes(obj));  break;
                 case ResponseType.BinaryFile:  WriteBinary(SerializeHelper.ToBinary(obj));      break;
@@ -69,15 +69,18 @@ namespace App.HttpApi
             }
         }
 
+
         // 输出文本
-        public void WriteText(string text, Encoding encoding=null)
+        public void WriteText(string text, Encoding encoding=null, bool addMobileMeta=false)
         {
             var response = HttpContext.Current.Response;
-            SetCache(response, this.CacheSeconds, this.CacheLocation, "*");
+            //SetCache(response, this.CacheSeconds, this.CacheLocation, "*");
             response.ContentEncoding = encoding ?? HttpContext.Current.Request.ContentEncoding;
             response.ContentType = this.MimeType;
             if (!string.IsNullOrEmpty(this.FileName))
                 response.AddHeader("Content-Disposition", "attachment; filename=" + this.FileName);
+            if (addMobileMeta)
+                response.Write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>");
             response.Write(text);
         }
 
@@ -85,7 +88,7 @@ namespace App.HttpApi
         public void WriteBinary(byte[] bytes)
         {
             var response = HttpContext.Current.Response;
-            SetCache(response, this.CacheSeconds, this.CacheLocation, "*");
+            //SetCache(response, this.CacheSeconds, this.CacheLocation, "*");
             response.ClearContent();
             response.ContentType = this.MimeType;
             if (!string.IsNullOrEmpty(this.FileName))

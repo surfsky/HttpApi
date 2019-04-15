@@ -53,12 +53,11 @@
   <ItemGroup>
     <Compile Include="Components\Attributes.cs" />
     <Compile Include="Components\Asp.cs" />
-    <Compile Include="Components\AuthHelper.cs" />
     <Compile Include="Components\Enums.cs" />
     <Compile Include="Components\Extensions.cs" />
     <Compile Include="Components\StringHelper.cs" />
     <Compile Include="Components\XmlSerializer.cs" />
-    <Compile Include="DataResult.cs" />
+    <Compile Include="APIResult.cs" />
     <Compile Include="HttpApiConfig.cs" />
     <Compile Include="HttpApiHelper.Export.cs" />
     <Compile Include="HttpApiModule.cs" />

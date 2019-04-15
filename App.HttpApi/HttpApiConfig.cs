@@ -20,19 +20,38 @@ namespace App.HttpApi
         //--------------------------------------------------
         // HttpApi访问事件，请在Global中设置
         //--------------------------------------------------
-        public delegate HttpError AuthHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, string ip, string securityCode);
+        public delegate void VisitHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr);
+        public delegate void AuthHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, string securityCode);
         public delegate void EndHandler(HttpContext context);
         public delegate void ExceptionHandler(MethodInfo method, Exception ex);
+
+        /// <summary>访问事件（有异常请直接抛出 HttpApiException 异常）</summary>
+        public event VisitHandler OnVisit;
+
+        /// <summary>鉴权事件（有异常请直接抛出 HttpApiException 异常）</summary>
         public event AuthHandler OnAuth;
+
+        /// <summary>结束事件（有异常请直接抛出 HttpApiException 异常）</summary>
         public event EndHandler OnEnd;
+
+        /// <summary>异常处理</summary>
         public event ExceptionHandler OnException;
 
+
+        //--------------------------------------------
+        // 包裹方法
+        //--------------------------------------------
+        public void DoVisit(HttpContext context, MethodInfo method, HttpApiAttribute attr)
+        {
+            if (this.OnVisit != null)
+                this.OnVisit(context, method, attr);
+        }
+
         /// <summary>授权事件</summary>
-        public HttpError DoAuth(HttpContext context, MethodInfo method, HttpApiAttribute attr, string ip, string securityCode)
+        public void DoAuth(HttpContext context, MethodInfo method, HttpApiAttribute attr, string securityCode)
         {
             if (this.OnAuth != null)
-                return this.OnAuth(context, method, attr, ip, securityCode);
-            return null;
+                this.OnAuth(context, method, attr, securityCode);
         }
 
         /// <summary>结束</summary>
@@ -44,14 +63,10 @@ namespace App.HttpApi
 
         /// <summary>异常处理</summary>
         /// <returns>若有自定义异常处理程序，则返回true；否则返回false</returns>
-        public bool DoException(MethodInfo method, Exception ex)
+        public void DoException(MethodInfo method, Exception ex)
         {
             if (this.OnException != null)
-            {
                 this.OnException(method, ex);
-                return true;
-            }
-            return false;
         }
 
 

@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 namespace App.HttpApi
 {
     /// <summary>XML序列化异常</summary>
-    public class XmlSerializerException : Exception
+    internal class XmlSerializerException : Exception
     {
         public XmlSerializerException() { }
         public XmlSerializerException(string message) : base(message){}
@@ -35,7 +35,7 @@ namespace App.HttpApi
     ///     检测和避免无限循环引用
     ///     更精确的控制需要构建一个 XmlDocument 对象，最后再根据格式参数生成 xml 文本
     /// </summary>
-    public class XmlSerializer
+    internal class XmlSerializer
     {
         private string _rootTag;
         private ElementType _elemType;

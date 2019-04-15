@@ -8,18 +8,18 @@ using System.Linq;
 namespace App.HttpApi
 {
     /// <summary>
-    /// Http 错误
+    /// HttpApi 异常
     /// </summary>
-    public class HttpError
+    public class HttpApiException : Exception
     {
         public int Code { get; set; }
-        public string Info { get; set; }
-        public HttpError(int code, string info)
+        public HttpApiException(int code, string message)
+            : base(message)
         {
             this.Code = code;
-            this.Info = info;
         }
     }
+
 
 
     /// <summary>
@@ -28,54 +28,36 @@ namespace App.HttpApi
     public partial class HttpApiHelper
     {
         //----------------------------------------------
+        // 入口
         //----------------------------------------------
         /// <summary>处理 Web 方法调用请求</summary>
-        /// <param name="context">Http上下文</param>
-        /// <param name="handler">任何使用了[HttpApi]特性标签的对象，如Page、HttpHandler</param>
         public static void ProcessRequest(HttpContext context, object handler)
         {
-            // 解析方法名和参数
-            RequestDecoder decoder = RequestDecoder.CreateInstance(context);
-            Dictionary<string, object> args = decoder.ParseArguments();
-
-            // 获取类型和方法信息
+            // 解析类型、方法、参数等信息
             // 对于aspx页面，执行时编译出来的是类似ASP.xxx_aspx的类，这不是我们想要处理的类，追溯处理父类(IMPORTANT!)
-            Type type = handler.GetType();
+            var decoder = RequestDecoder.CreateInstance(context);
+            var args = decoder.ParseArguments();
+            var type = handler.GetType();
             if (type.FullName.StartsWith("ASP.") && type.BaseType != null)
                 type = type.BaseType;
-            string methodName = decoder.MethodName;
-            MethodInfo method = ReflectHelper.GetMethod(type, methodName);
-            HttpApiAttribute attr = ReflectHelper.GetHttpApiAttribute(method);
+            var methodName = decoder.MethodName;
+            var method = ReflectHelper.GetMethod(type, methodName);
+            var attr = ReflectHelper.GetHttpApiAttribute(method);
 
             // 处理预留方法
             if (ProcessReservedMethod(context, type, methodName, args))
                 return;
 
-            // 访问鉴权
-            string ip = Asp.GetClientIP();
-            var principal = App.Core.AuthHelper.LoadCookiePrincipal();  // 获取身份验票
-            string securityCode = context.Request.Params["securityCode"];
-            var err = CheckMethodEnable(context, method, methodName, attr);
-            if (err != null)
-            {
-                WriteError(context, err.Code, err.Info);
-                return;
-            }
-            err = HttpApiConfig.Instance.DoAuth(context, method, attr, ip, securityCode);
-            if (err != null)
-            {
-                WriteError(context, err.Code, err.Info);
-                return;
-            }
-
             // 普通方法调用
             try
             {
+                // 检测方法可用性
+                CheckMethod(context, method, attr);
+
                 // 获取需要的参数
                 var parameters = ReflectHelper.GetParameters(method, args);
                 var p = SerializeHelper.ToJson(parameters).ClearSpace().TrimStart('[').TrimEnd(']');//.Replace("\"", "");
-                //var p = HttpContext.Current.Request.Url.Query.TrimStart('?');  // 不能用 URL，要兼容 Post 方式调用
-                var cacheKey = string.Format("{0}-{1}-{2}", handler, method.Name, p);
+                var cacheKey = string.Format("{0}-{1}-{2}", handler, method.Name, p);  // 可考虑用 MD5 做缓存健名
                 var expireDt = DateTime.Now.AddSeconds(attr.CacheSeconds);
 
                 // 获取方法调用结果并依情况缓存
@@ -84,8 +66,8 @@ namespace App.HttpApi
                     result = method.Invoke(handler, parameters);
                 else
                     result = CacheHelper.GetCachedObject<object>(
-                        cacheKey, expireDt, 
-                        () =>{return method.Invoke(handler, parameters);}
+                        cacheKey, expireDt,
+                        () => { return method.Invoke(handler, parameters); }
                         );
 
                 // 输出结果
@@ -100,14 +82,48 @@ namespace App.HttpApi
             }
             catch (Exception ex)
             {
+                if (ex is HttpApiException)
+                {
+                    var err = ex as HttpApiException;
+                    WriteError(context, err.Code, err.Message);
+                }
+                else
+                {
+                    var info = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message;
+                    WriteError(context, 400, info);
+                }
                 HttpApiConfig.Instance.DoException(method, ex);
-                string result = string.Format("Api {0}() FAIL. {1} {2}", methodName, ex.Message, ex.InnerException?.Message);
-                WriteError(context, 400, result);
             }
             finally
             {
                 HttpApiConfig.Instance.DoEnd(context);
             }
+        }
+
+        //----------------------------------------------
+        // 辅助处理方法
+        //----------------------------------------------
+        /// <summary>获取请求类型名</summary>
+        public static string GetRequestTypeName()
+        {
+            var path = HttpContext.Current.Request.FilePath;
+
+            // 去头
+            if (path.StartsWith("/HttpApi") || path.StartsWith("/httpapi"))
+                path = path.Substring(9);
+
+            // 去尾
+            int n = path.LastIndexOf("/");
+            if (n != -1)
+                path = path.Substring(0, n);
+
+            // 如果类名用的是简写，加上前缀
+            if (path.IndexOf(".") == -1)
+                path = HttpApiConfig.Instance.ApiTypePrefix + path;
+
+            // 用点来串联
+            var typeName = path.Replace('-', '.').Replace('_', '.');
+            return typeName;
         }
 
         // 预处理保留方法（"js", "jq", "ext", "api", "apis"）
@@ -177,74 +193,62 @@ namespace App.HttpApi
             return null;
         }
 
-        // 检测方法的可用性
-        static HttpError CheckMethodEnable(HttpContext context, MethodInfo method, string methodName, HttpApiAttribute attr)
+
+        /// <summary>方法可访问性校验</summary>
+        private static void CheckMethod(HttpContext context, MethodInfo method, HttpApiAttribute attr)
         {
             // 方法未找到或未公开
             if (method == null || attr == null)
-                return new HttpError(404, "Function " + methodName + " not found. Please check the [HttpApi] attribute.");
+                throw new HttpApiException(404, "API " + method.Name + " not found. Please check the [HttpApi] attribute.");
 
+            // 访问事件
+            var instance = HttpApiConfig.Instance;
+            instance.DoVisit(context, method, attr);
+
+            // 校验方法可用性
+            App.Core.AuthHelper.LoadCookiePrincipal();  // 获取身份验票
+            CheckMethodEnable(context, method, attr);
+
+            // 自定义鉴权
+            string securityCode = context.Request.Params["securityCode"];
+            instance.DoAuth(context, method, attr, securityCode);
+        }
+
+        // 检测方法的可用性
+        static void CheckMethodEnable(HttpContext context, MethodInfo method, HttpApiAttribute attr)
+        {
             // 校验访问方式
             if (!attr.AuthVerbs.IsNullOrEmpty())
             {
                 var verbs = attr.VerbList;
                 if (verbs.Count == 0)
-                    return null;
+                    return;
                 if (!verbs.Contains(context.Request.HttpMethod.ToLower()))
-                    return new HttpError(400, "Auth verbs fail: " + attr.AuthVerbs);
+                    throw new HttpApiException(400, "Auth verbs fail: " + attr.AuthVerbs);
             }
 
             // 校验登录与否
             if (attr.AuthLogin)
             {
                 if (!Asp.IsLogin())
-                    return new HttpError(401, "Auth login fail");
+                    throw new HttpApiException(401, "Auth login fail");
             }
 
             // 校验用户
             if (!string.IsNullOrEmpty(attr.AuthUsers))
             {
                 if (!Asp.IsInUsers(attr.AuthUsers.Split(',', ';')))
-                    return new HttpError(401, "Auth user fail");
+                    throw new HttpApiException(401, "Auth user fail");
             }
 
             // 校验角色
             if (!string.IsNullOrEmpty(attr.AuthRoles))
             {
                 if (!Asp.IsInRoles(attr.AuthRoles.Split(',', ';')))
-                    return new HttpError(401, "Role auth fail");
+                    throw new HttpApiException(401, "Auth role fail");
             }
-
-            return null;
         }
 
-        /// <summary>获取请求类型名</summary>
-        public static string GetRequestTypeName()
-        {
-            var path = HttpContext.Current.Request.FilePath;
-
-            // 去头
-            if (path.StartsWith("/HttpApi") || path.StartsWith("/httpapi"))
-                path = path.Substring(9);
-
-            // 去尾
-            int n = path.LastIndexOf("/");
-            if (n != -1)
-                path = path.Substring(0, n);
-
-            // 去扩展名
-            //n = path.LastIndexOf(".axd");
-            //if (n != -1)
-            //    path = path.Substring(0, n);
-
-            // 如果类名用的是简写，加上前缀
-            if (path.IndexOf(".") == -1)
-                path = HttpApiConfig.Instance.ApiTypePrefix + path;
-
-            // 用点来串联
-            var typeName = path.Replace('-', '.').Replace('_', '.');
-            return typeName;
-        }
 
 
         //-----------------------------------------------------------
@@ -261,7 +265,7 @@ namespace App.HttpApi
             // 是否需要做 DataResult JSON 封装
             if (wrap && (dataType == ResponseType.JSON || dataType == ResponseType.ImageBase64 || dataType == ResponseType.Text || dataType == ResponseType.XML))
             {
-                result = new DataResult(true, wrapInfo, result, null);
+                result = new APIResult(true, wrapInfo, result, null);
                 if (dataType != ResponseType.XML)
                     dataType = ResponseType.JSON;
             }
@@ -285,7 +289,7 @@ namespace App.HttpApi
             }
             else
             {
-                DataResult dr = new DataResult(false, info, errorCode, null);
+                APIResult dr = new APIResult(false, info, errorCode, null);
                 WriteResult(context, dr, ResponseType.JSON);
             }
         }

@@ -33,7 +33,7 @@ namespace App.HttpApi
         public static bool IsLogin()
         {
             System.Security.Principal.IPrincipal p = HttpContext.Current.User;
-            if (p == null) return false;
+            if (p == null || p.Identity == null) return false;
             return p.Identity.IsAuthenticated;
         }
 

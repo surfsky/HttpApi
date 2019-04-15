@@ -15,7 +15,7 @@ namespace App.HttpApi
     }
 
     /// <summary>
-    /// 枚举返回方式
+    /// 枚举输出方式
     /// </summary>
     public enum EnumFomatting
     {

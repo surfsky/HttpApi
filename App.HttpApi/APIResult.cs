@@ -3,9 +3,9 @@
 namespace App.HttpApi
 {
     /// <summary>
-    /// 标准数据返回结果
+    /// API 返回值
     /// </summary>
-    public class DataResult
+    public class APIResult
     {
         /// <summary>结果（字符串类型）</summary>
         public bool Result { get; set; }
@@ -22,7 +22,7 @@ namespace App.HttpApi
         /// <summary>附加数据（自定义类型，如分页信息DataPager）</summary>
         public object Extra { get; set; }
 
-        public DataResult(bool result, String info="", object data=null, object extra=null)
+        public APIResult(bool result, String info="", object data=null, object extra=null)
         {
             Result = result;
             Info = info;

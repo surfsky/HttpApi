@@ -3,9 +3,7 @@
 -------------------------------------------------
 优先
 	尝试合并HttpApiAttribute 和 API 类，基本重叠
-	完善API展示页面
-		生成 Post/Get 测试窗体
-		输出值类型: ReturnType
+	完善API展示页面: 显示输出值类型: ReturnType（
 	增加访问间隔控制
 		AuthInterval/VisitInterval，限制访问间隔
 		需维护一个字典或内存表：ClientIP, Api, LastVisitDt，会自动删除老数据
@@ -34,6 +32,13 @@
 -------------------------------------------------
 已完成
 -------------------------------------------------
+2019-04-30
+	/增加测试页面：/HttpApi/Common/Echo$  /HttpApi/Common/Echo!
+
+2019-04-28
+	/增加 HttpApiAttribute.Log 属性，可在OnVisit事件中判断并做日志
+	/增加 HttpApiConfig.OnVisit 事件，可查看访问时的详细情况
+	
 2018-11-30
 	/修正bug：可空类型，若输入为空会出错，如：
 	/https://bearmanager.cn/HttpApi/Mall/GetProducts?type=

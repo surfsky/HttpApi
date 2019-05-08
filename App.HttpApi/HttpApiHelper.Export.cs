@@ -18,7 +18,7 @@ namespace App.HttpApi
         /// <summary>
         /// 构造接口清单页面
         /// </summary>
-        static StringBuilder GetTypeApiHtml(TypeAPI typeapi)
+        static string BuildApiListHtml(TypeAPI typeapi)
         {
             // 概述信息
             StringBuilder sb = new StringBuilder();
@@ -41,6 +41,7 @@ namespace App.HttpApi
                 <td width='70'>校验用户</td>
                 <td width='70'>校验角色</td>
                 <td width='70'>校验动作</td>
+                <td width='70'>访问日志</td>
                 <td width='70'>状态</td>
                 <td>备注</td>
                 </tr>");
@@ -57,19 +58,20 @@ namespace App.HttpApi
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthUsers);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Log);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);
                 sb.AppendFormat("</tr>");
             }
             sb.AppendLine("</table>");
-            return sb;
+            return sb.ToString();
         }
 
 
         /// <summary>
         /// 构造接口页面
         /// </summary>
-        static StringBuilder GetApiHtml(API api)
+        static string BuildApiHtml(API api)
         {
             // 概述信息
             StringBuilder sb = new StringBuilder();
@@ -91,6 +93,7 @@ namespace App.HttpApi
                 <td width='70'>校验用户</td>
                 <td width='70'>校验角色</td>
                 <td width='70'>校验动作</td>
+                <td width='70'>访问日志</td>
                 <td width='70'>状态</td>
                 <td>备注</td>
                 </tr>");
@@ -103,6 +106,7 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthUsers);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.Log);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);
             sb.AppendFormat("</tr>");
@@ -110,20 +114,55 @@ namespace App.HttpApi
 
             // 参数
             sb.AppendFormat("<h2>参数</h2>");
+            sb.Append(BuildApiTestHtml(api));
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// 构造API参数页面
+        /// </summary>
+        static string BuildApiParamsHtml(API api)
+        {
+            var sb = new StringBuilder();
             sb.AppendFormat("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
             sb.AppendFormat("<tr><td width='100'>参数名</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr>");
             foreach (var p in api.Params)
             {
                 sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
-                    ,p.Name
-                    ,p.Description
-                    ,p.Type
-                    ,p.Info
-                    ,p.DefaultValue
+                    , p.Name
+                    , p.Description
+                    , p.Type
+                    , p.Info
+                    , p.DefaultValue
                     );
             }
             sb.AppendFormat("</tr></table>");
-            return sb;
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// 构造API测试页面
+        /// </summary>
+        static string BuildApiTestHtml(API api)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("<form action='{0}' method='post'>", api.Url.TrimEnd('_', '$', '!'));
+            sb.AppendFormat("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendFormat("<tr><td width='100'>参数名</td><td>值</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr>");
+            foreach (var p in api.Params)
+            {
+                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td><input type='text' name='{0}' style='width:200px; border:none'/></td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
+                    , p.Name
+                    , p.Description
+                    , p.Type
+                    , p.Info
+                    , p.DefaultValue
+                    );
+            }
+            sb.AppendFormat("</tr></table>");
+            sb.AppendFormat("<input type='submit' value='提 交' style='margin-top:30px' />");
+            sb.AppendFormat("</form>");
+            return sb.ToString();
         }
 
 
@@ -256,7 +295,7 @@ namespace App.HttpApi
         // 获取API方法展示地址
         static string GetMethodDisplayUrl(string rootUrl, MethodInfo method)
         {
-            return string.Format("{0}/{1}_", rootUrl, method.Name);
+            return string.Format("{0}/{1}$", rootUrl, method.Name);
         }
 
         // 获取API方法测试地址

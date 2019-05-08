@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Reflection;
 using System.Web;
@@ -20,7 +21,7 @@ namespace App.HttpApi
         //--------------------------------------------------
         // HttpApi访问事件，请在Global中设置
         //--------------------------------------------------
-        public delegate void VisitHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr);
+        public delegate void VisitHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, Dictionary<string, object> inputs);
         public delegate void AuthHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, string securityCode);
         public delegate void EndHandler(HttpContext context);
         public delegate void ExceptionHandler(MethodInfo method, Exception ex);
@@ -41,10 +42,10 @@ namespace App.HttpApi
         //--------------------------------------------
         // 包裹方法
         //--------------------------------------------
-        public void DoVisit(HttpContext context, MethodInfo method, HttpApiAttribute attr)
+        public void DoVisit(HttpContext context, MethodInfo method, HttpApiAttribute attr, Dictionary<string, object>inputs)
         {
             if (this.OnVisit != null)
-                this.OnVisit(context, method, attr);
+                this.OnVisit(context, method, attr, inputs);
         }
 
         /// <summary>授权事件</summary>

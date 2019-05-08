@@ -52,7 +52,7 @@ namespace App.HttpApi
             try
             {
                 // 检测方法可用性
-                CheckMethod(context, method, attr);
+                CheckMethod(context, method, attr, args);
 
                 // 获取需要的参数
                 var parameters = ReflectHelper.GetParameters(method, args);
@@ -109,7 +109,7 @@ namespace App.HttpApi
             var path = HttpContext.Current.Request.FilePath;
 
             // 去头
-            if (path.StartsWith("/HttpApi") || path.StartsWith("/httpapi"))
+            if (path.ToLower().StartsWith("/httpapi"))
                 path = path.Substring(9);
 
             // 去尾
@@ -132,14 +132,25 @@ namespace App.HttpApi
             string methodNameLower = methodName.ToLower();
             int cacheDuration = ReflectHelper.GetCacheDuration(type);
 
-            // 输出api接口展示页面（方法名后面跟了个_)
+            // 输出api接口展示页面
             var lastChar = methodNameLower.Substring(methodNameLower.Length - 1);
-            if (lastChar == "_")
+            if (lastChar == "_" || lastChar == "$")
             {
                 var name = methodName.Substring(0, methodName.Length - 1);
                 var typeapi = GetTypeApi(type);
                 var api = FindApi(typeapi, name);
-                var result = GetApiHtml(api);
+                var result = BuildApiHtml(api);
+                context.Response.Clear();
+                context.Response.ContentType = "text/html";
+                context.Response.Write(result.ToString());
+            }
+            // 输出api接口测试页面
+            else if (lastChar == "!")
+            {
+                var name = methodName.Substring(0, methodName.Length - 1);
+                var typeapi = GetTypeApi(type);
+                var api = FindApi(typeapi, name);
+                var result = BuildApiTestHtml(api);
                 context.Response.Clear();
                 context.Response.ContentType = "text/html";
                 context.Response.Write(result.ToString());
@@ -155,10 +166,10 @@ namespace App.HttpApi
                 if (methodNameLower == "api")
                 {
                     var typeapi = GetTypeApi(type);
-                    var result = GetTypeApiHtml(typeapi);
+                    var result = BuildApiListHtml(typeapi);
                     context.Response.Clear();
                     context.Response.ContentType = "text/html";
-                    context.Response.Write(result.ToString());
+                    context.Response.Write(result);
                 }
                 // 输出api接口清单
                 else if (methodNameLower == "apis")
@@ -195,7 +206,7 @@ namespace App.HttpApi
 
 
         /// <summary>方法可访问性校验</summary>
-        private static void CheckMethod(HttpContext context, MethodInfo method, HttpApiAttribute attr)
+        private static void CheckMethod(HttpContext context, MethodInfo method, HttpApiAttribute attr, Dictionary<string,object> inputs)
         {
             // 方法未找到或未公开
             if (method == null || attr == null)
@@ -203,7 +214,7 @@ namespace App.HttpApi
 
             // 访问事件
             var instance = HttpApiConfig.Instance;
-            instance.DoVisit(context, method, attr);
+            instance.DoVisit(context, method, attr, inputs);
 
             // 校验方法可用性
             App.Core.AuthHelper.LoadCookiePrincipal();  // 获取身份验票
@@ -349,6 +360,7 @@ namespace App.HttpApi
                         AuthRoles = attr.AuthRoles,
                         AuthVerbs = attr.AuthVerbs.IsNullOrEmpty() ? "" : attr.AuthVerbs.ToUpper(),
                         Status = attr.Status,
+                        Log = attr.Log,
                         Remark = attr.Remark,
                         Example = attr.Example,
                         Url = GetMethodDisplayUrl(rootUrl, method),

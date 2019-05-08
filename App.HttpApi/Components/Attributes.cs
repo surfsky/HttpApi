@@ -111,6 +111,9 @@ namespace App.HttpApi
         /// <summary>状态（Testing, Published, Deprecated)</summary>
         public ApiStatus Status { get; set; }
 
+        /// <summary>是否记录日志</summary>
+        public bool Log { get; set; } = false;
+
         //---------------------------------------------------
         // 访问权限控制
         //---------------------------------------------------

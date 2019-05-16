@@ -210,7 +210,7 @@ namespace App.HttpApi
         {
             // 方法未找到或未公开
             if (method == null || attr == null)
-                throw new HttpApiException(404, "API " + method.Name + " not found. Please check the [HttpApi] attribute.");
+                throw new HttpApiException(404, "Not Found.");
 
             // 访问事件
             var instance = HttpApiConfig.Instance;

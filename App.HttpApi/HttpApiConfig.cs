@@ -102,7 +102,7 @@ namespace App.HttpApi
             set { this["formatDateTime"] = value; }
         }
         
-        [ConfigurationProperty("errorResponse", DefaultValue=ErrorResponse.DataResult)]
+        [ConfigurationProperty("errorResponse", DefaultValue=ErrorResponse.APIResult)]
         public ErrorResponse ErrorResponse
         {
             get { return (ErrorResponse)this["errorResponse"]; }

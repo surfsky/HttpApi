@@ -1,4 +1,4 @@
-# App.HttpApi
+﻿# App.HttpApi
 
 
 
@@ -93,7 +93,7 @@ Web.Config
   formatIndented="Indented" 
   formatDateTime="yyyy-MM-dd" 
   formatLowCamel="false"
-  errorResponse="DataResult" 
+  errorResponse="APIResult" 
   apiTypePrefix="App." 
   wrap="" 
   />
@@ -421,6 +421,7 @@ public static DataResult GetPersons()
 - 2017-12  Nuget发布：install-package App.HttpApi，增加 HttpApiConfig 配置节
 - 2018-10  增加自定义鉴权事件；实现Api展示页面；用配置节控制Json输出格式；简化访问路径；完善xml输出
 - 2018-11  默认参数可为空也可不填写；可空类型参数可为空也可不填写；可在api介绍页面上输出枚举类型成员信息；
+- 2019-03  Api 测试页面（填写参数；选择方法Get/Post；发送请求；显示输出结果）
 
 ## 8.项目目标
 - WebAPI的一些限制：http://blog.csdn.net/leeyue_1982/article/details/51305950
@@ -429,7 +430,6 @@ public static DataResult GetPersons()
 - Restful 方式的API动作过少（GET/POST/DELETE/)，无法覆盖到所有动作，干脆放开方法名，让开发者自己定义好了
 
 ## 9.任务
-- Api 测试页面（填写参数；选择方法Get/Post；发送请求；显示输出结果）
 - XML 格式控制：属性/成员、递进、大小写等
 
 

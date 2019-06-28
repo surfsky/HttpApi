@@ -82,7 +82,7 @@ namespace App.HttpApi
             // 对象为空处理
             if (obj == null)
             {
-                if (!name.IsNullOrEmpty())
+                if (!name.IsEmpty())
                     sb.AppendFormat("<{0}/>", name);
                 return;
             }
@@ -91,7 +91,7 @@ namespace App.HttpApi
             var type = obj.GetType();
             if (type.IsNullable())
                 type = type.GetNullableDataType();
-            if (name.IsNullOrEmpty())
+            if (name.IsEmpty())
                 name = GetNodeName(type);
 
             // 根据类型进行输出（还要判断可空类型）

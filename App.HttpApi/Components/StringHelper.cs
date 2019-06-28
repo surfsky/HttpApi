@@ -38,7 +38,7 @@ namespace App.HttpApi
         /// <summary>去除所有HTML痕迹（包括脚本、标签、注释、转义符等）</summary>
         public static string ClearHtml(this string html)
         {
-            if (html.IsNullOrEmpty()) return "";
+            if (html.IsEmpty()) return "";
 
             //删除脚本
             html = Regex.Replace(html, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);
@@ -76,7 +76,7 @@ namespace App.HttpApi
         /// <summary>获取遮掩文本</summary>
         public static string GetMask(this string txt, int n, string mask=".")
         {
-            if (txt.IsNullOrEmpty() || txt.Length < n)
+            if (txt.IsEmpty() || txt.Length < n)
                 return txt;
             else
             {
@@ -89,7 +89,7 @@ namespace App.HttpApi
         /// <summary>获取摘要</summary>
         public static string GetSummary(this string txt, int n)
         {
-            if (txt.IsNullOrEmpty() || txt.Length < n)
+            if (txt.IsEmpty() || txt.Length < n)
                 return txt;
             else
                 return txt.Substring(0, n) + "....";

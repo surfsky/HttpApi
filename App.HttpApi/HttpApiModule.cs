@@ -19,12 +19,23 @@ namespace App.HttpApi
         public void Dispose(){}
         public void Init(HttpApplication application)
         {
-            application.PostResolveRequestCache += delegate (object sender, EventArgs e)
-            {
-                string url = HttpContext.Current.Request.Url.ToString().ToLower();
-                if (url.Contains("httpapi/"))
-                    HttpContext.Current.RemapHandler(new HttpApiHandler()); // 指定处理器
-            };
+            application.PostResolveRequestCache += Application_PostResolveRequestCache;
+            application.AuthenticateRequest += Application_AuthenticateRequest;
+        }
+
+        // 指定HttpApi处理器去处理
+        private void Application_PostResolveRequestCache(object sender, EventArgs e)
+        {
+            string url = HttpContext.Current.Request.Url.ToString().ToLower();
+            if (url.Contains("httpapi/"))
+                HttpContext.Current.RemapHandler(new HttpApiHandler()); // 指定处理器
+        }
+
+
+        // 读取登录验票
+        private void Application_AuthenticateRequest(object sender, EventArgs e)
+        {
+            //App.Core.AuthHelper.LoadPrincipalFromCookie();
         }
     }
 }

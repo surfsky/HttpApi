@@ -30,12 +30,14 @@ namespace App.HttpApi
         {
             var cache = HttpRuntime.Cache; // 等价于 HttpContext.Current.Cache
             if (cache[key] == null) 
-            {
-                T o = func();
-                if (o != null)
-                    cache.Insert(key, o, null, expiredTime, Cache.NoSlidingExpiration); // 如果存在则会覆盖; 使用绝对时间过期策略；
-            }
+                SetCachedObject(key, expiredTime, func);
             return cache[key] as T;
+        }
+        public static void SetCachedObject<T>(string key, DateTime expiredTime, Func<T> func) where T : class
+        {
+            T o = func();
+            if (o != null)
+                HttpRuntime.Cache.Insert(key, o, null, expiredTime, Cache.NoSlidingExpiration); // 如果存在则会覆盖; 使用绝对时间过期策略；
         }
 
         /// <summary>

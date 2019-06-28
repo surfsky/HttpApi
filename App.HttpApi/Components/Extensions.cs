@@ -12,15 +12,15 @@ namespace App.HttpApi
     internal static class Extensions
     {
         /// <summary>字符串是否为空</summary>
-        public static bool IsNullOrEmpty(this string txt)
+        public static bool IsEmpty(this string txt)
         {
             return String.IsNullOrEmpty(txt);
         }
 
         /// <summary>对象是否为空或为空字符串</summary>
-        public static bool IsNullOrEmpty(this object o)
+        public static bool IsEmpty(this object o)
         {
-            return (o == null) ? true : o.ToString().IsNullOrEmpty();
+            return (o == null) ? true : o.ToString().IsEmpty();
         }
 
         /// <summary>将可空对象转化为字符串</summary>

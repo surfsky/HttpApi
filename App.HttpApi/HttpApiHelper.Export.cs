@@ -15,6 +15,30 @@ namespace App.HttpApi
         //-----------------------------------------------------------
         // 生成接口页面
         //-----------------------------------------------------------
+        // 样式控制
+        static string BuildCss()
+        {
+            return @"
+                <style>
+                table {border-collapse: collapse}
+                tr:first-child {background: #f2f2f2;}
+                input[type=""text""] {background-color: #f2f2f2;}
+                input[type=""submit""] {
+                    width: 120px;
+                    height: 28px;
+                    background-color: #68c9e8;
+                    border-radius: 5px;
+                    color: white;
+                    border: none;
+                    font-size: 14;
+                }
+                input[type=""submit""]:hover {
+                    cursor: hand
+                }
+                </style>
+            ";
+        }
+
         /// <summary>
         /// 构造接口清单页面
         /// </summary>
@@ -22,6 +46,7 @@ namespace App.HttpApi
         {
             // 概述信息
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine(BuildCss());
             sb.AppendLine("<h1>" + typeapi.Description + "</h1>");
             foreach (HistoryAttribute history in typeapi.Histories)
             {
@@ -29,14 +54,14 @@ namespace App.HttpApi
             }
 
             // 接口清单
-            sb.AppendLine("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendLine("<table border='1' width='100%' cellpadding='2' cellspacing='0'>");
             sb.AppendLine(@"<tr>
                 <td width='200'>接口名</td>
                 <td width='200'>说明</td>
                 <td width='70'>返回类型</td>
                 <td width='70'>缓存(秒)</td>
                 <td width='70'>校验IP</td>
-                <td width='80'>校验安全码</td>
+                <td width='80'>校验Token</td>
                 <td width='70'>校验登录</td>
                 <td width='70'>校验用户</td>
                 <td width='70'>校验角色</td>
@@ -53,7 +78,7 @@ namespace App.HttpApi
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.ReturnType);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.CacheDuration);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthIP);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthSecurityCode);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthToken);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthLogin);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthUsers);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
@@ -75,6 +100,7 @@ namespace App.HttpApi
         {
             // 概述信息
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine(BuildCss());
             sb.AppendFormat("<h1>{0}</h1>", api.Name);
             sb.AppendFormat("<h3>{0}</h3>", api.Description);
             sb.AppendFormat("<div>{0}</div></br>", api.UrlTest);
@@ -83,12 +109,12 @@ namespace App.HttpApi
 
             // 属性
             sb.AppendFormat("<h2>属性</h2>");
-            sb.AppendLine("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendLine("<table border='1'  width='100%' cellpadding='2' cellspacing='0'>");
             sb.AppendLine(@"<tr>
                 <td width='70'>返回类型</td>
                 <td width='70'>缓存(秒)</td>
                 <td width='70'>校验IP</td>
-                <td width='80'>校验安全码</td>
+                <td width='80'>校验Token</td>
                 <td width='70'>校验登录</td>
                 <td width='70'>校验用户</td>
                 <td width='70'>校验角色</td>
@@ -101,7 +127,7 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.ReturnType);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.CacheDuration);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthIP);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthSecurityCode);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthToken);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthLogin);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthUsers);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
@@ -124,7 +150,8 @@ namespace App.HttpApi
         static string BuildApiParamsHtml(API api)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendLine(BuildCss());
+            sb.AppendFormat("<br/><table border='1' width='100%' cellpadding='2' cellspacing='0'>");
             sb.AppendFormat("<tr><td width='100'>参数名</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr>");
             foreach (var p in api.Params)
             {
@@ -147,7 +174,7 @@ namespace App.HttpApi
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("<form action='{0}' method='post'>", api.Url.TrimEnd('_', '$', '!'));
-            sb.AppendFormat("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendFormat("<br/><table border='1'  width='100%' cellpadding='2' cellspacing='0'>");
             sb.AppendFormat("<tr><td width='100'>参数名</td><td>值</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr>");
             foreach (var p in api.Params)
             {
@@ -262,7 +289,7 @@ namespace App.HttpApi
                 scriptBuilder.AppendLine("// 类型  : " + api.ReturnType);
                 scriptBuilder.AppendLine("// 备注  : " + api.Remark);
                 scriptBuilder.AppendLine("// 校验IP: " + api.AuthIP);
-                scriptBuilder.AppendLine("// 校验安全码: " + api.AuthSecurityCode);
+                scriptBuilder.AppendLine("// 校验安全码: " + api.AuthToken);
                 scriptBuilder.AppendLine("// 校验登录: " + api.AuthLogin);
                 scriptBuilder.AppendLine("// 校验用户: " + api.AuthUsers);
                 scriptBuilder.AppendLine("// 校验角色: " + api.AuthRoles);
@@ -299,7 +326,7 @@ namespace App.HttpApi
         }
 
         // 获取API方法测试地址
-        static string GetMethodTestUrl(string rootUrl, MethodInfo method, bool authSecurityCode)
+        static string GetMethodTestUrl(string rootUrl, MethodInfo method, bool authToken)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("{0}/{1}", rootUrl, method.Name);
@@ -310,8 +337,8 @@ namespace App.HttpApi
                 foreach (ParameterInfo p in ps)
                     sb.Append(p.Name + "=x&");
             }
-            if (authSecurityCode)
-                sb.Append("securityCode=x");
+            if (authToken)
+                sb.Append("token=x");
             return sb.ToString().TrimEnd('&');
         }
 

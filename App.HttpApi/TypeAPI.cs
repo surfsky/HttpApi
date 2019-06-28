@@ -27,7 +27,7 @@ namespace App.HttpApi
         public string ReturnType { get; set; }
         public int CacheDuration { get; set; }
         public bool AuthIP { get; set; }
-        public bool AuthSecurityCode { get; set; }
+        public bool AuthToken { get; set; }
         public bool AuthLogin { get; set; }
         public string AuthUsers { get; set; }
         public string AuthRoles { get; set; }

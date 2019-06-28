@@ -52,23 +52,28 @@ namespace App.HttpApi
             try
             {
                 // 检测方法可用性
-                CheckMethod(context, method, attr, args);
-
                 // 获取需要的参数
+                CheckMethod(context, method, attr, args);
                 var parameters = ReflectHelper.GetParameters(method, args);
-                var p = SerializeHelper.ToJson(parameters).ClearSpace().TrimStart('[').TrimEnd(']');//.Replace("\"", "");
-                var cacheKey = string.Format("{0}-{1}-{2}", handler, method.Name, p);  // 可考虑用 MD5 做缓存健名
-                var expireDt = DateTime.Now.AddSeconds(attr.CacheSeconds);
 
                 // 获取方法调用结果并依情况缓存
                 object result;
                 if (attr.CacheSeconds == 0)
                     result = method.Invoke(handler, parameters);
                 else
-                    result = CacheHelper.GetCachedObject<object>(
-                        cacheKey, expireDt,
-                        () => { return method.Invoke(handler, parameters); }
-                        );
+                {
+                    var p = SerializeHelper.ToJson(parameters).ClearSpace().TrimStart('[').TrimEnd(']');//.Replace("\"", "");
+                    var cacheKey = string.Format("{0}-{1}-{2}", handler, method.Name, p);  // 可考虑用 MD5 做缓存健名
+                    var expireDt = DateTime.Now.AddSeconds(attr.CacheSeconds);
+                    // 强制刷新缓存
+                    if (args.ContainsKey("_refresh"))
+                    {
+                        bool refresh = (args["_refresh"].ToString() == "true");
+                        if (refresh)
+                             CacheHelper.SetCachedObject<object>(cacheKey, expireDt, () => { return method.Invoke(handler, parameters); });
+                    }
+                    result = CacheHelper.GetCachedObject<object>(cacheKey, expireDt, () => { return method.Invoke(handler, parameters); });
+                }
 
                 // 输出结果
                 ResponseType dataType = attr.Type;
@@ -217,19 +222,21 @@ namespace App.HttpApi
             instance.DoVisit(context, method, attr, inputs);
 
             // 校验方法可用性
-            App.Core.AuthHelper.LoadCookiePrincipal();  // 获取身份验票
+            App.Core.AuthHelper.LoadPrincipalFromCookie();  // 获取身份验票
             CheckMethodEnable(context, method, attr);
 
             // 自定义鉴权
-            string securityCode = context.Request.Params["securityCode"];
-            instance.DoAuth(context, method, attr, securityCode);
+            string token = context.Request.Params["token"];
+            if (token.IsEmpty())
+                token = context.Request.Params["securityCode"];
+            instance.DoAuth(context, method, attr, token);
         }
 
         // 检测方法的可用性
         static void CheckMethodEnable(HttpContext context, MethodInfo method, HttpApiAttribute attr)
         {
             // 校验访问方式
-            if (!attr.AuthVerbs.IsNullOrEmpty())
+            if (!attr.AuthVerbs.IsEmpty())
             {
                 var verbs = attr.VerbList;
                 if (verbs.Count == 0)
@@ -354,18 +361,18 @@ namespace App.HttpApi
                         ReturnType = ParseDataType(attr.Type, method.ReturnType).ToString(),
                         CacheDuration = attr.CacheSeconds,
                         AuthIP = attr.AuthIP,
-                        AuthSecurityCode = attr.AuthSecurityCode,
+                        AuthToken = attr.AuthToken,
                         AuthLogin = attr.AuthLogin,
                         AuthUsers = attr.AuthUsers,
                         AuthRoles = attr.AuthRoles,
-                        AuthVerbs = attr.AuthVerbs.IsNullOrEmpty() ? "" : attr.AuthVerbs.ToUpper(),
+                        AuthVerbs = attr.AuthVerbs.IsEmpty() ? "" : attr.AuthVerbs.ToUpper(),
                         Status = attr.Status,
                         Log = attr.Log,
                         Remark = attr.Remark,
                         Example = attr.Example,
                         Url = GetMethodDisplayUrl(rootUrl, method),
-                        UrlTest = GetMethodTestUrl(rootUrl, method, attr.AuthSecurityCode),
-                        Params = GetMethodParams(method, attr.AuthSecurityCode),
+                        UrlTest = GetMethodTestUrl(rootUrl, method, attr.AuthToken),
+                        Params = GetMethodParams(method, attr.AuthToken),
                         Method = method,
                         RType = attr.Type
                     };
@@ -392,13 +399,13 @@ namespace App.HttpApi
         {
             var typeName = type.FullName;
             var typePrefix = HttpApiConfig.Instance.ApiTypePrefix;
-            if (!typePrefix.IsNullOrEmpty() && typeName.StartsWith(typePrefix))
+            if (!typePrefix.IsEmpty() && typeName.StartsWith(typePrefix))
                 typeName = typeName.Substring(typePrefix.Length);
             return typeName;
         }
 
         /// <summary>获取方法参数信息</summary>
-        private static List<ParamAttribute> GetMethodParams(MethodInfo method, bool authSecurityCode)
+        private static List<ParamAttribute> GetMethodParams(MethodInfo method, bool authToken)
         {
             var items = new List<ParamAttribute>();
             var attrs = ReflectHelper.GetParamAttributes(method);
@@ -415,8 +422,8 @@ namespace App.HttpApi
                     p.DefaultValue?.ToString()
                     ));
             }
-            if (authSecurityCode)
-                items.Add(new ParamAttribute("securityCode", "安全码", "String", "", ""));
+            if (authToken)
+                items.Add(new ParamAttribute("token", "授权Token", "String", "", ""));
             return items;
         }
 

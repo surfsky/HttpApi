@@ -120,8 +120,8 @@ namespace App.HttpApi
         /// <summary>是否校验访问 IP</summary>
         public bool AuthIP { get; set; } = false;
 
-        /// <summary>是否校验访问安全码(存在Cookie[HttpApiSecurityCode]中)</summary>
-        public bool AuthSecurityCode { get; set; } = false;
+        /// <summary>是否校验授权码</summary>
+        public bool AuthToken { get; set; } = false;
 
         /// <summary>是否校验登录(User.IsAuthenticated)</summary>
         public bool AuthLogin { get; set; } = false;
@@ -139,7 +139,7 @@ namespace App.HttpApi
         {
             get
             {
-                if (AuthVerbs.IsNullOrEmpty())
+                if (AuthVerbs.IsEmpty())
                     return new List<string>();
                 else
                     return AuthVerbs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToLower();

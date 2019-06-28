@@ -22,7 +22,7 @@ namespace App.HttpApi
         // HttpApi访问事件，请在Global中设置
         //--------------------------------------------------
         public delegate void VisitHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, Dictionary<string, object> inputs);
-        public delegate void AuthHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, string securityCode);
+        public delegate void AuthHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, string token);
         public delegate void EndHandler(HttpContext context);
         public delegate void ExceptionHandler(MethodInfo method, Exception ex);
 
@@ -49,10 +49,10 @@ namespace App.HttpApi
         }
 
         /// <summary>授权事件</summary>
-        public void DoAuth(HttpContext context, MethodInfo method, HttpApiAttribute attr, string securityCode)
+        public void DoAuth(HttpContext context, MethodInfo method, HttpApiAttribute attr, string token)
         {
             if (this.OnAuth != null)
-                this.OnAuth(context, method, attr, securityCode);
+                this.OnAuth(context, method, attr, token);
         }
 
         /// <summary>结束</summary>

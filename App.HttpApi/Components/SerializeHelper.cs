@@ -11,9 +11,48 @@ using System.Reflection;
 using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Globalization;
+using App.Core;
 
 namespace App.HttpApi
 {
+    /// <summary>
+    /// 长整形序列化。
+    /// Javascript 的整数是32位的，number类型的安全整数是53位，如果超过53位会被截断。
+    /// 出于接口通用性考虑，如果是长整形（64位），就统一转化为字符串传递给客户端。
+    /// </summary>
+    public class Int64Converter : JsonConverter
+    {
+        // 只处理long和ulong两种类型的数据
+        public override bool CanConvert(Type objectType)
+        {
+            var type = objectType.GetRealType();
+            switch (type.FullName)
+            {
+                case "System.Int64":
+                case "System.UInt64":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // 将long数据转化为字符串输出
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            long v = value is ulong ? (long)(ulong)value : (long)value;
+            writer.WriteValue(v.ToString());
+        }
+
+        // 读字符串并解析为long
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            string txt = reader.Value as string;
+            long? v = txt.ToLong();
+            return typeof(ulong) == objectType ? (object)(ulong)v : v;
+        }
+    }
+
     /// <summary>
     /// 序列化方法类
     /// </summary>
@@ -49,14 +88,18 @@ namespace App.HttpApi
                 settings.Formatting = cfg.FormatIndented;
 
                 // 时间格式
-                IsoDateTimeConverter datetimeConverter = new IsoDateTimeConverter();
+                var datetimeConverter = new IsoDateTimeConverter();
                 datetimeConverter.DateTimeFormat = cfg.FormatDateTime;
                 settings.Converters.Add(datetimeConverter);
 
                 // 枚举格式
-                StringEnumConverter enumConverter = new StringEnumConverter();
+                var enumConverter = new StringEnumConverter();
                 if (cfg.FormatEnum == EnumFomatting.Text)
                     settings.Converters.Add(enumConverter);
+
+                // 长整形格式
+                var int64Converter = new Int64Converter();
+                settings.Converters.Add(int64Converter);
 
                 //
                 return JsonConvert.SerializeObject(obj, settings);

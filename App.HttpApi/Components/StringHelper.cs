@@ -14,7 +14,7 @@ namespace App.HttpApi
     /// </summary>
     internal static class StringHelper
     {
-        /// <summary>Js格式化</summary>
+        /// <summary>解析逗号表达式</summary>
         public static int[] ToIntArray(this string commaText)
         {
             if (String.IsNullOrEmpty(commaText))

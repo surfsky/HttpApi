@@ -19,59 +19,6 @@ namespace App.HttpApi
     public class HttpApiConfig : ConfigurationSection
     {
         //--------------------------------------------------
-        // HttpApi访问事件，请在Global中设置
-        //--------------------------------------------------
-        public delegate void VisitHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, Dictionary<string, object> inputs);
-        public delegate void AuthHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, string token);
-        public delegate void EndHandler(HttpContext context);
-        public delegate void ExceptionHandler(MethodInfo method, Exception ex);
-
-        /// <summary>访问事件（有异常请直接抛出 HttpApiException 异常）</summary>
-        public event VisitHandler OnVisit;
-
-        /// <summary>鉴权事件（有异常请直接抛出 HttpApiException 异常）</summary>
-        public event AuthHandler OnAuth;
-
-        /// <summary>结束事件（有异常请直接抛出 HttpApiException 异常）</summary>
-        public event EndHandler OnEnd;
-
-        /// <summary>异常处理</summary>
-        public event ExceptionHandler OnException;
-
-
-        //--------------------------------------------
-        // 包裹方法
-        //--------------------------------------------
-        public void DoVisit(HttpContext context, MethodInfo method, HttpApiAttribute attr, Dictionary<string, object>inputs)
-        {
-            if (this.OnVisit != null)
-                this.OnVisit(context, method, attr, inputs);
-        }
-
-        /// <summary>授权事件</summary>
-        public void DoAuth(HttpContext context, MethodInfo method, HttpApiAttribute attr, string token)
-        {
-            if (this.OnAuth != null)
-                this.OnAuth(context, method, attr, token);
-        }
-
-        /// <summary>结束</summary>
-        public void DoEnd(HttpContext context)
-        {
-            if (this.OnEnd != null)
-                this.OnEnd(context);
-        }
-
-        /// <summary>异常处理</summary>
-        /// <returns>若有自定义异常处理程序，则返回true；否则返回false</returns>
-        public void DoException(MethodInfo method, Exception ex)
-        {
-            if (this.OnException != null)
-                this.OnException(method, ex);
-        }
-
-
-        //--------------------------------------------------
         // 序列化控制配置
         //--------------------------------------------------
         [ConfigurationProperty("formatLowCamel", DefaultValue = false)]
@@ -101,7 +48,14 @@ namespace App.HttpApi
             get { return (string)this["formatDateTime"]; }
             set { this["formatDateTime"] = value; }
         }
-        
+
+        [ConfigurationProperty("formatLongNumber", DefaultValue = "Int64,UInt64,Decimal")]
+        public string FormatLongNumber
+        {
+            get { return (string)this["formatLongNumber"]; }
+            set { this["formatLongNumber"] = value; }
+        }
+
         [ConfigurationProperty("errorResponse", DefaultValue=ErrorResponse.APIResult)]
         public ErrorResponse ErrorResponse
         {
@@ -123,7 +77,9 @@ namespace App.HttpApi
             set { this["wrap"] = value; }
         }
 
+        //--------------------------------------------------
         // 单例
+        //--------------------------------------------------
         private static HttpApiConfig _instance = null;
         public static HttpApiConfig Instance
         {
@@ -141,6 +97,58 @@ namespace App.HttpApi
                 }
                 return _instance;
             }
+        }
+
+        //--------------------------------------------------
+        // HttpApi访问事件，请在Global中设置
+        //--------------------------------------------------
+        public delegate void VisitHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, Dictionary<string, object> inputs);
+        public delegate void AuthHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, string token);
+        public delegate void EndHandler(HttpContext context);
+        public delegate void ExceptionHandler(MethodInfo method, Exception ex);
+
+        /// <summary>访问事件（有异常请直接抛出 HttpApiException 异常）</summary>
+        public event VisitHandler OnVisit;
+
+        /// <summary>鉴权事件（有异常请直接抛出 HttpApiException 异常）</summary>
+        public event AuthHandler OnAuth;
+
+        /// <summary>结束事件（有异常请直接抛出 HttpApiException 异常）</summary>
+        public event EndHandler OnEnd;
+
+        /// <summary>异常处理</summary>
+        public event ExceptionHandler OnException;
+
+
+        //--------------------------------------------
+        // 包裹方法
+        //--------------------------------------------
+        public void DoVisit(HttpContext context, MethodInfo method, HttpApiAttribute attr, Dictionary<string, object> inputs)
+        {
+            if (this.OnVisit != null)
+                this.OnVisit(context, method, attr, inputs);
+        }
+
+        /// <summary>授权事件</summary>
+        public void DoAuth(HttpContext context, MethodInfo method, HttpApiAttribute attr, string token)
+        {
+            if (this.OnAuth != null)
+                this.OnAuth(context, method, attr, token);
+        }
+
+        /// <summary>结束</summary>
+        public void DoEnd(HttpContext context)
+        {
+            if (this.OnEnd != null)
+                this.OnEnd(context);
+        }
+
+        /// <summary>异常处理</summary>
+        /// <returns>若有自定义异常处理程序，则返回true；否则返回false</returns>
+        public void DoException(MethodInfo method, Exception ex)
+        {
+            if (this.OnException != null)
+                this.OnException(method, ex);
         }
     }
 }

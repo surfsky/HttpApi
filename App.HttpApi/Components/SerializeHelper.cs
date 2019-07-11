@@ -17,39 +17,36 @@ using App.Core;
 namespace App.HttpApi
 {
     /// <summary>
-    /// 长整形序列化。
+    /// 长数字（如long、decimal）字符串序列化。
     /// Javascript 的整数是32位的，number类型的安全整数是53位，如果超过53位会被截断。
-    /// 出于接口通用性考虑，如果是长整形（64位），就统一转化为字符串传递给客户端。
+    /// 可统一将数据（Int64, UInt64, Decimal）转化为字符串传递给客户端。
     /// </summary>
-    public class Int64Converter : JsonConverter
+    public class LongNumberToStringConverter : JsonConverter
     {
-        // 只处理long和ulong两种类型的数据
+        public List<TypeCode> _types;
+        public LongNumberToStringConverter(List<TypeCode> types)
+        {
+            this._types = types;
+        }
+
+        // 可处理的数据类型
         public override bool CanConvert(Type objectType)
         {
-            var type = objectType.GetRealType();
-            switch (type.FullName)
-            {
-                case "System.Int64":
-                case "System.UInt64":
-                    return true;
-                default:
-                    return false;
-            }
+            var typeCode = objectType.GetRealType().GetTypeCode();
+            return _types.Contains(typeCode);
         }
 
-        // 将long数据转化为字符串输出
+        // 将数据转化为字符串输出
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            long v = value is ulong ? (long)(ulong)value : (long)value;
-            writer.WriteValue(v.ToString());
+            writer.WriteValue(value.ToString());
         }
 
-        // 读字符串并解析为long
+        // 读字符串并解析
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             string txt = reader.Value as string;
-            long? v = txt.ToLong();
-            return typeof(ulong) == objectType ? (object)(ulong)v : v;
+            return txt.ParseBasicType(objectType);
         }
     }
 
@@ -93,13 +90,12 @@ namespace App.HttpApi
                 settings.Converters.Add(datetimeConverter);
 
                 // 枚举格式
-                var enumConverter = new StringEnumConverter();
                 if (cfg.FormatEnum == EnumFomatting.Text)
-                    settings.Converters.Add(enumConverter);
+                    settings.Converters.Add(new StringEnumConverter());
 
-                // 长整形格式
-                var int64Converter = new Int64Converter();
-                settings.Converters.Add(int64Converter);
+                // 长数字格式化（转化为字符串）
+                var types = cfg.FormatLongNumber.ParseEnums<TypeCode>();
+                settings.Converters.Add(new LongNumberToStringConverter(types));
 
                 //
                 return JsonConvert.SerializeObject(obj, settings);

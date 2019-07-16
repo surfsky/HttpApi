@@ -485,7 +485,15 @@ public static APIResult GetPersons()
 }
 ```      
 
-## 7.History
+## 7.项目目标
+- 立项初衷：（1）简化服务器端接口开发代码量；（2）自动完成客户端js代码，减少出错率；
+- 后来又想集成鉴权、缓存、输出格式、错误控制、统一输出结构等逻辑；
+- WebAPI 有众多限制：http://blog.csdn.net/leeyue_1982/article/details/51305950
+- Restful 方式的API动作过少（GET/POST/DELETE/)，无法覆盖到所有动作，干脆放开方法名，让开发者自己定义好了
+- WebAPI 要想实现我的目标，有很大的代码工作量，故全新开发本框架。
+
+
+## 8.History
 - 2012-08  初版
 - 2014-06  支持默认参数；增加问授权（角色、用户、登录）；错误输出可控（APIResult 或 HTTP ERROR）
 - 2016-06  增加api展示窗口，修正Image方式输出故障
@@ -498,15 +506,9 @@ public static APIResult GetPersons()
 - 2019-07  长数字类型可控输出为文本，避免客户端js因为精度问题导致的各种错误。
 
 
-## 8.项目目标
-- WebAPI的一些限制：http://blog.csdn.net/leeyue_1982/article/details/51305950
-- 这个项目的初衷是简化接口开发，并自动完成客户端js代码的封装，简化服务器端和客户端的开发代码量，减少出错率
-- 并想集成鉴权、缓存、输出格式控制等逻辑
-- Restful 方式的API动作过少（GET/POST/DELETE/)，无法覆盖到所有动作，干脆放开方法名，让开发者自己定义好了
-
 ## 9.任务
 - XML 格式控制：属性/成员、递进、大小写等
-
+- 写一个动态token的接口调用示例
 
 ## 10.参考
 - http://www.cnblogs.com/wzcheng/archive/2010/05/20/1739810.html

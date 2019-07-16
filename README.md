@@ -3,33 +3,33 @@
 
 ## 1.说明
 
-*(01) 一种轻量的提供数据接口的框架，可作为 WebAPI 的替代方案。
-*(02) 可将类中的方法暴露为http接口，如：
+* (01) 一种轻量的提供数据接口的框架，可作为 WebAPI 的替代方案。
+* (02) 可将类中的方法暴露为http接口，如：
 ```
 http://.../HttpApi/TypeName/Method?p1=x&p2=x
 ```
-*(03) 可将页面类中的方法暴露为http接口，如：
+* (03) 可将页面类中的方法暴露为http接口，如：
 ```
 http://.../Page1.aspx/GetData?page=1&rows=2&sort=abc&order=desc
 http://.../Handler1.ashx/GetData?page=1&rows=2&sort=abc&order=desc
 ```
-*(04) 自动生成客户端调用脚本
+* (04) 自动生成客户端调用脚本
 ```
 http://.../HttpApi/TypeName/js
 ```
-*(05) 自动生成API清单、API接口测试页面
+* (05) 自动生成API清单、API接口测试页面
 ```
 HttpApi/TypeName/api
 HttpApi/TypeName/apis
 HttpApi/TypeName/Method$
 ```
 
-*(06) 带缓存机制：可指定方法返回值的缓存时间、方式; 客户端可控强制刷新缓存。
-*(07) 带鉴权机制：访问IP、动作、 是否登录、用户名、角色、Token。可自定义接口鉴权逻辑。
-*(08) 带封装机制：可将方法返回值自动包裹为 APIResult 结构体。
-*(09）可配置Json输出格式：枚举输出、json递进、日期、长数字、错误时的输出方式。
-*(10）服务器端和客户端都可指定接口返回的数据格式，如 text, xml，json, file, image, base64image 等。
-*(11）数据接口支持可空数据类型参数、默认参数。
+* (06) 带缓存机制：可指定方法返回值的缓存时间、方式; 客户端可控强制刷新缓存。
+* (07) 带鉴权机制：访问IP、动作、 是否登录、用户名、角色、Token。可自定义接口鉴权逻辑。
+* (08) 带封装机制：可将方法返回值自动包裹为 APIResult 结构体。
+* (09）可配置Json输出格式：枚举输出、json递进、日期、长数字、错误时的输出方式。
+* (10）服务器端和客户端都可指定接口返回的数据格式，如 text, xml，json, file, image, base64image 等。
+* (11）数据接口支持可空数据类型参数、默认参数。
 
 ## 2.作者
 ```

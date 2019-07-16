@@ -1,35 +1,35 @@
 ﻿# App.HttpApi
 
 
-
 ## 1.说明
 
-* 一种轻量的提供数据接口的框架，可作为 WebAPI 的替代方案
-* 可将类中的方法暴露为http接口，如：
+*(01) 一种轻量的提供数据接口的框架，可作为 WebAPI 的替代方案。
+*(02) 可将类中的方法暴露为http接口，如：
 ```
 http://.../HttpApi/TypeName/Method?p1=x&p2=x
 ```
-* 可将页面类中的方法暴露为http接口，如：
+*(03) 可将页面类中的方法暴露为http接口，如：
 ```
 http://.../Page1.aspx/GetData?page=1&rows=2&sort=abc&order=desc
 http://.../Handler1.ashx/GetData?page=1&rows=2&sort=abc&order=desc
 ```
-* 自动生成客户端调用脚本
+*(04) 自动生成客户端调用脚本
 ```
 http://.../HttpApi/TypeName/js
 ```
-* 自动生成API清单及API接口参数展示页面
+*(05) 自动生成API清单、API接口测试页面
 ```
 HttpApi/TypeName/api
 HttpApi/TypeName/apis
-HttpApi/TypeName/Method_
+HttpApi/TypeName/Method$
 ```
 
-* 带缓存机制：可指定方法返回值的缓存时间、方式
-* 带鉴权机制：访问IP、动作、 是否登录、用户名、角色、安全码。可自定义接口鉴权逻辑。
-* 带封装机制：可将方法返回值自动包裹为 DataResult 结构体
-* 可配置Json输出格式：枚举输出、json递进、日期、错误时的输出方式
-* 服务器端和客户端都可指定接口返回的数据格式，如text, xml，json, file, image, base64image 等
+*(06) 带缓存机制：可指定方法返回值的缓存时间、方式; 客户端可控强制刷新缓存。
+*(07) 带鉴权机制：访问IP、动作、 是否登录、用户名、角色、Token。可自定义接口鉴权逻辑。
+*(08) 带封装机制：可将方法返回值自动包裹为 APIResult 结构体。
+*(09）可配置Json输出格式：枚举输出、json递进、日期、长数字、错误时的输出方式。
+*(10）服务器端和客户端都可指定接口返回的数据格式，如 text, xml，json, file, image, base64image 等。
+*(11）数据接口支持可空数据类型参数、默认参数。
 
 ## 2.作者
 ```
@@ -89,13 +89,13 @@ Web.Config
   <section name="httpApi" type="App.HttpApi.HttpApiConfig, App.HttpApi"/>
 </configSections>
 <httpApi 
-  formatEnum="Text" 
-  formatIndented="Indented" 
-  formatDateTime="yyyy-MM-dd" 
-  formatLowCamel="false"
-  errorResponse="APIResult" 
-  apiTypePrefix="App." 
-  wrap="" 
+  formatEnum="Text"                      // 枚举输出格式: Text | Int
+  formatIndented="Indented"              // json加空格换行递进格式化后输出
+  formatDateTime="yyyy-MM-dd"            // 时间类型输出格式
+  formatLowCamel="false"                 // 是否用小字母开头驼峰方式输出
+  formatLongNumber="Int64,Decimal"       // 长数字输出为字符串，避免客户端js因为精度问题出错
+  errorResponse="APIResult"              // 错误时的输出：APIResult | HttpError
+  apiTypePrefix="App."                   // 可省略的API前缀，如原始路径为 /HttpAPI/App.Base/Demo 可简化为 /HttpApi/Base/Demo
   />
 ```
 
@@ -108,10 +108,10 @@ Web.Config
 [Script(CacheDuration =0, ClassName ="Demo", NameSpace ="App")]
 ```
 
-### (3) 自动生成 Api 介绍页面
+### (3) 自动生成 Api 列表、详情及测试页面
 ```
 http://..../HttpApi/Demo/api
-http://..../HttpApi/Demo/HelloWorld_
+http://..../HttpApi/Demo/HelloWorld$
 ```
 可附上标签，显示 Api 修改历史/参数信息/输出类型/缓存等
 ```
@@ -129,7 +129,28 @@ public class Demo
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Apis.png?raw=true)
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Api.png?raw=true)
 
-### (4) 指定 HttpApi 方法的输出类型
+
+### （4） 缓存控制
+```
+[HttpApi("输出系统时间", CacheSeconds=30)]
+public DateTime GetTime()
+{
+    return System.DateTime.Now;
+}
+```
+
+调用时数据将会缓存30秒再刷新：
+```
+/HttpAPI/Common/GetTime
+```
+
+如果需要强制刷新缓存，可增加一个_refresh参数，常用于接口调测用。如:
+```
+/HttpAPI/Common/GetTime?_refresh=true
+```
+
+
+### (5) 输出类型数据类型控制
 服务器端指定输出类型
 ```
 [HttpApi("...", Type = ResponseType.JSON)]
@@ -143,50 +164,147 @@ public class Demo
 [HttpApi("...", Type = ResponseType.BinaryFile)]
 ```
 
-客户端指定输出类型
+客户端指定输出类型为xml
 ```
-http://...../HttpApi/Demo/HelloWorld?info=x&_type=xml
+http://...../HttpApi/Demo/HelloWorld?_type=xml
+```
+
+该接口将输出 XML：
+```
+<APIResult>
+    <Result>True</Result>
+    <Info>获取成功</Info>
+    <CreateDt>2019-07-16 10:26:30</CreateDt>
+    <Data>Hello world!</Data>
+    <Extra/>
+</APIResult>
+```
+
+### （6） 访问鉴权控制
+
+#### 常见的数据接口安全性策略及HttpAPI解决方案
+
+- 用 Https 传输接口数据：从网络层上着手，避免交互数据被监听、篡改。
+- 完全公开的接口：这种接口无需任何鉴权即可调用。这种方式现在很少见了，仅用于内部系统。
+- 安全参数保护的接口：访问者必须事先和接口提供网站约定安全参数，访问者调用接口时必须附上该安全参数。HttpAPI可用 AuthToken 方式实现。
+- 动态授权访问的接口：是方法2的升级版本，此时的安全参数是动态分配且有时间限制的（通常由appid+appsecret+timestamp生成，也就是常见的oauth token机制）。HttpAPI可用 AuthToken 方式实现。
+- 需要登陆访问的接口：如获取自己的订单，该类接口需要先登陆生成cookie验票（包含用户及角色信息），访问此类接口需带上cookie，服务器端解析该cookie以判断当前访问者的登陆状态、名称、角色等信息。HttpApi可用AuthLogin、AuthUser、AuthRole方式实现。
+- 其它限制：如访问IP、访问频率、访问动作等HttpAPI都有相应处理方法。
+
+
+#### HttpAPI支持以下标签来控制接口访问鉴权
+
+```
+[HttpApi("...", AuthVerbs="Get,Post")]      // 校验访问动作
+[HttpApi("...", AuthLogin=true)]            // 校验登陆状态
+[HttpApi("...", AuthUsers="A,B")]           // 校验登陆用户名
+[HttpApi("...", AuthRoles="A,B")]           // 校验登陆用户角色
+[HttpApi("...", AuthIP=true)]               // 校验IP
+[HttpApi("...", AuthToken=true)]            // 校验Token
+```
+
+#### 登陆状态、用户名、角色的鉴权
+```
+[HttpApi("登录")]
+public string Login()
+{
+    AuthHelper.Login("Admin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
+    System.Threading.Thread.Sleep(200);
+    return "访问成功（已登录）";
+}
+
+[HttpApi("注销")]
+public string Logout()
+{
+    AuthHelper.Logout();
+    System.Threading.Thread.Sleep(200);
+    return "注销成功";
+}
+
+[HttpApi("用户必须登录后才能访问该接口，若无授权则返回401错误", AuthLogin=true)]
+public string LimitLogin()
+{
+    System.Threading.Thread.Sleep(200);
+    return "访问成功（已登录）";
+}
+
+[HttpApi("限制用户访问，若无授权则返回401错误", AuthUsers = "Admin,Kevin")]
+public string LimitUser()
+{
+    System.Threading.Thread.Sleep(200);
+    return "访问成功（限制用户Admin,Kevin）";
+}
+
+[HttpApi("限制角色访问，若无授权则返回401错误", AuthRoles = "Admins")]
+public string LimitRole()
+{
+    System.Threading.Thread.Sleep(200);
+    return "访问成功（限制角色Admins）";
+}
 ```
 
 
-### （5） 访问鉴权
-由标签控制访问鉴权
-```
-[HttpApi("...", AuthVerbs="Get,Post")]
-[HttpApi("...", AuthLogin=true)]
-[HttpApi("...", AuthUsers="A,B")]
-[HttpApi("...", AuthRoles="A,B")]
-[HttpApi("...", AuthIP=true)]
-[HttpApi("...", AuthSecurityCode=true)]
-```
-出于灵活性考虑，AuthIP和AuthSecurityCode需要编写自定义访问鉴权代码（如从数据库中获取授权IP和安全码进行校对）：
+
+#### AuthToken 及 AuthIP 的实现
+
+出于灵活性和统一性考虑，这两种方法需要编写自定义访问鉴权代码（如从数据库中获取授权IP和token进行校对），示例代码如下：
+
 ```
 public class Global : System.Web.HttpApplication
 {
-
     protected void Application_Start(object sender, EventArgs e)
     {
-        // HttpApi 自定义访问校验（安全码存在 Params["securityCode"] 中)
-        HttpApiConfig.Instance.OnAuth += (ctx, method, attr, ip, securityCode) =>
+        // HttpApi 自定义访问校验
+        HttpApiConfig.Instance.OnAuth += (ctx, method, attr, ip, token) =>
         {
-            Debug.WriteLine(string.Format("IP={0}, User={1}, SecurityCode={2}, Method={3}.{4}, AuthIP={5}, AuthSecurityCode={6}, AuthLogin={7}, AuthUsers={8}, AuthRoles={9}",
+            Debug.WriteLine(string.Format("IP={0}, User={1}, Token={2}, Method={3}.{4}, AuthIP={5}, AuthToken={6}, AuthLogin={7}, AuthUsers={8}, AuthRoles={9}",
                 ip,
                 ctx.User?.Identity.Name,
                 securityCode,
                 method.DeclaringType.FullName,
                 method.Name,
                 attr.AuthIP,
-                attr.AuthSecurityCode,
+                attr.AuthToken,
                 attr.AuthLogin,
                 attr.AuthUsers,
                 attr.AuthRoles
                 ));
-            return null;
+            if (attr.AuthIP && !CheckIP(ip))
+                throw new HttpApiException("该IP禁止访问本接口", 401);
+            if (attr.AuthToken && !CheckToken(token))
+                throw new HttpApiException("请核对授权token", 401);
+            // 其它自定义的鉴权逻辑，如访问频率等。如果鉴权失败，抛出HttpApiException即可。
         };
     }
 }
 ```
-### （6） 更多可控参数
+
+
+### （7） 统一的接口数据格式 APIResult
+
+我们常常将接口吐出的数据统一格式，便于客户端调用，HttpAPI中内置了APIResult结构体，可在输出时指定。
+
+```
+[HttpApi("输出系统时间")]
+public APIResult GetTime()
+{
+    return new APIResult(true, "操作成功", System.DateTime.Now);
+}
+```
+
+输出格式为
+```
+{
+    Result: true,
+    Info: "操作成功",
+    CreateDt: "2019-07-16 10:24:14",
+    Data: '2019-01-01',
+    Extra: {...}
+}
+```
+
+
+### （8） 更多可控参数
 ```
 /// <summary>描述信息</summary>
 public string Description { get; set; }
@@ -196,12 +314,6 @@ public string Example { get; set; }
 
 /// <summary>备注</summary>
 public string Remark { get; set; }
-
-/// <summary>缓存的秒数。默认为0，即没有任何缓存。</summary>
-public int CacheSeconds { get; set; } = 0;
-
-/// <summary>缓存位置（默认服务器和客户端都缓存）</summary>
-public HttpCacheability CacheLocation { get; set; } = HttpCacheability.ServerAndPrivate;
 
 /// <summary>导出文件的MIME类别</summary>
 public string MimeType { get; set; }
@@ -218,6 +330,7 @@ public string WrapCondition { get; set; }
 /// <summary>状态（Testing, Published, Deprecated)</summary>
 public ApiStatus Status { get; set; }
 ```
+
 
 ## 6.更多示例
 ```
@@ -320,47 +433,6 @@ public Image GetImage(string text)
     return bmp;
 }
 
-//---------------------------------------------
-// 控制访问权限
-//---------------------------------------------
-[HttpApi("登录")]
-public string Login()
-{
-    AuthHelper.Login("Admin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
-    System.Threading.Thread.Sleep(200);
-    return "访问成功（已登录）";
-}
-
-[HttpApi("注销")]
-public string Logout()
-{
-    AuthHelper.Logout();
-    System.Threading.Thread.Sleep(200);
-    return "注销成功";
-}
-
-
-[HttpApi("用户必须登录后才能访问该接口，若无授权则返回401错误", AuthLogin=true)]
-public string LimitLogin()
-{
-    System.Threading.Thread.Sleep(200);
-    return "访问成功（已登录）";
-}
-
-[HttpApi("限制用户访问，若无授权则返回401错误", AuthUsers = "Admin,Kevin")]
-public string LimitUser()
-{
-    System.Threading.Thread.Sleep(200);
-    return "访问成功（限制用户Admin,Kevin）";
-}
-
-[HttpApi("限制角色访问，若无授权则返回401错误", AuthRoles = "Admins")]
-public string LimitRole()
-{
-    System.Threading.Thread.Sleep(200);
-    return "访问成功（限制角色Admins）";
-}
-
 
 //---------------------------------------------
 // 自定义类
@@ -402,26 +474,29 @@ public static Person GetPersonDataResult()
     return new Person() { Name = "Kevin" };
 }
 
-[HttpApi("返回DataResult对象")]
-public static DataResult GetPersons()
+[HttpApi("返回APIResult对象")]
+public static APIResult GetPersons()
 {
     var persons = new List<Person>(){
         new Person(){ Name="Kevin", Sex=Sex.Male, Birth=new DateTime(2000, 01, 01)},
         new Person(){ Name="Cherry", Sex=Sex.Female, Birth=new DateTime(2010, 01, 01)}
     };
-    return new DataResult(true, "", persons);
+    return new APIResult(true, "", persons);
 }
 ```      
 
 ## 7.History
 - 2012-08  初版
-- 2014-06  支持默认参数；增加问授权（角色、用户、登录）；错误输出可控（DataResult 或 HTTP ERROR）
+- 2014-06  支持默认参数；增加问授权（角色、用户、登录）；错误输出可控（APIResult 或 HTTP ERROR）
 - 2016-06  增加api展示窗口，修正Image方式输出故障
 - 2017-11  简化和优化 HttpApiAttribute，可选缓存方式
 - 2017-12  Nuget发布：install-package App.HttpApi，增加 HttpApiConfig 配置节
 - 2018-10  增加自定义鉴权事件；实现Api展示页面；用配置节控制Json输出格式；简化访问路径；完善xml输出
 - 2018-11  默认参数可为空也可不填写；可空类型参数可为空也可不填写；可在api介绍页面上输出枚举类型成员信息；
 - 2019-03  Api 测试页面（填写参数；选择方法Get/Post；发送请求；显示输出结果）
+- 2019-06  客户端可控强制刷新缓存（url参数中增加 _refresh=true）
+- 2019-07  长数字类型可控输出为文本，避免客户端js因为精度问题导致的各种错误。
+
 
 ## 8.项目目标
 - WebAPI的一些限制：http://blog.csdn.net/leeyue_1982/article/details/51305950

@@ -150,7 +150,7 @@ public DateTime GetTime()
 ```
 
 
-### (5) 输出类型数据类型控制
+### (5) 输出数据类型控制
 服务器端指定输出类型
 ```
 [HttpApi("...", Type = ResponseType.JSON)]

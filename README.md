@@ -499,12 +499,12 @@ public static APIResult GetPersons()
 
 ## 8.截图
 
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apicode?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apilist?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apidetail?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apiresult?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apixml?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/auth?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apicode.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apilist.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apidetail.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apiresult.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apixml.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/auth.png?raw=true)
 
 
 ## 9.参考

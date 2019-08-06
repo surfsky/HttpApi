@@ -321,6 +321,8 @@ namespace App.HttpApi
 
         public static object ToBasicObject(object o, Type type)
         {
+            return o.ToString().ParseBasicType(type);
+            /*
             if (type.IsSubclassOf(typeof(Enum)))
                 return Enum.Parse(type, o.ToString());
 
@@ -343,6 +345,7 @@ namespace App.HttpApi
                 default:
                     return o;
             }
+            */
         }
 
 

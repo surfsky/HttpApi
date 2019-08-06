@@ -112,23 +112,33 @@ namespace App.HttpApi
         public static string GetRequestTypeName()
         {
             var path = HttpContext.Current.Request.FilePath;
+            var u = HttpContext.Current.Request.Url.AbsolutePath;
+            var url = u.ToString().ToLower();
 
-            // 去头
+            // 以 /HttpApi/Type/Method 方式调用
             if (path.ToLower().StartsWith("/httpapi"))
+            {
+                // 去头尾
                 path = path.Substring(9);
+                int n = path.LastIndexOf("/");
+                if (n != -1)
+                    path = path.Substring(0, n);
 
-            // 去尾
-            int n = path.LastIndexOf("/");
-            if (n != -1)
-                path = path.Substring(0, n);
+                // 如果类名用的是简写，加上前缀
+                if (path.IndexOf(".") == -1)
+                    path = HttpApiConfig.Instance.ApiTypePrefix + path;
 
-            // 如果类名用的是简写，加上前缀
-            if (path.IndexOf(".") == -1)
-                path = HttpApiConfig.Instance.ApiTypePrefix + path;
-
-            // 用点来串联
-            var typeName = path.Replace('-', '.').Replace('_', '.');
-            return typeName;
+                // 用点来串联
+                var typeName = path.Replace('-', '.').Replace('_', '.');
+                return typeName;
+            }
+            else
+            {
+                // 找到页面对应处理类（未完成）
+                var typeName = path;
+                return typeName;
+            }
+            return "";
         }
 
         // 预处理保留方法（"js", "jq", "ext", "api", "apis"）
@@ -227,8 +237,6 @@ namespace App.HttpApi
 
             // 自定义鉴权
             string token = context.Request.Params["token"];
-            if (token.IsEmpty())
-                token = context.Request.Params["securityCode"];
             instance.DoAuth(context, method, attr, token);
         }
 
@@ -419,7 +427,7 @@ namespace App.HttpApi
                     desc,
                     ReflectHelper.GetTypeString(p.ParameterType),
                     ReflectHelper.GetTypeSummary(p.ParameterType),
-                    p.DefaultValue?.ToString()
+                    GetObjectString(p.DefaultValue)
                     ));
             }
             if (authToken)
@@ -427,6 +435,15 @@ namespace App.HttpApi
             return items;
         }
 
+        // 获取对象字符串
+        static string GetObjectString(object o)
+        {
+            if (o == null)
+                return "Null";
+            if (o is string && (o as string)== "")
+                return "\"\"";
+            return o.ToString();
+        }
 
     }
 }

@@ -19,24 +19,22 @@ namespace App.HttpApi
         static string BuildCss()
         {
             return @"
-                <style>
-                table {border-collapse: collapse}
-                tr:first-child {background: #f2f2f2;}
-                input[type=""text""] {background-color: #f2f2f2;}
-                input[type=""submit""] {
-                    width: 120px;
-                    height: 28px;
-                    background-color: #68c9e8;
-                    border-radius: 5px;
-                    color: white;
-                    border: none;
-                    font-size: 14;
-                }
-                input[type=""submit""]:hover {
-                    cursor: hand
-                }
-                </style>
-            ";
+<head>
+    <meta charset=""utf-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1"">
+    <link rel=""stylesheet"" href=""https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css"">
+    <script src=""https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js""></script>
+    <script src=""https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js""></script>
+    <script src=""https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js""></script>
+    <style>
+        body {padding: 20px;}
+        h1 {font-size:1.8rem;}
+        h2 {font-size:1.6rem;}
+        h3 {font-size:1.4rem;}
+        form {width: 100%;}
+    </style>
+</head>
+    ";
         }
 
         /// <summary>
@@ -54,22 +52,23 @@ namespace App.HttpApi
             }
 
             // 接口清单
-            sb.AppendLine("<table border='1' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendLine(@"<tr>
-                <td width='200'>接口名</td>
-                <td width='200'>说明</td>
-                <td width='70'>返回类型</td>
-                <td width='70'>缓存(秒)</td>
-                <td width='70'>校验IP</td>
-                <td width='80'>校验Token</td>
-                <td width='70'>校验登录</td>
-                <td width='70'>校验用户</td>
-                <td width='70'>校验角色</td>
-                <td width='70'>校验动作</td>
-                <td width='70'>访问日志</td>
-                <td width='70'>状态</td>
+            sb.AppendLine("<br/>");
+            sb.AppendLine("<table class='table table-sm table-hover'>");
+            sb.AppendLine(@"<thead><tr>
+                <td>接口名</td>
+                <td>说明</td>
+                <td>返回类型</td>
+                <td>缓存(秒)</td>
+                <td>校验IP</td>
+                <td>校验Token</td>
+                <td>校验登录</td>
+                <td>校验用户</td>
+                <td>校验角色</td>
+                <td>校验动作</td>
+                <td>访问日志</td>
+                <td>状态</td>
                 <td>备注</td>
-                </tr>");
+                </tr></thead>");
             foreach (var api in typeapi.Apis)
             {
                 sb.AppendFormat("<tr>");
@@ -108,21 +107,21 @@ namespace App.HttpApi
             sb.AppendFormat("<div>{0}</div></br>", api.Example);
 
             // 属性
-            sb.AppendFormat("<h2>属性</h2>");
-            sb.AppendLine("<table border='1'  width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendLine(@"<tr>
-                <td width='70'>返回类型</td>
-                <td width='70'>缓存(秒)</td>
-                <td width='70'>校验IP</td>
-                <td width='80'>校验Token</td>
-                <td width='70'>校验登录</td>
-                <td width='70'>校验用户</td>
-                <td width='70'>校验角色</td>
-                <td width='70'>校验动作</td>
-                <td width='70'>访问日志</td>
-                <td width='70'>状态</td>
+            sb.AppendFormat("<h3>属性</h3><br/>");
+            sb.AppendLine("<table class='table table-sm table-hover'>");
+            sb.AppendLine(@"<thead><tr>
+                <td>返回类型</td>
+                <td>缓存(秒)</td>
+                <td>校验IP</td>
+                <td>校验Token</td>
+                <td>校验登录</td>
+                <td>校验用户</td>
+                <td>校验角色</td>
+                <td>校验动作</td>
+                <td>访问日志</td>
+                <td>状态</td>
                 <td>备注</td>
-                </tr>");
+                </tr></thead>");
             sb.AppendFormat("<tr>");
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.ReturnType);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.CacheDuration);
@@ -139,33 +138,11 @@ namespace App.HttpApi
             sb.AppendLine("</table>");
 
             // 参数
-            sb.AppendFormat("<h2>参数</h2>");
+            sb.AppendFormat("<h3>参数</h3>");
             sb.Append(BuildApiTestHtml(api));
             return sb.ToString();
         }
 
-        /// <summary>
-        /// 构造API参数页面
-        /// </summary>
-        static string BuildApiParamsHtml(API api)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine(BuildCss());
-            sb.AppendFormat("<br/><table border='1' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendFormat("<tr><td width='100'>参数名</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr>");
-            foreach (var p in api.Params)
-            {
-                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
-                    , p.Name
-                    , p.Description
-                    , p.Type
-                    , p.Info
-                    , p.DefaultValue
-                    );
-            }
-            sb.AppendFormat("</tr></table>");
-            return sb.ToString();
-        }
 
         /// <summary>
         /// 构造API测试页面
@@ -174,11 +151,11 @@ namespace App.HttpApi
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("<form action='{0}' method='post'>", api.Url.TrimEnd('_', '$', '!'));
-            sb.AppendFormat("<br/><table border='1'  width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendFormat("<tr><td width='100'>参数名</td><td>值</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr>");
+            sb.AppendFormat("<br/><table class='table table-sm table-hover'>");
+            sb.AppendFormat("<thead><tr><td>参数名</td><td>值</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr></thead>");
             foreach (var p in api.Params)
             {
-                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td><input type='text' name='{0}' style='width:200px; border:none'/></td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
+                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td><input type='text' name='{0}' class='form-control form-control-sm'/></td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
                     , p.Name
                     , p.Description
                     , p.Type
@@ -187,7 +164,7 @@ namespace App.HttpApi
                     );
             }
             sb.AppendFormat("</tr></table>");
-            sb.AppendFormat("<input type='submit' value='提 交' style='margin-top:30px' />");
+            sb.AppendFormat("<input type='submit' value='提 交' class='btn btn-primary btn-sm' />");
             sb.AppendFormat("</form>");
             return sb.ToString();
         }

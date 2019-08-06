@@ -96,6 +96,9 @@
     <Content Include="Task.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Css\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\App.Core\App.Core-github\App.Core\App.Core.csproj">
       <Project>{c887d0a1-20f6-44da-87df-ea8d45ace744}</Project>
       <Name>App.Core</Name>

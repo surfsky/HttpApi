@@ -785,3 +785,79 @@
 
                 sb.AppendFormat("</{0}>", field.Name);
 
+
+
+				        /// <summary>
+        /// 构造API参数页面
+        /// </summary>
+        static string BuildApiParamsHtml(API api)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(BuildCss());
+            sb.AppendFormat("<br/><table class='table table-sm'>");
+            sb.AppendFormat("<thead><tr><td width='100'>参数名</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr></thead>");
+            foreach (var p in api.Params)
+            {
+                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
+                    , p.Name
+                    , p.Description
+                    , p.Type
+                    , p.Info
+                    , p.DefaultValue
+                    );
+            }
+            sb.AppendFormat("</tr></table>");
+            return sb.ToString();
+        }
+ style='width:200px; border:none'
+
+
+                 <td width='70'>返回类型</td>
+                <td width='70'>缓存(秒)</td>
+                <td width='70'>校验IP</td>
+                <td width='80'>校验Token</td>
+                <td width='70'>校验登录</td>
+                <td width='70'>校验用户</td>
+                <td width='70'>校验角色</td>
+                <td width='70'>校验动作</td>
+                <td width='70'>访问日志</td>
+                <td width='70'>状态</td>
+                <td>备注</td>
+
+				            sb.AppendLine(@"<thead><tr>
+                <td width='200'>接口名</td>
+                <td width='200'>说明</td>
+                <td width='70'>返回类型</td>
+                <td width='70'>缓存(秒)</td>
+                <td width='70'>校验IP</td>
+                <td width='80'>校验Token</td>
+                <td width='70'>校验登录</td>
+                <td width='70'>校验用户</td>
+                <td width='70'>校验角色</td>
+                <td width='70'>校验动作</td>
+                <td width='70'>访问日志</td>
+                <td width='70'>状态</td>
+                <td>备注</td>
+                </tr></thead>");
+
+				            /*
+            return @"
+                <style>
+                table {border-collapse: collapse}
+                tr:first-child {background: #f2f2f2;}
+                input[type=""text""] {background-color: #f2f2f2;}
+                input[type=""submit""] {
+                    width: 120px;
+                    height: 28px;
+                    background-color: #68c9e8;
+                    border-radius: 5px;
+                    color: white;
+                    border: none;
+                    font-size: 14;
+                }
+                input[type=""submit""]:hover {
+                    cursor: hand
+                }
+                </style>
+            ";
+            */

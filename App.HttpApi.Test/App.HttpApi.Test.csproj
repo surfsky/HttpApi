@@ -70,8 +70,9 @@
   <ItemGroup>
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="js\jquery-1.8.0.js" />
-    <Content Include="js\jquery-1.8.0.min.js" />
+    <Content Include="Res\css\site.css" />
+    <Content Include="Res\js\jquery-1.8.0.js" />
+    <Content Include="Res\js\jquery-1.8.0.min.js" />
     <Content Include="TestAuth.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -82,28 +83,29 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="CallPage.aspx" />
-    <Content Include="CallClass.aspx" />
-    <Content Include="CallJquery.aspx" />
-    <Content Include="CallJs.aspx" />
-    <Content Include="CallExt.aspx" />
     <Content Include="TestPage.aspx" />
+    <Content Include="TestAPI.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Component\DemoClass.cs" />
-    <Compile Include="App_Code\DemoClass2.cs" />
+    <Compile Include="API\Demo.cs" />
+    <Compile Include="API\Person.cs" />
+    <Compile Include="App_Code\Demo2.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestHandler.ashx" />
+    <Content Include="DemoHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\App.Core\App.Core-github\App.Core\App.Core.csproj">
+      <Project>{c887d0a1-20f6-44da-87df-ea8d45ace744}</Project>
+      <Name>App.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\App.HttpApi\App.HttpApi.csproj">
       <Project>{f74d6b50-ef4d-4521-a7d5-d5cac6422f24}</Project>
       <Name>App.HttpApi</Name>

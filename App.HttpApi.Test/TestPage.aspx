@@ -1,18 +1,12 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" ClassName="App.TestPage" Inherits="App.HttpApi.HttpApiPageBase" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" ClassName="App.DemoPage" Inherits="App.HttpApi.HttpApiPageBase" %>
 <%@ Import Namespace="App.HttpApi" %>
 <script runat="server">
-    [HttpApi("Hello", Type = ResponseType.Text)]
+    [HttpApi("Hello", Type = App.HttpApi.ResponseType.Text)]
     public static string HelloWorld(string info)
     {
         System.Threading.Thread.Sleep(200);
-        return "Hello world : " + info;
-        //return DemoClass.GetStaticObject().ToString();  // cool，直接调用动态编译文件的方法
-    }
-
-    [HttpApi(Type = ResponseType.Text)]
-    public DateTime GetTime()
-    {
-        return System.DateTime.Now;
+        object o = Demo.GetStaticObject();
+        return o.ToString();
     }
 </script>
 
@@ -20,22 +14,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1" runat="server">
     <title></title>
-    <script type="text/javascript" src="js/jquery-1.8.0.js"></script>
-</head>
-<body>
-    <form id="form1" runat="server">
-        <h1>HttpApiHttpPage测试</h1>
-        <pre>
-        </pre>
-        <div id="clickMe" style="background:lightblue;">click me</div>
-    </form>
+    <link href="/res/css/site.css" rel="stylesheet" />
+    <script type="text/javascript" src="/res/js/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="/HttpApi/DemoPage/js"></script>
     <script type="text/javascript">
         $(function () {
             $("#clickMe").click(function () {
-                var o = App.TestPage.GetTime();
-                App.TestPage.HelloWorld("...kevin...", function (data) { }, "clickMe");
+                App.DemoPage.HelloWorld("Kevin", function (data) { }, "clickMe");
             });
         });
     </script>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <h1>调用 aspx 类方法</h1>
+        <div id="clickMe" class="btn">click me</div>
+    </form>
 </body>
 </html>

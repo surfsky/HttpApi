@@ -11,7 +11,7 @@ namespace App.HttpApi
     /// 
     /// Aspx页面提供web方法调用的3个解决方案：
     /// （1）客户端post请求，不加上Content-Type参数
-    /// （2）服务器端注册自己的httpModule（参考老的 Kingsoc.Web.WebMethod 项目），麻烦
+    /// （2）服务器端注册自己的httpModule
     /// （3）统一用 App.HttpApi.HttpApiHandler 来实现，手工写js引用
     /// 
     /// 建议统一用方案（3）

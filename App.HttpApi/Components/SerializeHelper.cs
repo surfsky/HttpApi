@@ -32,7 +32,7 @@ namespace App.HttpApi
         // 可处理的数据类型
         public override bool CanConvert(Type objectType)
         {
-            var typeCode = objectType.GetRealType().GetTypeCode();
+            var typeCode = Type.GetTypeCode(objectType.GetRealType());
             return _types.Contains(typeCode);
         }
 

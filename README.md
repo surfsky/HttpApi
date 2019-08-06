@@ -48,6 +48,9 @@ Nuget: install-package App.HttpApi
 App.Core.dll
 App.HttpApi.dll
 ```
+注：App.HttpApi 引用了 App.Core 类库，用到其：
+- ASP.NET 建权验票相关方法
+- 类型解析相关方法
        
 (2) 修改 web.config 文件（用nuget安装的话会自动修改）
 ```
@@ -493,33 +496,73 @@ public static APIResult GetPersons()
 - WebAPI 要想实现我的目标，有很大的代码工作量，故全新开发本框架。
 
 
-## 8.History
-- 2012-08  初版
-- 2014-06  支持默认参数；增加问授权（角色、用户、登录）；错误输出可控（APIResult 或 HTTP ERROR）
-- 2016-06  增加api展示窗口，修正Image方式输出故障
-- 2017-11  简化和优化 HttpApiAttribute，可选缓存方式
-- 2017-12  Nuget发布：install-package App.HttpApi，增加 HttpApiConfig 配置节
-- 2018-10  增加自定义鉴权事件；实现Api展示页面；用配置节控制Json输出格式；简化访问路径；完善xml输出
-- 2018-11  默认参数可为空也可不填写；可空类型参数可为空也可不填写；可在api介绍页面上输出枚举类型成员信息；
-- 2019-03  Api 测试页面（填写参数；选择方法Get/Post；发送请求；显示输出结果）
-- 2019-06  客户端可控强制刷新缓存（url参数中增加 _refresh=true）
-- 2019-07  长数字类型可控输出为文本，避免客户端js因为精度问题导致的各种错误。
+
+## 8.截图
+
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apicode?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apilist?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apidetail?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apiresult?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apixml?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/auth?raw=true)
 
 
-## 9.任务
-- XML 格式控制：属性/成员、递进、大小写等
-- 写一个动态token的接口调用示例
-
-## 10.参考
+## 9.参考
 - http://www.cnblogs.com/wzcheng/archive/2010/05/20/1739810.html
 
 
-## 11.截图
 
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Apis?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Api?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Auth?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/ExportJson.png?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/ExportXml.png?raw=true)
 
+## 10.任务
+- 以 Page.aspx/Method 或 Handler.ashx/Method 方式调用（未完成）
+- 写一个动态token的接口调用示例
+- XML 格式控制：属性/成员、递进、大小写等
+
+
+## 11.History
+2012-08  
+- 初版
+
+2014-06
+- 支持默认参数；
+- 增加问授权（角色、用户、登录）；
+- 错误输出可控（APIResult 或 HTTP ERROR）
+
+2016-06  
+- 增加api展示窗口
+- 修正Image方式输出故障
+
+2017-11  
+- 简化和优化 HttpApiAttribute
+- 可选缓存方式
+
+2017-12  
+- Nuget发布：install-package App.HttpApi
+- 增加 HttpApiConfig 配置节
+
+2018-10  
+- 增加自定义鉴权事件；
+- 实现Api展示页面；
+- 用配置节控制Json输出格式；
+- 简化访问路径；
+- 完善 XML 输出；
+
+2018-11  
+- 默认参数可为空也可不填写；
+- 可空类型参数可为空也可不填写；
+- 可在 API 介绍页面上输出枚举类型成员信息；
+
+2019-03  
+- 实现Api 测试页面（填写参数；选择方法Get/Post；发送请求；显示输出结果）
+
+2019-06  
+- 客户端可控强制刷新缓存（url参数中增加 _refresh=true）
+
+2019-07  
+- 长数字类型可控输出为文本，避免客户端js因为精度问题导致的各种错误。
+
+2019-08
+- 应用 Bootstrap 样式
+- 简化和修正 Demo 项目。
+- 修正复杂参数可空类型转换异常BUG：Demo.CreateGirl(Person father)
 

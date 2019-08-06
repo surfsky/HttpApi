@@ -14,24 +14,19 @@ namespace Test
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            // HttpApi 自定义访问校验（安全码存在 QueryString["securityCode"] 中)
-            HttpApiConfig.Instance.OnAuth += (ctx, method, attr, ip, securityCode) =>
+            // HttpApi 自定义访问校验
+            HttpApiConfig.Instance.OnAuth += (ctx, method, attr, token) =>
             {
-                Debug.WriteLine(string.Format("IP={0}, User={1}, SecurityCode={2}, Method={3}.{4}, AuthIP={5}, AuthSecurityCode={6}, AuthLogin={7}, AuthUsers={8}, AuthRoles={9}",
-                    ip,
-                    ctx.User?.Identity.Name,
-                    securityCode,
-                    method.DeclaringType.FullName,
-                    method.Name,
-                    attr.AuthIP,
-                    attr.AuthSecurityCode,
-                    attr.AuthLogin,
-                    attr.AuthUsers,
-                    attr.AuthRoles
-                    ));
-                return null;
+                if (attr.AuthToken && !CheckToken(token))
+                    throw new HttpApiException(404, "Token failure.");
             };
+        }
 
+        /// <summary>检测 API 访问验票</summary>
+        private bool CheckToken(string token)
+        {
+            // 填写自己的验票检测逻辑
+            return true;
         }
 
         protected void Session_Start(object sender, EventArgs e)

@@ -504,7 +504,7 @@ public static APIResult GetPersons()
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apidetail.png?raw=true)
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apiresult.png?raw=true)
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apixml.png?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/auth.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/testauth.png?raw=true)
 
 
 ## 9.参考

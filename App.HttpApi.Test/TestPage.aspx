@@ -1,12 +1,11 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" ClassName="App.DemoPage" Inherits="App.HttpApi.HttpApiPageBase" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" ClassName="App.TestPage"  %>
 <%@ Import Namespace="App.HttpApi" %>
 <script runat="server">
     [HttpApi("Hello", Type = App.HttpApi.ResponseType.Text)]
     public static string HelloWorld(string info)
     {
         System.Threading.Thread.Sleep(200);
-        object o = Demo.GetStaticObject();
-        return o.ToString();
+        return "Hello : " + info;
     }
 </script>
 
@@ -16,11 +15,13 @@
     <title></title>
     <link href="/res/css/site.css" rel="stylesheet" />
     <script type="text/javascript" src="/res/js/jquery-1.8.0.js"></script>
-    <script type="text/javascript" src="/HttpApi/DemoPage/js"></script>
+
+    <!--script type="text/javascript" src="/HttpApi/TestPage/js"></!--script-->
+    <script type="text/javascript" src="/TestPage.aspx/js"></script>
     <script type="text/javascript">
         $(function () {
             $("#clickMe").click(function () {
-                App.DemoPage.HelloWorld("Kevin", function (data) { }, "clickMe");
+                App.TestPage.HelloWorld("Kevin", null, "clickMe");
             });
         });
     </script>

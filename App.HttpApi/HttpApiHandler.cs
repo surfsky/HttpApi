@@ -3,6 +3,8 @@ using System.Web;
 using System.Web.Caching;
 using System.Web.SessionState;
 using System.Reflection;
+using System.Web.UI;
+using System.Collections.Generic;
 
 namespace App.HttpApi
 {
@@ -10,10 +12,7 @@ namespace App.HttpApi
     /// Web方法调用，可调用任何类（包括动态编译的）中标记了[HttpApi]特性标签的方法。
     /// </summary>
     /// <example>
-    /// (1)注册: 
-    ///     &lt;httpHandlers&gt;
-    ///         &lt;add verb=&quot;*&quot; path=&quot;HttpApi-*.axd&quot; type=&quot;App.HttpApi.WebMethodCallerHandler&quot;/&gt;
-    ///     &lt;/httpHandlers&gt;
+    /// (1)注册 HttpApiModule: 
     /// (2)编写类：
     ///     using System;
     ///     using System.Collections.Generic;
@@ -38,8 +37,9 @@ namespace App.HttpApi
     ///         }
     ///     }
     /// (2)使用: 
-    ///     查看js：  HttpApi.App.MyClass.axd/js
-    ///     调用函数：HttpApi.App.MyClass.axd/HelloWorld?info=xxx
+    ///     查看js：  HttpApi/App.MyClass/js
+    ///     查看api： HttpApi/App.MyClass/api
+    ///     调用函数：HttpApi/App.MyClass/HelloWorld?info=xxx
     /// </example>
     public class HttpApiHandler : IHttpHandler, IRequiresSessionState
     {
@@ -58,12 +58,31 @@ namespace App.HttpApi
         //----------------------------------------------
         public static void HandlerHttpApiRequest(HttpContext context)
         {
-            // 根据请求路径获取类型名：去掉扩展名；去前缀；用点运算符；
-            // 获取处理器对象（从程序集创建或从缓存获取），处理web方法调用请求。
-            var typeName = HttpApiHelper.GetRequestTypeName();
-            var handler = TryGetHandlerFromCache(typeName);
-            if (handler == null)
-                handler = TryCreateHandlerFromAssemblies(typeName);
+            var req = context.Request;
+            var uri = req.Url;
+            var url = uri.AbsolutePath.ToLower();
+            object handler = null;
+
+            // 获取处理器对象
+            if (url.StartsWith("/httpapi/"))
+            {
+                // 以 /HttpApi/Type/Method 方式调用
+                var typeName = HttpApiHelper.GetRequestTypeName();
+                handler = TryGetHandlerFromCache(typeName);
+                if (handler == null)
+                    handler = TryCreateHandlerFromAssemblies(typeName);
+            }
+            else
+            {
+                // 以 Page.aspx/Method 方式调用
+                int n = url.LastIndexOf("/");
+                url = url.Substring(0, n);
+                Type type = WebHandlerParser.GetCompiledType(url, url, context);
+                handler = Activator.CreateInstance(type);
+            }
+
+
+            // 调用处理器方法
             if (handler != null)
             {
                 HttpApiHelper.ProcessRequest(context, handler);
@@ -71,7 +90,23 @@ namespace App.HttpApi
             }
         }
 
-
+        /// <summary>页面请求处理器解析器（抄的 Asp.net 源码）</summary>
+        internal class WebHandlerParser : SimpleWebHandlerParser
+        {
+            private WebHandlerParser(HttpContext context, string virtualPath, string physicalPath) 
+                : base(context, virtualPath, physicalPath)
+            {
+            }
+            internal static Type GetCompiledType(string virtualPath, string physicalPath, HttpContext context)
+            {
+                var parser = new WebHandlerParser(context, virtualPath, physicalPath);
+                return parser.GetCompiledTypeFromCache();
+            }
+            protected override string DefaultDirectiveName
+            {
+                get {return "webhandler"; }
+            }
+        }
 
         // 加到缓存中去（若实现了IDisposal接口，则保存assembly，否则保存对象）
         static void SaveHandlerInCache(string typeName, Assembly assembly, object handler)

@@ -72,10 +72,6 @@
     <Compile Include="TypeAPI.cs" />
     <Compile Include="HttpApiHelper.cs" />
     <Compile Include="HttpApiHandler.cs" />
-    <Compile Include="HttpApiHandlerBase.cs" />
-    <Compile Include="HttpApiPageBase.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Js\extTemplate.js" />

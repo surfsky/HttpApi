@@ -1,4 +1,4 @@
-﻿<%@ WebHandler Language="C#" Class="App.DemoHandler" %>
+﻿<%@ WebHandler Language="C#" Class="App.TestHandler" %>
 
 using System;
 using System.Collections.Generic;
@@ -8,8 +8,12 @@ using App.HttpApi;
 
 namespace App
 {
-    public class DemoHandler : HttpApiHandlerBase
+    public class TestHandler : IHttpHandler
     {
+        public bool IsReusable { get { return true; } }
+        public void ProcessRequest(HttpContext context) { }
+
+
         [HttpApi(Type = ResponseType.JSON)]
         public static object GetStaticObject()
         {

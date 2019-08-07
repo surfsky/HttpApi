@@ -96,7 +96,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DemoHandler.ashx" />
+    <Content Include="TestHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

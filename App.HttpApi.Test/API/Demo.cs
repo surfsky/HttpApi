@@ -185,7 +185,7 @@ namespace App
         {
             return new Person()
             {
-                Name = father.Name + "'s dear daughter",
+                Name = father?.Name + "'s dear daughter",
                 Birth = System.DateTime.Now,
                 Sex = Sex.Female,
                 Father = father

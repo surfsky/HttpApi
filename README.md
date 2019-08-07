@@ -514,7 +514,6 @@ public static APIResult GetPersons()
 
 
 ## 10.任务
-- 以 Page.aspx/Method 或 Handler.ashx/Method 方式调用（未完成）
 - 写一个动态token的接口调用示例
 - XML 格式控制：属性/成员、递进、大小写等
 
@@ -564,5 +563,6 @@ public static APIResult GetPersons()
 2019-08
 - 应用 Bootstrap 样式
 - 简化和修正 Demo 项目。
-- 修正复杂参数可空类型转换异常BUG：Demo.CreateGirl(Person father)
+- 修正复杂参数可空类型属性转换异常BUG。
+- 简化 Page.aspx/Method 或 Handler.ashx/Method 方式调用，无需继承任何类（废除 HttpApiPageBase 和 HttpApiHandlerBase)
 

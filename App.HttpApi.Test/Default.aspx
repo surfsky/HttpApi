@@ -17,7 +17,7 @@
         <li><a target="_blank" href="HttpApi/Demo/apis">查看接口清单(json)</a></li>
         <li><a target="_blank" href="HttpApi/Demo/js">查看接口类映射到客户端的js文件</a></li>
         <li><a target="_blank" href="TestPage.aspx/js">查看Aspx文件映射到客户端的js文件</a></li>
-        <li><a target="_blank" href="DemoHandler.ashx/js">查看Ashx文件映射到客户端的js文件</a></li>
+        <li><a target="_blank" href="TestHandler.ashx/js">查看Ashx文件映射到客户端的js文件</a></li>
         <h3>方法调用</h3>
         <li><a target="_blank" href="TestAPI.aspx">调用接口类方法</a></li>
         <li><a target="_blank" href="TestPage.aspx">调用Aspx类方法</a></li>

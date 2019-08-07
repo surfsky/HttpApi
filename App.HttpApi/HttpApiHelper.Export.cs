@@ -164,7 +164,7 @@ namespace App.HttpApi
                     );
             }
             sb.AppendFormat("</tr></table>");
-            sb.AppendFormat("<input type='submit' value='提 交' class='btn btn-primary btn-sm' />");
+            sb.AppendFormat("<input type='submit' value='提   交' class='btn btn-primary btn-sm' />");
             sb.AppendFormat("</form>");
             return sb.ToString();
         }

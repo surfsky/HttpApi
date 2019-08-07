@@ -861,3 +861,57 @@
                 </style>
             ";
             */
+
+			        // 请求页面
+        private void Application_BeginRequest(object sender, EventArgs e)
+        {
+            var u = HttpContext.Current.Request.Url.AbsolutePath;
+            var url = u.ToString().ToLower();
+
+            // 以 Page.aspx/Method 或 Handler.ashx/Method 方式调用
+            if (!url.Contains("httpapi/"))
+            {
+                int m = url.LastIndexOf(".");
+                int n = url.LastIndexOf("/");
+                if (m != -1 && n != -1 && m < n)
+                {
+                    url = url.Substring(0, n);
+                    var ext = url.Substring(m);
+                    var exts = new List<string>() { ".aspx", "ashx" };
+                    if (exts.Contains(ext))
+                        HttpApiHandler.HandlerHttpApiRequest(HttpContext.Current);
+                }
+            }
+        }
+
+        private void Application_EndRequest(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+		            application.BeginRequest += Application_BeginRequest;
+            application.EndRequest += Application_EndRequest;
+
+
+			
+                int m = url.LastIndexOf(".");
+                if (m != -1 && n != -1 && m < n)
+                {
+                    var ext = url.Substring(m);
+
+                    if (ext == ".aspx")
+                    {
+                        var factory = (PageHandlerFactory)Activator.CreateInstance(typeof(PageHandlerFactory), true);
+                        handler = factory.GetHandler(HttpContext.Current, req.HttpMethod, url, url);
+                    }
+                    else if (ext == ".ashx")
+                    {
+                        //var factory = Activator.CreateInstance("System.Web.dll", "System.Web.UI.SimpleHandlerFactory", new object[] { }) as IHttpHandlerFactory;  // 无法创建
+                        //handler = factory.GetHandler(HttpContext.Current, req.HttpMethod, url, url);
+                        type = WebHandlerParser.GetCompiledType(url, url, context);
+                        handler = Activator.CreateInstance(type) as IHttpHandler;
+                    }
+                }
+
+
+

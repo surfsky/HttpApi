@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>动态 Token 示例</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/res/css/site.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/HttpApi/Demo/js"></script>
+    <style>
+        body {padding: 20px;}
+        h1 {font-size:1.8rem;}
+        h2 {font-size:1.6rem;}
+        h3 {font-size:1.4rem;}
+        form {width: 100%;}
+    </style>
+    <script>
+        $(function () {
+            // 获取token
+            $("#btnGetToken").click(function () {
+                App.Demo.GetToken("key", "secret", function (val) {
+                    $("#txtToken").val(val);
+                });
+            });
+
+            // 获取数据（需校验Token）
+            $("#btnGetData").click(function () {
+                var token = $("#txtToken").val();
+                var o = App.Demo.GetData(token);
+                $("#txtData").val(o);
+            });
+
+        });
+    </script>
+</head>
+<body class="container">
+    <form class="form">
+        <div class="form-group">
+            <label for="txtToken">Token</label>
+            <input id="txtToken" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="txtData">Data</label>
+            <input id="txtData" type="text" class="form-control">
+        </div>
+        <button id="btnGetToken" type="button" class="btn btn-default btn-primary">GetToken</button>
+        <button id="btnGetData" type="button" class="btn btn-default">GetData(AuthToken)</button>
+    </form>
+</body>
+</html>

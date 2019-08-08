@@ -236,7 +236,7 @@ namespace App.HttpApi
             CheckMethodEnable(context, method, attr);
 
             // 自定义鉴权
-            string token = context.Request.Params["token"];
+            string token = inputs.Keys.Contains("token") ? inputs["token"].ToString() : "";
             instance.DoAuth(context, method, attr, token);
         }
 

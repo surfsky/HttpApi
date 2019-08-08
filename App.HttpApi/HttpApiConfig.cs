@@ -97,9 +97,8 @@ namespace App.HttpApi
         {
             if (_instance == null)
             {
+                // 尝试从配置节中恢复配置。若未找到配置节，则赋予默认值。
                 _instance = (HttpApiConfig)ConfigurationManager.GetSection("httpApi");
-
-                // 若未找到配置节，则赋予默认值
                 if (_instance == null)
                 {
                     _instance = new HttpApiConfig();
@@ -139,30 +138,26 @@ namespace App.HttpApi
         //--------------------------------------------
         public void DoVisit(HttpContext context, MethodInfo method, HttpApiAttribute attr, Dictionary<string, object> inputs)
         {
-            if (this.OnVisit != null)
-                this.OnVisit(context, method, attr, inputs);
+            this.OnVisit?.Invoke(context, method, attr, inputs);
         }
 
         /// <summary>授权事件</summary>
         public void DoAuth(HttpContext context, MethodInfo method, HttpApiAttribute attr, string token)
         {
-            if (this.OnAuth != null)
-                this.OnAuth(context, method, attr, token);
+            this.OnAuth?.Invoke(context, method, attr, token);
         }
 
         /// <summary>结束</summary>
         public void DoEnd(HttpContext context)
         {
-            if (this.OnEnd != null)
-                this.OnEnd(context);
+            this.OnEnd?.Invoke(context);
         }
 
         /// <summary>异常处理</summary>
         /// <returns>若有自定义异常处理程序，则返回true；否则返回false</returns>
         public void DoException(MethodInfo method, Exception ex)
         {
-            if (this.OnException != null)
-                this.OnException(method, ex);
+            this.OnException?.Invoke(method, ex);
         }
     }
 }

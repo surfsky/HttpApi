@@ -28,7 +28,7 @@ namespace Test
         private bool CheckToken(string token)
         {
             var o = token.DesDecrypt("12345678").ParseJson<Token>();
-            if (o != null && o.ExpireDt < DateTime.Now)
+            if (o != null && o.ExpireDt > DateTime.Now)
                 return true;
             return false;
         }

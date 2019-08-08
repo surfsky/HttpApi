@@ -1,15 +1,15 @@
 ﻿
 
 /*
-* 功能说明: 使用js ajax调用服务器端方法
-* 服务地址: %URL%/js
-* 创建时间: %DATE%
-* 缓存时间: %DURATION% 秒
-* 内核维护: http://surfsky.cnblogs.com
-* 调用方法：
-*     同步调用
+* Http Api Invoke
+* %URL%/js
+* Cache Seconds: %DURATION%
+* Create Date: %DATE%
+* Core Maintainer: https://github.com/surfsky/App.HttpApi/
+* Usage：
+*     synchronous
 *         var val = %NS%.%CLS%.Foo(parameters);
-*     异步调用
+*     asynchronous
 *         %NS%.%CLS%.Foo(parameters, function(data){document.getElementById('id').innerHTML = data;});
 *         %NS%.%CLS%.Foo(parameters, function(){}, 'id');
 */
@@ -25,9 +25,9 @@
 %NS%.%CLS% = {
     _url: "%URL%",
 
-    // 调用服务器端方法
+    // call web method
     CallWebMethod: function (methodName, args, options, callback, senderId) {
-        // 调用前处理
+        // before call
         %NS%.BeforeCallWebMethod(senderId);
         var url = this._url + "/" + methodName;
         var data = JSON.stringify(args);
@@ -38,7 +38,7 @@
             ajax = new XMLHttpRequest();
         }
 
-        // 若回调函数不为空，则启用异步方式
+        // Asynchronous if callback is not null
         if (callback != null) {
             var fn = function (data) {
                 callback(data);
@@ -54,7 +54,7 @@
             //ajax.setRequestHeader("Content-Type", "application/json; charset=utf-8");
             ajax.send(data);
         }
-        // 否则启用同步方式
+        // Synchronous if callback is null
         else {
             var val;
             var fn = function (data) {

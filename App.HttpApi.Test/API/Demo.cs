@@ -138,8 +138,8 @@ namespace App
         //---------------------------------------------
         // 自定义类
         //---------------------------------------------
-        [HttpApi("复杂参数解析")]
-        [Param("father", "父亲，如：{Name:'Kevin', Birth:'1979-12-01', Sex:0}")]
+        [HttpApi("Complex type parameter")]
+        [Param("father", "Father，如：{Name:'Kevin', Birth:'1979-12-01', Sex:0}")]
         public Person CreateGirl(Person father)
         {
             return new Person()

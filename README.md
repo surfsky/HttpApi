@@ -3,7 +3,7 @@
 
 ## 1.说明
 
-* (01) 一种轻量的提供数据接口的框架，可作为 WebAPI 的替代方案。
+* (01) 一种便利的提供数据接口服务的框架，可作为 WebAPI 的升级方案。
 * (02) 可将类中的方法暴露为http接口，如：
 ```
 http://.../HttpApi/TypeName/Method?p1=x&p2=x
@@ -490,10 +490,11 @@ public static APIResult GetPersons()
 
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apicode.png?raw=true)
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apilist.png?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apidetail.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/api.png?raw=true)
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apiresult.png?raw=true)
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apixml.png?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/testauth.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/token.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/auth.png?raw=true)
 
 
 ## 9.参考
@@ -550,8 +551,10 @@ public static APIResult GetPersons()
 
 2019-08
 - 应用 Bootstrap 样式
-- 简化和修正 Demo 项目。
-- 修正复杂参数可空类型属性转换异常BUG。
 - 简化 Page.aspx/Method 或 Handler.ashx/Method 方式调用，无需继承任何类（废除 HttpApiPageBase 和 HttpApiHandlerBase)
 - 国际化支持。增加配置项：language="zh-CN"
-- 补足动态 token 的接口调用示例。
+- 新增动态 token 示例页面。
+- 升级 Json.Net 到 11.0.2
+- 简化和修正 App.HttpApi.Test 项目。
+- 修正复杂参数可空类型属性转换异常 BUG。
+- 修正 AuthToken 自动生成 js 的参数遗漏问题。

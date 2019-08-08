@@ -915,3 +915,18 @@
 
 
 
+
+
+				                sb.AppendFormat("//-----------------------------------------------------------------\r\n");
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.Url, api.Url);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.CacheSeconds,  api.CacheDuration);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.ReturnType,  api.ReturnType);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.Description, api.Description);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthVerbs, api.AuthVerbs);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthIP,  api.AuthIP);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthToken,  api.AuthToken);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthLogin,  api.AuthLogin);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthUser,  api.AuthUsers);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthRole,  api.AuthRoles);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.Remark, api.Remark);
+                sb.AppendFormat("//-----------------------------------------------------------------\r\n");

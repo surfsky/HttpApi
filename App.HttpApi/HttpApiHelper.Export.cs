@@ -266,30 +266,19 @@ namespace App.HttpApi
 
             // 依次生成函数调用脚本
             var typeapi = GetTypeApi(type);
-            StringBuilder scriptBuilder = new StringBuilder(script);
+            var sb = new StringBuilder(script);
             foreach (var api in typeapi.Apis)
             {
-                scriptBuilder.AppendLine("//-----------------------------------------------------------------");
-                scriptBuilder.AppendLine("// 说明  : " + api.Description);
-                scriptBuilder.AppendLine("// 地址  : " + api.UrlTest);
-                scriptBuilder.AppendLine("// 缓存  : " + api.CacheDuration.ToString() + " 秒");
-                scriptBuilder.AppendLine("// 类型  : " + api.ReturnType);
-                scriptBuilder.AppendLine("// 备注  : " + api.Remark);
-                scriptBuilder.AppendLine("// 校验IP: " + api.AuthIP);
-                scriptBuilder.AppendLine("// 校验安全码: " + api.AuthToken);
-                scriptBuilder.AppendLine("// 校验登录: " + api.AuthLogin);
-                scriptBuilder.AppendLine("// 校验用户: " + api.AuthUsers);
-                scriptBuilder.AppendLine("// 校验角色: " + api.AuthRoles);
-                scriptBuilder.AppendLine("// 校验动作: " + api.AuthVerbs);
-                scriptBuilder.AppendLine("//-----------------------------------------------------------------");
+                sb.AppendFormat("// {0}\r\n", api.Description);
+                sb.AppendFormat("// {0}\r\n", api.Url);
 
-                string func = GetFunctionScript(nameSpace, className, api.Method, api.RType);
-                scriptBuilder.AppendLine(func);
+                string func = GetFunctionScript(nameSpace, className, api.Method, api.RType, api.AuthToken);
+                sb.AppendLine(func);
             }
 
             // 插入json2.js并输出
-            scriptBuilder.Insert(0, GetJsonScript());
-            return scriptBuilder;
+            sb.Insert(0, GetJsonScript());
+            return sb;
         }
 
         // 构造namespace创建语句
@@ -332,15 +321,17 @@ namespace App.HttpApi
         /// <summary>
         /// 取得函数调用代码段
         /// </summary>
-        static string GetFunctionScript(string nameSpace, string className, MethodInfo method, ResponseType format)
+        static string GetFunctionScript(string nameSpace, string className, MethodInfo method, ResponseType format, bool authToken)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             // 函数名和参数
             sb.AppendFormat("{0}.{1}.{2}", nameSpace, className, method.Name);
             sb.Append(" = function(");
             foreach (ParameterInfo p in method.GetParameters())
                 sb.Append(p.Name + ", ");
+            if (authToken)
+                sb.Append("token, ");
             sb.Append("callback, senderId)");
 
             // 使用jquery调用服务器端的函数
@@ -353,6 +344,8 @@ namespace App.HttpApi
                 string item = (i == 0) ? p.Name + ":" + p.Name : ", " + p.Name + ":" + p.Name;
                 sb.Append(item);
             }
+            if (authToken)
+                sb.AppendFormat("token : token");
             sb.AppendLine("};");
             switch (format)
             {

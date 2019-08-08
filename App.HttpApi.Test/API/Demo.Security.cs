@@ -17,17 +17,32 @@ namespace App
     {
 
         //---------------------------------------------
-        // 控制访问权限
+        // Token 机制
+        // 1. 获取动态token
+        // 2. 访问需要健权的接口，带上token参数
+        // 3. 服务器端统一在 global 里面做token校验
         //---------------------------------------------
         [HttpApi("获取Token")]
         public string GetToken(string appKey, string appSecret)
         {
             var now = DateTime.Now;
-            var o = new Token(appKey, appSecret, now.ToTimeStamp(), now.AddDays(1));
-            return o.ToString().DesEncrypt("12345678");
+            var o = new Token(appKey, appSecret, now.ToTimeStamp(), now.AddMinutes(1));
+            return o.ToJson().DesEncrypt("12345678");
         }
 
 
+        [HttpApi("NeedTokenApi", AuthToken=true)]
+        public string GetData()
+        {
+            var now = DateTime.Now;
+            return now.ToString();
+        }
+
+
+
+        //---------------------------------------------
+        // 控制访问权限
+        //---------------------------------------------
         [HttpApi("登录")]
         public string Login()
         {

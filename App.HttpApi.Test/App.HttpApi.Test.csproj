@@ -68,12 +68,12 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Default.aspx" />
+    <Content Include="Default.html" />
     <Content Include="Global.asax" />
     <Content Include="Res\css\site.css" />
     <Content Include="Res\js\jquery-1.8.0.js" />
     <Content Include="Res\js\jquery-1.8.0.min.js" />
-    <Content Include="TestToken.aspx" />
+    <Content Include="TestToken.html" />
     <Content Include="TestAuth.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

@@ -239,5 +239,14 @@ namespace App.HttpApi.Properties {
                 return ResourceManager.GetString("Type", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 Url 的本地化字符串。
+        /// </summary>
+        internal static string Url {
+            get {
+                return ResourceManager.GetString("Url", resourceCulture);
+            }
+        }
     }
 }

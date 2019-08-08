@@ -177,4 +177,7 @@
   <data name="Type" xml:space="preserve">
     <value>类型</value>
   </data>
+  <data name="Url" xml:space="preserve">
+    <value>地址</value>
+  </data>
 </root>

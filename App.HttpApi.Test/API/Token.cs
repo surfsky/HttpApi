@@ -17,8 +17,8 @@ namespace App
 
         public Token(string appKey, string appSecret, string timeStamp, DateTime expireDt)
         {
-            this.AppKey = AppKey;
-            this.AppSecret = AppSecret;
+            this.AppKey = appKey;
+            this.AppSecret = appSecret;
             this.TimeStamp = timeStamp;
             this.ExpireDt = expireDt;
         }

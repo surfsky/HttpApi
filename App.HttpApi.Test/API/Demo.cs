@@ -13,11 +13,11 @@ using System.Collections;
 
 namespace App
 {
-    [Description("API接口类")]
+    [Description("HttpApi Demo")]
     [Script(CacheDuration =0, ClassName ="Demo", NameSpace ="App")]
-    [History("2016-11-01", "SURFSKY", "修改了A")]
-    [History("2016-11-02", "SURFSKY", "修改了B")]
-    public class Demo
+    [History("2016-11-01", "SURFSKY", "History log1")]
+    [History("2016-11-02", "SURFSKY", "History log2")]
+    public partial class Demo
     {
         //---------------------------------------------
         // 静态方法
@@ -132,47 +132,6 @@ namespace App
                 new PointF(5, 5)
                 );
             return bmp;
-        }
-
-        //---------------------------------------------
-        // 控制访问权限
-        //---------------------------------------------
-        [HttpApi("登录")]
-        public string Login()
-        {
-            AuthHelper.Login("Admin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
-            System.Threading.Thread.Sleep(200);
-            return "访问成功（已登录）";
-        }
- 
-        [HttpApi("注销")]
-        public string Logout()
-        {
-            AuthHelper.Logout();
-            System.Threading.Thread.Sleep(200);
-            return "注销成功";
-        }
-
-
-        [HttpApi("用户必须登录后才能访问该接口，若无授权则返回401错误", AuthLogin=true)]
-        public string LimitLogin()
-        {
-            System.Threading.Thread.Sleep(200);
-            return "访问成功（已登录）";
-        }
-
-        [HttpApi("限制用户访问，若无授权则返回401错误", AuthUsers = "Admin,Kevin")]
-        public string LimitUser()
-        {
-            System.Threading.Thread.Sleep(200);
-            return "访问成功（限制用户Admin,Kevin）";
-        }
-
-        [HttpApi("限制角色访问，若无授权则返回401错误", AuthRoles = "Admins")]
-        public string LimitRole()
-        {
-            System.Threading.Thread.Sleep(200);
-            return "访问成功（限制角色Admins）";
         }
 
 

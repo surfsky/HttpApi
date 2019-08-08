@@ -6,6 +6,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using App.Core;
+using App;
 
 namespace Test
 {
@@ -25,8 +27,10 @@ namespace Test
         /// <summary>检测 API 访问验票</summary>
         private bool CheckToken(string token)
         {
-            // 填写自己的验票检测逻辑
-            return true;
+            var o = token.DesDecrypt("12345678").ParseJson<Token>();
+            if (o != null && o.ExpireDt < DateTime.Now)
+                return true;
+            return false;
         }
 
         protected void Session_Start(object sender, EventArgs e)

@@ -4,7 +4,7 @@ using System.Web;
 using System.Data;
 using System.Drawing;
 using App.HttpApi;
-
+using System.ComponentModel;
 
 namespace App
 {
@@ -12,6 +12,7 @@ namespace App
     /// 接口示例类。
     /// 测试释放资源，请实现IDisposable接口
     /// </summary>
+    [Description("HttpApi Demo2.  /App_Code/ dynamic class")]
     public class Demo2 : IDisposable
     {
         public void Dispose()

@@ -61,6 +61,11 @@
     <Compile Include="HttpApiConfig.cs" />
     <Compile Include="HttpApiHelper.Export.cs" />
     <Compile Include="HttpApiModule.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ResponseType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestDecoder.cs" />
@@ -75,6 +80,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Js\extTemplate.js" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.zh-CN.resx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Js\jqTemplate.js" />

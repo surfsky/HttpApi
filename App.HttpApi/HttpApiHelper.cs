@@ -126,7 +126,7 @@ namespace App.HttpApi
 
                 // 如果类名用的是简写，加上前缀
                 if (path.IndexOf(".") == -1)
-                    path = HttpApiConfig.Instance.ApiTypePrefix + path;
+                    path = HttpApiConfig.Instance.TypePrefix + path;
 
                 // 用点来串联
                 var typeName = path.Replace('-', '.').Replace('_', '.');
@@ -406,7 +406,7 @@ namespace App.HttpApi
         private static string GetTypeTrimName(Type type)
         {
             var typeName = type.FullName;
-            var typePrefix = HttpApiConfig.Instance.ApiTypePrefix;
+            var typePrefix = HttpApiConfig.Instance.TypePrefix;
             if (!typePrefix.IsEmpty() && typeName.StartsWith(typePrefix))
                 typeName = typeName.Substring(typePrefix.Length);
             return typeName;

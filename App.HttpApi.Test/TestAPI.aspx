@@ -41,7 +41,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <h1>调用接口类方法</h1>
+        <h1>Call HttpApi</h1>
         <div id="btn1" class="btn" >调用JS方法（异步）</div>
         <div id="btn2" class="btn" >调用JS方法（同步）</div>
         <div id="btn3" class="btn" >手工写接口调用</div>

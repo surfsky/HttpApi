@@ -52,6 +52,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+    <title>动态 Token 示例（未完成）</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link href="/res/css/site.css" rel="stylesheet" />
     <script type="text/javascript" src="/HttpApi/Demo/js"></script>
@@ -76,54 +77,6 @@
         &nbsp;<asp:Button runat="server" ID="btnLogout" Text="注销" OnClick="btnLogout_Click" class="btn" />
     </div>
 
-    <pre>
-【使用方法】
-（1）在需认证的HttpApi方法上加上特性标签
-        - AllowLogin： 校验登陆状态
-        - AllowUsers ：校验允许访问的用户（用逗号分隔）
-        - AuthRoles ： 校验允许访问的角色（用逗号分隔）
-    示例
-        [HttpApi()]
-        public string Login()
-        {
-            AuthHelper.Login("Admin", null, DateTime.Now.AddDays(1));
-            return "登录成功";
-        }
-        [HttpApi(AuthLogin=true)]
-        public string LimitLogin()
-        {
-            return "用户必须登录后才能访问该接口";
-        }
-        [HttpApi(AuthUsers = "Admin,Kevin")]
-        public string LimitUser()
-        {
-            return "指定用户才能访问该方法（Admin,Kevin）";
-        }
-        [HttpApi(AuthRoles = "Admins")]
-        public string LimitRole()
-        {
-            return "指定角色才能访问该方法（Admins）";
-        }
-
-（2）在Global.asax.cs中写下以下代码，从cookie验票中获取当前用户信息
-        protected void Application_AuthenticateRequest(object sender, EventArgs e)
-        {
-            AuthHelper.LoadCookieTicket();
-        }
-
-（4）可在Web.confit中配置错误时返回格式（不设置的话默认为APIResult）
-        // 若为HttpError，会输出标准的HTTP错误，浏览器的话会跳转到对应的错误页面
-        // 若为APIResult，直接输出 APIResult json 错误信息
-
-
-【关于HttpContext.Current.User】
-HttpContext.Current.User 保存了当前访问用户的信息
-    - 含两个基本接口
-        IPrincipal p = HttpContext.Current.User;
-        String name = p.Name;
-        bool b = p.IsInRole("Admins");
-
-    </pre>
     </form>
 </body>
 </html>

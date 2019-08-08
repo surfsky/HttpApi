@@ -8,11 +8,18 @@ using System.Xml.Serialization;
 
 namespace App
 {
+    /// <summary>
+    /// Person sex
+    /// </summary>
     public enum Sex
     {
         Male = 0,
         Female = 1
     }
+
+    /// <summary>
+    /// Person
+    /// </summary>
     public class Person
     {
         public string Name { get; set; }

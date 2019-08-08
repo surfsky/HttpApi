@@ -98,13 +98,14 @@ Web.Config
   formatLowCamel="false"                 // 是否用小字母开头驼峰方式输出
   formatLongNumber="Int64,Decimal"       // 长数字输出为字符串，避免客户端js因为精度问题出错
   errorResponse="APIResult"              // 错误时的输出：APIResult | HttpError
-  apiTypePrefix="App."                   // 可省略的API前缀，如原始路径为 /HttpAPI/App.Base/Demo 可简化为 /HttpApi/Base/Demo
+  typePrefix="App."                      // 可省略的API类型前缀，如原始路径为 /HttpAPI/App.Base/Demo 可简化为 /HttpApi/Base/Demo
+  language="en"                          // 国际化支持。现支持 en, zh-CN
   />
 ```
 
 ### （2）自动生成客户端调用的 javascript 脚本
 ```
-<script src="http://.../App/Demo/js"></script>
+<script src="http://.../HttpApi/Demo/js"></script>
 ```
 可在类上附上标签，控制生成的脚本内容
 ```
@@ -118,7 +119,7 @@ http://..../HttpApi/Demo/HelloWorld$
 ```
 可附上标签，显示 Api 修改历史/参数信息/输出类型/缓存等
 ```
-[History("2016-11-01", "SURFSKY", "修改了A")]
+[History("2016-11-01", "SURFSKY", "modify A")]
 public class Demo
 {
     [HttpApi("HelloWorld", CacheSeconds=10)]
@@ -129,8 +130,6 @@ public class Demo
     }
 }
 ```
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Apis.png?raw=true)
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/Api.png?raw=true)
 
 
 ### （4） 缓存控制
@@ -258,24 +257,14 @@ public class Global : System.Web.HttpApplication
     protected void Application_Start(object sender, EventArgs e)
     {
         // HttpApi 自定义访问校验
-        HttpApiConfig.Instance.OnAuth += (ctx, method, attr, ip, token) =>
+        HttpApiConfig.Instance.OnAuth += (ctx, method, attr, token) =>
         {
-            Debug.WriteLine(string.Format("IP={0}, User={1}, Token={2}, Method={3}.{4}, AuthIP={5}, AuthToken={6}, AuthLogin={7}, AuthUsers={8}, AuthRoles={9}",
-                ip,
-                ctx.User?.Identity.Name,
-                securityCode,
-                method.DeclaringType.FullName,
-                method.Name,
-                attr.AuthIP,
-                attr.AuthToken,
-                attr.AuthLogin,
-                attr.AuthUsers,
-                attr.AuthRoles
-                ));
             if (attr.AuthIP && !CheckIP(ip))
                 throw new HttpApiException("该IP禁止访问本接口", 401);
             if (attr.AuthToken && !CheckToken(token))
                 throw new HttpApiException("请核对授权token", 401);
+            if (attr.Log)
+                Logger.Log(...);
             // 其它自定义的鉴权逻辑，如访问频率等。如果鉴权失败，抛出HttpApiException即可。
         };
     }
@@ -514,7 +503,6 @@ public static APIResult GetPersons()
 
 
 ## 10.任务
-- 写一个动态token的接口调用示例
 - XML 格式控制：属性/成员、递进、大小写等
 
 
@@ -565,4 +553,5 @@ public static APIResult GetPersons()
 - 简化和修正 Demo 项目。
 - 修正复杂参数可空类型属性转换异常BUG。
 - 简化 Page.aspx/Method 或 Handler.ashx/Method 方式调用，无需继承任何类（废除 HttpApiPageBase 和 HttpApiHandlerBase)
-
+- 国际化支持。增加配置项：language="zh-CN"
+- 补足动态 token 的接口调用示例。

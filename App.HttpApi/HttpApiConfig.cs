@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Reflection;
 using System.Web;
+using App.HttpApi.Properties;
 
 namespace App.HttpApi
 {
@@ -63,11 +64,11 @@ namespace App.HttpApi
             set { this["errorResponse"] = value; }
         }
 
-        [ConfigurationProperty("apiTypePrefix", DefaultValue = "App.DAL.Db")]
-        public string ApiTypePrefix
+        [ConfigurationProperty("typePrefix", DefaultValue = "App.API")]
+        public string TypePrefix
         {
-            get { return (string)this["apiTypePrefix"]; }
-            set { this["apiTypePrefix"] = value; }
+            get { return (string)this["typePrefix"]; }
+            set { this["typePrefix"] = value; }
         }
 
         [ConfigurationProperty("wrap")]
@@ -77,25 +78,38 @@ namespace App.HttpApi
             set { this["wrap"] = value; }
         }
 
+        [ConfigurationProperty("language", DefaultValue="zh-CN")]
+        public string Language
+        {
+            get { return (string)this["language"]; }
+            set { this["language"] = value; }
+        }
+
+
         //--------------------------------------------------
         // 单例
         //--------------------------------------------------
         private static HttpApiConfig _instance = null;
-        public static HttpApiConfig Instance
+        public static HttpApiConfig Instance {get {return _instance;}}
+
+        /// <summary>静态初始化</summary>
+        static HttpApiConfig()
         {
-            get
+            if (_instance == null)
             {
+                _instance = (HttpApiConfig)ConfigurationManager.GetSection("httpApi");
+
+                // 若未找到配置节，则赋予默认值
                 if (_instance == null)
                 {
-                    _instance = (HttpApiConfig)ConfigurationManager.GetSection("httpApi");
-                    if (_instance == null)
-                    {
-                        _instance = new HttpApiConfig();
-                        _instance.FormatIndented = Formatting.Indented;
-                        _instance.FormatEnum = EnumFomatting.Text;
-                    }
+                    _instance = new HttpApiConfig();
+                    _instance.FormatIndented = Formatting.Indented;
+                    _instance.FormatEnum = EnumFomatting.Text;
+                    _instance.Language = "en";
                 }
-                return _instance;
+
+                // 设置国际化支持
+                Resources.Culture = new System.Globalization.CultureInfo(_instance.Language);
             }
         }
 

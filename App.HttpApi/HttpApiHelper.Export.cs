@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web;
 using System.Reflection;
 using System.Text;
+using App.HttpApi.Properties;
 
 namespace App.HttpApi
 {
@@ -52,23 +53,23 @@ namespace App.HttpApi
             }
 
             // 接口清单
-            sb.AppendLine("<br/>");
-            sb.AppendLine("<table class='table table-sm table-hover'>");
-            sb.AppendLine(@"<thead><tr>
-                <td>接口名</td>
-                <td>说明</td>
-                <td>返回类型</td>
-                <td>缓存(秒)</td>
-                <td>校验IP</td>
-                <td>校验Token</td>
-                <td>校验登录</td>
-                <td>校验用户</td>
-                <td>校验角色</td>
-                <td>校验动作</td>
-                <td>访问日志</td>
-                <td>状态</td>
-                <td>备注</td>
-                </tr></thead>");
+            sb.AppendFormat("<br/>");
+            sb.AppendFormat("<table class='table table-sm table-hover'>");
+            sb.AppendFormat("<thead><tr>");
+            sb.AppendFormat("<td>{0}</td>", Resources.Name);
+            sb.AppendFormat("<td>{0}</td>", Resources.Description);
+            sb.AppendFormat("<td>{0}</td>", Resources.ReturnType);
+            sb.AppendFormat("<td>{0}</td>", Resources.CacheSeconds);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthIP);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthToken);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthLogin);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthUser);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthRole);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthVerbs);
+            sb.AppendFormat("<td>{0}</td>", Resources.Log);
+            sb.AppendFormat("<td>{0}</td>", Resources.Status);
+            sb.AppendFormat("<td>{0}</td>", Resources.Remark);
+            sb.AppendFormat("</tr></thead>");
             foreach (var api in typeapi.Apis)
             {
                 sb.AppendFormat("<tr>");
@@ -107,21 +108,21 @@ namespace App.HttpApi
             sb.AppendFormat("<div>{0}</div></br>", api.Example);
 
             // 属性
-            sb.AppendFormat("<h3>属性</h3><br/>");
-            sb.AppendLine("<table class='table table-sm table-hover'>");
-            sb.AppendLine(@"<thead><tr>
-                <td>返回类型</td>
-                <td>缓存(秒)</td>
-                <td>校验IP</td>
-                <td>校验Token</td>
-                <td>校验登录</td>
-                <td>校验用户</td>
-                <td>校验角色</td>
-                <td>校验动作</td>
-                <td>访问日志</td>
-                <td>状态</td>
-                <td>备注</td>
-                </tr></thead>");
+            sb.AppendFormat("<h3>{0}</h3><br/>", Resources.Property);
+            sb.AppendFormat("<table class='table table-sm table-hover'>");
+            sb.AppendFormat("<thead><tr>");
+            sb.AppendFormat("<td>{0}</td>", Resources.ReturnType);
+            sb.AppendFormat("<td>{0}</td>", Resources.CacheSeconds);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthIP);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthToken);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthLogin);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthUser);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthRole);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthVerbs);
+            sb.AppendFormat("<td>{0}</td>", Resources.Log);
+            sb.AppendFormat("<td>{0}</td>", Resources.Status);
+            sb.AppendFormat("<td>{0}</td>", Resources.Remark);
+            sb.AppendFormat("</tr></thead>");
             sb.AppendFormat("<tr>");
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.ReturnType);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.CacheDuration);
@@ -138,7 +139,7 @@ namespace App.HttpApi
             sb.AppendLine("</table>");
 
             // 参数
-            sb.AppendFormat("<h3>参数</h3>");
+            sb.AppendFormat("<h3>{0}</h3>", Resources.Parameters);
             sb.Append(BuildApiTestHtml(api));
             return sb.ToString();
         }
@@ -149,22 +150,31 @@ namespace App.HttpApi
         /// </summary>
         static string BuildApiTestHtml(API api)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendFormat("<form action='{0}' method='post'>", api.Url.TrimEnd('_', '$', '!'));
             sb.AppendFormat("<br/><table class='table table-sm table-hover'>");
-            sb.AppendFormat("<thead><tr><td>参数名</td><td>值</td><td>描述</td><td>类型</td><td>说明</td><td>缺省值</td></tr></thead>");
+            sb.AppendFormat("<thead><tr>");
+            sb.AppendFormat("<td>{0}</td>", Resources.ParamName);
+            sb.AppendFormat("<td>{0}</td>", Resources.ParamValue);
+            sb.AppendFormat("<td>{0}</td>", Resources.Type);
+            sb.AppendFormat("<td>{0}</td>", Resources.DefaultValue);
+            sb.AppendFormat("<td>{0}</td>", Resources.Description);
+            sb.AppendFormat("<td>{0}</td>", Resources.Remark);
+            sb.AppendFormat("</tr></thead>");
+
             foreach (var p in api.Params)
             {
-                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td><input type='text' name='{0}' class='form-control form-control-sm'/></td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
-                    , p.Name
-                    , p.Description
-                    , p.Type
-                    , p.Info
-                    , p.DefaultValue
-                    );
+                sb.AppendFormat("<tr>");
+                sb.AppendFormat("<td>{0}&nbsp;</td>", p.Name);
+                sb.AppendFormat("<td><input type='text' name='{0}' class='form-control form-control-sm'/></td>", p.Name);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", p.Type);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", p.DefaultValue);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", p.Description);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", p.Info);
+                sb.AppendFormat("</tr>");
             }
             sb.AppendFormat("</tr></table>");
-            sb.AppendFormat("<input type='submit' value='提   交' class='btn btn-primary btn-sm' />");
+            sb.AppendFormat("<input type='submit' value='{0}' class='btn btn-primary btn-sm' />", Resources.Submit);
             sb.AppendFormat("</form>");
             return sb.ToString();
         }

@@ -488,25 +488,25 @@ public static APIResult GetPersons()
 
 ## 8.截图
 
-接口定义
+接口定义<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apicode.png?raw=true)
 
-接口清单页面
+接口清单页面<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apilist.png?raw=true)
 
-接口详情页面
+接口详情页面<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/api.png?raw=true)
 
-接口返回值（默认为json）
+接口返回值（默认为json）<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apiresult.png?raw=true)
 
-接口返回值（xml格式）
+接口返回值（xml格式）<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apixml.png?raw=true)
 
-Token 鉴权访问示例
+Token 鉴权访问示例<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/token.png?raw=true)
 
-Auth 鉴权访问示例
+Auth 鉴权访问示例<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/auth.png?raw=true)
 
 

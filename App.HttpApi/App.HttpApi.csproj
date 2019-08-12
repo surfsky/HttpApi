@@ -104,12 +104,6 @@
   <ItemGroup>
     <Folder Include="Css\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\App.Core\App.Core-github\App.Core\App.Core.csproj">
-      <Project>{c887d0a1-20f6-44da-87df-ea8d45ace744}</Project>
-      <Name>App.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

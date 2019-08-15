@@ -16,7 +16,7 @@ namespace App
     [Description("HttpApi Demo")]
     [Script(CacheDuration =0, ClassName ="Demo", NameSpace ="App")]
     [History("2016-11-01", "SURFSKY", "History log1")]
-    [History("2016-11-02", "SURFSKY", "History log2")]
+    [History("2019-08-15", "SURFSKY", "Fix token")]
     public partial class Demo
     {
         //---------------------------------------------

@@ -19,18 +19,9 @@ namespace Test
             // HttpApi 自定义访问校验
             HttpApiConfig.Instance.OnAuth += (ctx, method, attr, token) =>
             {
-                if (attr.AuthToken && !CheckToken(token))
+                if (attr.AuthToken && Token.Check(token) == null)
                     throw new HttpApiException(404, "Token failure.");
             };
-        }
-
-        /// <summary>检测 API 访问验票</summary>
-        private bool CheckToken(string token)
-        {
-            var o = token.DesDecrypt("12345678").ParseJson<Token>();
-            if (o != null && o.ExpireDt > DateTime.Now)
-                return true;
-            return false;
         }
 
         protected void Session_Start(object sender, EventArgs e)

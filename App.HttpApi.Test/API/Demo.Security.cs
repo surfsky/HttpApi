@@ -25,9 +25,7 @@ namespace App
         [HttpApi("获取Token")]
         public string GetToken(string appKey, string appSecret)
         {
-            var now = DateTime.Now;
-            var o = new Token(appKey, appSecret, now.ToTimeStamp(), now.AddMinutes(1));
-            return o.ToJson().DesEncrypt("12345678");
+            return Token.Create(appKey, appSecret, 1);
         }
 
 

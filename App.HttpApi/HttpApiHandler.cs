@@ -49,7 +49,8 @@ namespace App.HttpApi
         // 处理 HttpApi 请求
         public void ProcessRequest(HttpContext context)
         {
-             HandlerHttpApiRequest(context);
+            //HttpContext.Current.Session["HttpApiSession"] = "HelloWorld";
+            HandlerHttpApiRequest(context);
         }
 
 

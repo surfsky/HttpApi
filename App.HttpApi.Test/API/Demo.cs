@@ -29,6 +29,13 @@ namespace App
             return string.Format("Hello world! {0} {1}", info, DateTime.Now);
         }
 
+        [HttpApi("TestSession")]
+        public static string TestSession(string info)
+        {
+            HttpContext.Current.Session["info"] = info;
+            return HttpContext.Current.Session["info"] as string;
+        }
+
         [HttpApi("静态方法示例", Type = ResponseType.JSON)]
         public static object GetStaticObject()
         {

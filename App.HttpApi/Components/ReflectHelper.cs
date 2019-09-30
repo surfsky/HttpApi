@@ -143,7 +143,8 @@ namespace App.HttpApi
             {
                 foreach (Attribute attr in info.GetCustomAttributes())
                 {
-                    if (attr.GetType().Name == "UIAttribute")
+                    var attrType = attr.GetType();
+                    if (attrType.FullName == "App.Core.UIAttribute")
                         return attr.GetPropertyValue("Title") as string;
                     if (attr is DescriptionAttribute)
                         return attr.GetPropertyValue("Description") as string;

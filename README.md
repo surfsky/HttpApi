@@ -578,3 +578,8 @@ Auth 鉴权访问示例<br/>
 2.5
 	- 彻底删除 App.Core 依赖，但保持 Enum GetUIDescription的能力
 	- 将Json输出的MIMETYPE改为"text/json"; 原先用 "application/json" 有些浏览器会把这个当作文件下载来处理
+	- 补充 Web.Config 配置
+ 	  <!-- 有些服务器有问题，Module RemapHandler 后无法获取 Session，要加这两行 -->
+      <remove name="Session" />
+      <add name="Session" type="System.Web.SessionState.SessionStateModule"/>
+

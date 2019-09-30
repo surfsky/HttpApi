@@ -4,3 +4,5 @@
 /Test/bin/*.pdb
 /App.HttpApi.Test/obj
 /.vs
+/Nuget/TestNuget/TestNuget/obj
+/Nuget/TestNuget/packages

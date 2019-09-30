@@ -304,7 +304,7 @@ namespace App.HttpApi
         // 获取API方法测试地址
         static string GetMethodTestUrl(string rootUrl, MethodInfo method, bool authToken)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendFormat("{0}/{1}", rootUrl, method.Name);
             ParameterInfo[] ps = method.GetParameters();
             if (ps.Length > 0)
@@ -314,7 +314,11 @@ namespace App.HttpApi
                     sb.Append(p.Name + "=x&");
             }
             if (authToken)
+            {
+                if (sb.ToString().IndexOf('?') == -1)
+                    sb.Append('?');
                 sb.Append("token=x");
+            }
             return sb.ToString().TrimEnd('&');
         }
 

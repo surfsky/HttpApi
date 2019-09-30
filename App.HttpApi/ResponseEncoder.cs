@@ -58,7 +58,7 @@ namespace App.HttpApi
             switch (dataType)
             {
                 case ResponseType.Text:        return @"text/plain";
-                case ResponseType.JSON:        return @"application/json";
+                case ResponseType.JSON:        return @"text/json";   //@"application/json"; 有些老的浏览器会把这个当作文件下载来处理
                 case ResponseType.HTML:        return @"text/html";
                 case ResponseType.XML:         return @"text/xml";
                 case ResponseType.JavaScript:  return @"text/javascript";

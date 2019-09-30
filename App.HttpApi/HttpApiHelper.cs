@@ -138,7 +138,7 @@ namespace App.HttpApi
                 var typeName = path;
                 return typeName;
             }
-            return "";
+            //return "";
         }
 
         // 预处理保留方法（"js", "jq", "ext", "api", "apis"）
@@ -232,7 +232,7 @@ namespace App.HttpApi
             instance.DoVisit(context, method, attr, inputs);
 
             // 校验方法可用性
-            App.Core.AuthHelper.LoadPrincipalFromCookie();  // 获取身份验票
+            AuthHelper.LoadPrincipalFromCookie();  // 获取身份验票
             CheckMethodEnable(context, method, attr);
 
             // 自定义鉴权

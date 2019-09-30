@@ -5,6 +5,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
+using App.Core;
+using System.ComponentModel;
 
 namespace App
 {
@@ -13,8 +15,9 @@ namespace App
     /// </summary>
     public enum Sex
     {
-        Male = 0,
-        Female = 1
+        [UI("男")]            Male = 0,
+        [UI("女")]            Female = 1,
+        [Description("不详")] Unknown = 2,
     }
 
     /// <summary>

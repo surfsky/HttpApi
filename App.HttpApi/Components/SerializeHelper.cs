@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json.Converters;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Drawing;
@@ -10,9 +9,10 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Web;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System.Globalization;
-using App.Core;
+//using App.Core;
 
 namespace App.HttpApi
 {
@@ -21,7 +21,7 @@ namespace App.HttpApi
     /// Javascript 的整数是32位的，number类型的安全整数是53位，如果超过53位会被截断。
     /// 可统一将数据（Int64, UInt64, Decimal）转化为字符串传递给客户端。
     /// </summary>
-    public class LongNumberToStringConverter : JsonConverter
+    internal class LongNumberToStringConverter : JsonConverter
     {
         public List<TypeCode> _types;
         public LongNumberToStringConverter(List<TypeCode> types)

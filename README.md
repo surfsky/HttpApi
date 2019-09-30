@@ -522,52 +522,59 @@ Auth 鉴权访问示例<br/>
 
 ## 11.History
 2012-08  
-- 初版
+	- 初版
 
 2014-06
-- 支持默认参数；
-- 增加问授权（角色、用户、登录）；
-- 错误输出可控（APIResult 或 HTTP ERROR）
+	- 支持默认参数；
+	- 增加问授权（角色、用户、登录）；
+	- 错误输出可控（APIResult 或 HTTP ERROR）
 
 2016-06  
-- 增加api展示窗口
-- 修正Image方式输出故障
+	- 增加api展示窗口
+	- 修正Image方式输出故障
 
 2017-11  
-- 简化和优化 HttpApiAttribute
-- 可选缓存方式
+	- 简化和优化 HttpApiAttribute
+	- 可选缓存方式
 
 2017-12  
-- Nuget发布：install-package App.HttpApi
-- 增加 HttpApiConfig 配置节
+	- Nuget发布：install-package App.HttpApi
+	- 增加 HttpApiConfig 配置节
 
 2018-10  
-- 增加自定义鉴权事件；
-- 实现Api展示页面；
-- 用配置节控制Json输出格式；
-- 简化访问路径；
-- 完善 XML 输出；
+	- 增加自定义鉴权事件；
+	- 实现Api展示页面；
+	- 用配置节控制Json输出格式；
+	- 简化访问路径；
+	- 完善 XML 输出；
 
 2018-11  
-- 默认参数可为空也可不填写；
-- 可空类型参数可为空也可不填写；
-- 可在 API 介绍页面上输出枚举类型成员信息；
+	- 默认参数可为空也可不填写；
+	- 可空类型参数可为空也可不填写；
+	- 可在 API 介绍页面上输出枚举类型成员信息；
 
 2019-03  
-- 实现Api 测试页面（填写参数；选择方法Get/Post；发送请求；显示输出结果）
+	- 实现Api 测试页面（填写参数；选择方法Get/Post；发送请求；显示输出结果）
 
 2019-06  
-- 客户端可控强制刷新缓存（url参数中增加 _refresh=true）
+	- 客户端可控强制刷新缓存（url参数中增加 _refresh=true）
 
 2019-07  
-- 长数字类型可控输出为文本，避免客户端js因为精度问题导致的各种错误。
+	- 长数字类型可控输出为文本，避免客户端js因为精度问题导致的各种错误。
 
 2019-08
-- 应用 Bootstrap 样式
-- 简化 Page.aspx/Method 或 Handler.ashx/Method 方式调用，无需继承任何类（废除 HttpApiPageBase 和 HttpApiHandlerBase)
-- 国际化支持。增加配置项：language="zh-CN"
-- 新增动态 token 示例页面。
-- 升级 Json.Net 到 11.0.2
-- 简化和修正 App.HttpApi.Test 项目。
-- 修正复杂参数可空类型属性转换异常 BUG。
-- 修正 AuthToken 自动生成 js 的参数遗漏问题。
+	- 应用 Bootstrap 样式
+	- 简化 Page.aspx/Method 或 Handler.ashx/Method 方式调用，无需继承任何类（废除 HttpApiPageBase 和 HttpApiHandlerBase)
+	- 国际化支持。增加配置项：language="zh-CN"
+	- 新增动态 token 示例页面。
+	- 升级 Json.Net 到 11.0.2
+	- 简化和修正 App.HttpApi.Test 项目。
+	- 修正复杂参数可空类型属性转换异常 BUG。
+	- 修正 AuthToken 自动生成 js 的参数遗漏问题。
+
+2.4.0
+	- 删除 App.Core 依赖
+
+2.5
+	- 彻底删除 App.Core 依赖，但保持 Enum GetUIDescription的能力
+	- 将Json输出的MIMETYPE改为"text/json"; 原先用 "application/json" 有些浏览器会把这个当作文件下载来处理

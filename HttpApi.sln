@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.HttpApi", "App.HttpApi\App.HttpApi.csproj", "{F74D6B50-EF4D-4521-A7D5-D5CAC6422F24}"
 EndProject
@@ -10,9 +10,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DD772976-24A5-4C80-BBBD-655F00B8F1C2}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		Task.txt = Task.txt
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Core", "..\..\App.Core\App.Core-github\App.Core\App.Core.csproj", "{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,14 +33,6 @@ Global
 		{1D132C72-95C0-4401-B2E3-19039D6EB0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D132C72-95C0-4401-B2E3-19039D6EB0C3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1D132C72-95C0-4401-B2E3-19039D6EB0C3}.Release|x86.ActiveCfg = Release|Any CPU
-		{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}.Debug|x86.Build.0 = Debug|Any CPU
-		{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}.Release|x86.ActiveCfg = Release|Any CPU
-		{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

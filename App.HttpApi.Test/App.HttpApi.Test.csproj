@@ -48,9 +48,18 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="App.Core, Version=1.4.5.21344, Culture=neutral, PublicKeyToken=90fe8924135fef55, processorArchitecture=MSIL">
+      <HintPath>..\packages\App.Corer.1.4.5\lib\net45\App.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\App.Corer.1.4.5\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.Extended, Version=6.0.0.0, Culture=neutral, PublicKeyToken=05b7e29bdd433584, processorArchitecture=MSIL">
+      <HintPath>..\packages\App.Corer.1.4.5\lib\net45\EntityFramework.Extended.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\App.Corer.1.4.5\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -66,6 +75,9 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="ThoughtWorks.QRCode, Version=1.0.2774.19990, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\App.Corer.1.4.5\lib\net45\ThoughtWorks.QRCode.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.html" />
@@ -105,10 +117,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\App.Core\App.Core-github\App.Core\App.Core.csproj">
-      <Project>{c887d0a1-20f6-44da-87df-ea8d45ace744}</Project>
-      <Name>App.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\App.HttpApi\App.HttpApi.csproj">
       <Project>{f74d6b50-ef4d-4521-a7d5-d5cac6422f24}</Project>
       <Name>App.HttpApi</Name>

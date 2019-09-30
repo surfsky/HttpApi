@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json.Converters;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Drawing;
@@ -10,7 +9,8 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Web;
 using System.ComponentModel;
-using App.Core;
+using Newtonsoft.Json.Converters;
+//using App.Core;
 
 namespace App.HttpApi
 {
@@ -124,6 +124,50 @@ namespace App.HttpApi
                     sb.AppendFormat("{0}-{1}({2}); ", (int)item, item.ToString(), item.GetDescription());
             }
             return sb.ToString();
+        }
+
+        /// <summary>获取枚举值的文本说明。RoleType.Admin.GetDescription()</summary>
+        public static string GetDescription(this object enumValue)
+        {
+            if (enumValue == null)
+                return "";
+            MemberInfo info = GetEnumField(enumValue);
+            return GetDescription(info);
+        }
+
+        /// <summary>获取字段说明（来自 AppCore.UIAttribute 或 DescriptionAttribute）</summary>
+        /// <remarks>此处用反射的方式获取属性值，以废除对 App.Core 的依赖</remarks>
+        static string GetDescription(this MemberInfo info)
+        {
+            if (info != null)
+            {
+                foreach (Attribute attr in info.GetCustomAttributes())
+                {
+                    if (attr.GetType().Name == "UIAttribute")
+                        return attr.GetPropertyValue("Title") as string;
+                    if (attr is DescriptionAttribute)
+                        return attr.GetPropertyValue("Description") as string;
+                }
+                return info.Name;
+            }
+            return "";
+        }
+
+        /// <summary>获取对象的属性值。也可考虑用dynamic实现。</summary>
+        /// <param name="propertyName">属性名。可考虑用nameof()表达式来实现强类型。</param>
+        public static object GetPropertyValue(this object obj, string propertyName)
+        {
+            Type type = obj.GetType();
+            PropertyInfo pi = type.GetProperty(propertyName);
+            return pi.GetValue(obj);
+        }
+
+        /// <summary>获取枚举值对应的字段</summary>
+        static FieldInfo GetEnumField(this object enumValue)
+        {
+            if (enumValue == null) return null;
+            var enumType = enumValue.GetType();
+            return enumType.GetField(enumValue.ToString());
         }
 
         //-------------------------------------------------

@@ -23,6 +23,14 @@ namespace App.HttpApi
             return (o == null) ? true : o.ToString().IsEmpty();
         }
 
+
+        /// <summary>字符串是否为空</summary>
+        public static bool IsNotEmpty(this string txt)
+        {
+            return !String.IsNullOrEmpty(txt);
+        }
+
+
         /// <summary>将可空对象转化为字符串</summary>
         public static string ToText(this object o, string format = "{0}")
         {

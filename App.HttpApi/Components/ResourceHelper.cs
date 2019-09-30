@@ -28,7 +28,7 @@ namespace App.HttpApi
     ///     RegistCss("SampleProject.MyStyleSheet.css");
     ///     RegistScript("SampleProject.MyScript.js");
     /// </summary>
-    public class ResourceHelper
+    internal class ResourceHelper
     {
         /// <summary>获取数据集中的资源流</summary>
         /// <param name="assembly">数据集</param>

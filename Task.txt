@@ -1,20 +1,937 @@
+-------------------------------------------------
+ÈÎÎñ
+-------------------------------------------------
+ÒÆ³ı App.Core ÒÀÀµ£¬µ«»¹ÊÇÒªÓÃµ½ UIAttribute
+
+
+
+
+ÓÅÏÈ
+	³¢ÊÔºÏ²¢HttpApiAttribute ºÍ API Àà£¬»ù±¾ÖØµş
+	ÍêÉÆAPIÕ¹Ê¾Ò³Ãæ: ÏÔÊ¾Êä³öÖµÀàĞÍ: ReturnType£¨
+	Ôö¼Ó·ÃÎÊ¼ä¸ô¿ØÖÆ
+		AuthInterval/VisitInterval£¬ÏŞÖÆ·ÃÎÊ¼ä¸ô
+		ĞèÎ¬»¤Ò»¸ö×Öµä»òÄÚ´æ±í£ºClientIP, Api, LastVisitDt£¬»á×Ô¶¯É¾³ıÀÏÊı¾İ
+		ĞèÒªÏŞÖÆµÄ½Ó¿ÚÈç£ºµÇÂ¼¡¢»ñÈ¡ÓÃ»§ĞÅÏ¢
+	Cache ·½°¸ÖØµş£¬²âÊÔÒ»ÏÂ
+
+Ôö¼Ó
+	ÍêÉÆ×Ô¶¯·â×°ÄÜÁ¦£¨WrapCondition£© £¬½öÖ§³Ö»ù´¡Êı¾İÀàĞÍ
+		0-text;1-text;2-text;  
+		true:text;false:text; 
+		Ok:text;Finished:text;
+	ÍêÉÆµ¼³ö Xml ÄÜÁ¦
+		¿É¿ØÖÆ£º
+			ÒÔÊôĞÔ·½Ê½»¹ÊÇÒÔ³ÉÔ±·½Ê½Õ¹Ê¾£¬ÒÔ¾«¼òxmlÊä³ö
+				»ù´¡ÀàĞÍÊı¾İ£¨string¡¢number¡¢datetime¡¢bool¡¢enum£©£¬¶¼¿ÉÒÔ¼òµ¥.ToText() Êä³öÊı¾İ
+				¸´ÔÓ¶ÔÏóÀàĞÍ£¬ÒÔ³ÉÔ±·½Ê½Õ¹Ê¾£¨ÀàËÆXAML£©
+				ÁĞ±íÀàĞÍ¡¢×ÖµäÀàĞÍ¡£
+			Ö§³Ö XmlAttribute ±êÇ©
+		Î¬»¤Ò»¸öÊä³ö¶ÔÏó±í£¬±ÜÃâÎŞÏŞÑ­»·
+		¿¼ÂÇ¹¹½¨Ò»¸ö XmlDocument ¶ÔÏó£¬×îºóÔÙ¸ù¾İ¸ñÊ½²ÎÊıÉú³É xml ÎÄ±¾
+	Ôö¼ÓÎÄ¼şÉÏ´«´¦ÀíÄÜÁ¦, ²ÎÊıÈç£ºstring Upload(byte[] file, string name)
+
+
+
+
+-------------------------------------------------
+ÒÑÍê³É
+-------------------------------------------------
+2019-05-10
+	/ĞŞÕı HttpApi ·½·¨Î´ÕÒµ½µÄÌáÊ¾´íÎó
+
+2019-04-30
+	/Ôö¼Ó²âÊÔÒ³Ãæ£º/HttpApi/Common/Echo$  /HttpApi/Common/Echo!
+
+2019-04-28
+	/Ôö¼Ó HttpApiAttribute.Log ÊôĞÔ£¬¿ÉÔÚOnVisitÊÂ¼şÖĞÅĞ¶Ï²¢×öÈÕÖ¾
+	/Ôö¼Ó HttpApiConfig.OnVisit ÊÂ¼ş£¬¿É²é¿´·ÃÎÊÊ±µÄÏêÏ¸Çé¿ö
+	
+2018-11-30
+	/ĞŞÕıbug£º¿É¿ÕÀàĞÍ£¬ÈôÊäÈëÎª¿Õ»á³ö´í£¬Èç£º
+	/https://bearmanager.cn/HttpApi/Mall/GetProducts?type=
+
+2018-11-26
+	/·½·¨ÃûÖ§³ÖÏÂ»®Ïß
+
+2018-11-21
+	/Ôö¼ÓÊÂ¼ş£ºHttpApiConfig.OnException
+
+2018-10-31
+	/App.Components ²ğ·Ö³ö App.Core ÏîÄ¿£¬ÎÈ¶¨»ù±¾²»±ä¸ü
+	/ÓÅ»¯Ä¬ÈÏ²ÎÊıÂß¼­£¬ÇëÇóÊ±¿ÉÁô¿ÕÒ²¿ÉÒÔ²»ÌîĞ´
+		http://localhost:5625/HttpApi/Base/GetArticles?type=normal&pageSize=&pageIndex=
+		http://localhost:5625/HttpApi/Base/GetArticles?type=normal
+	/ÓÅ»¯httpapi£¬Ö§³ÖÃ¶¾ÙÀàĞÍ²ÎÊıÓÃ×Ö·û´®±íÊ¾
+		http://localhost:5625/HttpApi/Base/GetArticles?type=normal&pageSize=5&pageIndex=1
+		http://localhost:5625/HttpApi/Base/GetArticles?type=1&pageSize=5&pageIndex=1
+
+2018-10-30
+	/HttpApiAttribute Ôö¼Ó Example ²ÎÊı
+	/²âÊÔ¿É¿ÕÀàĞÍ int? n ²ÎÊı
+	/Bug£ºXml ±¨´íÊ±µÄÊä³ö¸ñÊ½Ó¦¸ÃÒ²ÊÇ xml£¬ÏÖÔÚÊÇjson£¨ËãÁË£©
+
+2018-10-23
+	/Ôö¼ÓÈÕÖ¾ÄÜÁ¦£¨·ÅÆú£¬¿É¶ªµ½¼øÈ¨½Ó¿Ú£¬ÓÉÓÃ»§×Ô¼ºÈ¥Íê³É£©
+	/ÍêÉÆXmlµ¼³ö
+		/¿¼ÂÇÊ¹ÓÃÍ¨ÓÃµÄattributeÀ´±ê×¢×Ö¶Î¸ñÊ½ºÍÊä³ö
+			/Í¨ÓÃ±ê×¢
+				System.ComponentModel.DataAnnotations
+				Required
+				StringLength
+				DataType
+				[AcceptVerbs("Get", "Post")]
+				[RegularExpression(pattern:"d+",ErrorMessage ="²»·ûºÏÕıÔò¹æÔò")]
+			/»òÖ»Ê¹ÓÃJsonXXXXX, ÆäËüµÄÒÔJsonÎª×¼£¨²ÉÓÃ£©
+		/nullÖµ´¦Àí
+		/×Ö·û´®ÀàĞÍ£¨º¬CData´¦Àí: < &£©
+		/Ã¶¾Ù´¦Àí
+		/ÖµÀàĞÍ
+		/Ê±¼äÀàĞÍ
+		/¿É¿ÕÀàĞÍ
+		/ÄäÃûÀàĞÍ
+		/×ÖµäÀàĞÍ
+	/Êä³ö xml ÀàĞÍ³ö´í
+		/http://localhost:4350/HttpApi/DemoClass/GetPersonData?_type=xml
+		/¶ÔÓÚÎ´ÖªÀàĞÍ£¬ÓÃ System.Xml.Serialization.XmlSerializer »á±¨´í£¬±ØĞëÔ¤ÏÈ [XmlInclude(typeof(MyType)])]
+		/¿¼ÂÇÓÃÈı·½ xml ĞòÁĞ»¯Àà(Ok)£¬»òÕßÓÃ Json.net ºÃÏñÒ²¿ÉÒÔ(NO)
+
+
+2018-10-22
+	/¼ò»¯ApiÂ·¾¶(Ôö¼Ó HttpConfig.ApiTypePrefix ÊôĞÔ)£¬Â·¾¶ÃûÈç£º/HttpApi/Common/GetThumbnail
+	/ĞŞÕıJsµ¼³öÂ·¾¶ÎÊÌâ
+	/Ôö¼ÓjsonÅäÖÃ£ºformatSmallCamel Ğ¡ÍÕ·åÃüÃû·¨
+	/ÊµÏÖµ¼³ö xml
+		/nullÖµ´¦Àí
+		/×Ö·û´®ÀàĞÍ£¨CData´¦Àí£©
+		/Ã¶¾Ù´¦Àí
+		/ÖµÀàĞÍ
+		/Ê±¼äÀàĞÍ
+		/¿É¿ÕÀàĞÍ
+		/ÄäÃûÀàĞÍ
+
+2018-10-19
+	/ÒÆ³ı AuthIPs ÅäÖÃÏî£¬ÓÃÊÂ¼şÌæ´ú
+	/ÒÆ³ı HttpApiAuth£¬Ê¹ÓÃ App.Components.AuthHelper
+	/Ôö¼Ó×Ô¶¨Òå¼øÈ¨ÊÂ¼ş
+	/Ôö¼Ó¼øÈ¨±êÇ©£ºAuthIP, AuthSecurityCode
+	/ÓÅ»¯µ÷ÓÃÄ¿Â¼
+		/Èç HttpApi/A.B.C/Method£¬ÓÃ Module »òÕß RouteTable ÊµÏÖ
+		/¸ÄÎªHttpModule
+
+2018-10-18
+	/ÒıÓÃApp.Components
+	/Éú³ÉApiÕ¹Ê¾Ò³Ãæ
+	/ĞŞ¸ÄAPIÇåµ¥Ò³Ãæ
+	/Ôö¼Ó ParameterAttribute£ºName£¬Description£¬Default
+	/AuthHelper ¸üÃûÎª HttpApiAuth
+	/HttpApi ¿É¿ÕÀàĞÍµÄÃ¶¾ÙÀàĞÍÕ¹Ê¾
+	/ÓÅ»¯²ÎÊıÀàĞÍ×Ö·û´®
+		»ù´¡ÊıÖµÀàĞÍ£ºString, Int, Decimal
+		Ã¶¾ÙÀàĞÍ
+		¿É¿ÕÀàĞÍ
+
+2018-10-17
+	/Ôö¼ÓDataResult(object) ¹¹Ôìº¯Êı
+    /ĞŞ¸Ä·ÖÒ³×é½¨²ÎÊıÃû³Æ£ºTotal, PageSize, PageCount, PageIndex, 
+
+2018-10-11
+	/Ôö¼Ó ApiStatus, Verbs
+	/ĞŞ¸Ä ApiHtml µÄÏÔÊ¾
+	/Ôö¼ÓÅäÖÃ£ºjsonEnumFormatting="Text" jsonIndented="Indented" jsonDateTimeFormat="yyyy-MM-dd"
+
+2018-10-10
+	/DataResult ¹¹Ôì·½·¨µÚÒ»¸ö²ÎÊı¿ÉÎªboolÖµ
+	/½Ó¿ÚÅÅĞò
+	/a=xxx -> a=x
+	/Éı¼¶Newtonsoft.Json -> 6.0
+
+2018-02-23
+    /¸ü¸ÄÄÚÇ¶×ÊÔ´Ãû³Æ£¨È¥³ıÏÂ»®Ïß£©
+
+2017-12-14
+	/ÖØ¹¹ToolÀà£¬²ğ·ÖÎª¶à¸öÀà
+	/ÖØ¹¹HttpApiHandlerÀà£¬¸üÇåÎú
+	/Ôö¼ÓÈ«¾ÖÅäÖÃ£ºSuccessInfo ³É¹¦Ê±·µ»ØµÄĞÅÏ¢¡£
+	/Ôö¼ÓÈ«¾ÖÅäÖÃ£ºAuthIPs£¬½öÖ¸¶¨ipÄÚµÄ¿Í»§¶Ë²Å¿ÉÒÔ·ÃÎÊ¡£
+	/Ôö¼ÓÈ«¾ÖÅäÖÃ£ºEnumResponse£¬Ö¸¶¨Ã¶¾ÙÀàĞÍµÄ·µ»Ø·½Ê½
+	/Ôö¼Ó·½·¨ÌØĞÔ£ºVerbs=¡°Get,Post"£¬¿ÉÏŞÖÆ·ÃÎÊµÄ¶¯´Ê
+	/½«SuccessInfo-¡·WrapInfo£¬ÒÆµ½·½·¨ÌØĞÔÀïÃæÈ¥£¬ÎŞĞèÈ«¾ÖÅäÖÃ
+
+2017-12-12
+	/Nuget·¢²¼: install-package App.HttpApi
+	/Ôö¼ÓÈ«¾ÖÅäÖÃ
+		public HttpApiConfig
+		{
+		   public string SuccessInfo {get; set;}
+		   public string FailInfo {get; set;}
+		   public string AuthIPs {get; set;}
+		   public string LoggerName {get; set;}
+		}
+
+
+2017-12-01
+	/¸ü¸ÄÃû³Æ: HttpApi, WebApi, Api
+	/Ôö¼ÓÈÕÖ¾ÄÜÁ¦£º½áºÏnlog¡£ËãÁË£¬Ò³Ãæ·ÃÎÊÒ»°ãÍøÕ¾¶¼ÓĞÈ«¾ÖµÄmodelÀ´¼à¿Ø
+
+
+2017-11-24
+    /IQuaryable<T> ÀàĞÍÊı¾İµÄ×Ô¶¯·â×°
+        È¡Ïû£¬½Ó¿ÚÖĞ³£Ö±½Ó·µ»ØÄäÃû¶ÔÏó
+        »¹ÓĞpage¡¢pagesSizeµÈÂß¼­
+        ½áÂÛ£º»¹ÊÇÓÉÓÃ»§Ö±½ÓÔÚ½Ó¿ÚÖĞ´¦Àí°É
+
+2017-11-23
+    /·Çstring¡¢imageÀàĞÍ£¬Ä¬ÈÏÀàĞÍÊä³öÎª json£¨ÒÑÓĞ¸ÃÂß¼­£¬²é¿´·½·¨ HttpApiHelper.ParseDataType£©
+    /Ôö¼ÓÄ¬ÈÏ²ÎÊıDescription
+    /È¥³ıappsetting-wrapperÈ«¾ÖÉèÖÃ£¨²»ÊµÓÃ£©
+    /É¾³ıHttpApiAttribute.IClonable½Ó¿Ú
+    /gzipÖ§³Ö£¨ËãÁË£¬ÓÉiisÖ±½ÓÌá¹©°É£©
+    /È¥³ıFormatÊôĞÔ
+    /ÓÅ»¯»º´æ
+        /CacheDuration -> CacheSeconds
+        /Ôö¼Ó»º´æÎ»ÖÃÊôĞÔ CacheLocation
+    /ĞŞ¸Ä Wrap Âß¼­
+        /½«Wrapper¸ÄÎªboolÊôĞÔ
+        /×¢£ºÏÖÔÚµÄWrapÖ»Ó°Ïìµ½ Json ÀàĞÍµÄÊä³ö
+        /»¹ÊÇÁíÍâ¶¨Ò»¸ö ResponseType=JsonWrap¡£·ÅÆú¡£
+        /Ê¹ÓÃµ¥¶ÀµÄ Wrap ÊôĞÔ¡£²¢À©Õ¹µ½xml¡¢imagebase64¡¢ÆÕÍ¨textµÄÊä³ö
+	/Ôö¼ÓWrapperÌØĞÔ
+		- None: ²»·â×°£¬Ö±½ÓÊä³öµ½¿Í»§¶Ë
+		- DataResult: ÓÃDataResultÀà·â×°
+		¸Ã·½°¸ÓÃÓÚ·şÎñÆ÷¶ËºÍ¿Í»§¶ËµÄÊÊÅä
+		- ·şÎñÆ÷¶Ë¿ÉÄÜÖ»ĞèÒªÖ±½ÓµÄÊı¾İ£»
+		- ¶ø¶ÔÓÚ½Ó¿Ú¶øÑÔ£¬¿ÉÄÜĞèÒªÓÃÍ³Ò»µÄ½á¹¹À´·â×°£¨ÈçDataResult£©
+		»òÕßÊ¹ÓÃÈ«¾ÖappsettingÉè¶¨
+		<item key=webcall-wrapper value="DataResult"/>
+
+/Ôö¼Óhistoryattribute/DescriptionAttribute
+/ĞŞÕıgetimage´íÎó£¨È¥µôresponse.end)
+/ĞÂÔöapi²ÎÊı£¬ÏÔÊ¾ËùÓĞ½Ó¿Ú
+/²¿Êğµ½·şÎñÆ÷ÉÏÊÔÊÔ£¬¿´HttpContext.Current.User;µ½µ×ÊÇÊ²Ã´
+//É¾³ı                 case ResponseDataType.HTML: return new HtmlEncoder(context);
+//Ã¶¾Ù»á×ª»¯ÎªÊı×ÖÊä³ö¡£¡£¡£Ó¦¸Ã×ª»¯Îª×Ö·û´®£¬ÓÃnewtonsoft.jsonÔõÃ´Íæ£¿
+//¼ò»¯DataRowµÄÊä³ö½á¹û
+/½«AuthHelper¼¯³Éµ½HttpApi×é¼ş£¨2015-04-28£©
+/ĞŞ¸ÄJsonWrapper -> Wrapper£¨2015-04-28£©
+/ĞŞ¸ÄHttpApi£¬Ôö¼ÓÊÚÈ¨Âß¼­£¨2014-05-12£©
+    - ¼¯³ÉDataResultÀà
+    - ½«jsÎÄ¼ş¶ªµ½JsÄ¿Â¼ÏÂ
+    - ²ğ·ÖToolsÀà
+    - ÁîÆäÖ§³ÖÒÔÏÂÌØĞÔ(attribute)£º
+        - AllowAnonymous£ºÊÇ·ñÔÊĞíÄäÃû·ÃÎÊ£¨Ä¬ÈÏÎªtrue£©
+        - AllowUsers £ºÔÊĞí·ÃÎÊµÄÓÃ»§
+        - AllowRoles £ºÔÊĞí·ÃÎÊµÄ½ÇÉ«
+    - ÈôÎŞÊÚÈ¨·ÃÎÊ»á·µ»Ø401´íÎó»òDataResult¶ÔÏó £¨¿ÉÔÚWeb.confitÖĞÅäÖÃHttpApi-ErrorResponse=HttpError/DataResult£©
+    - Ê¹ÓÃ·½·¨
+        - È·±£ASP.NET Ò³ÃæÊµÏÖ HttpContext.Current.User ½Ó¿Ú£¨ÓÃÓÚ»ñÈ¡µ±Ç°ÓÃ»§µÄĞÅÏ¢£©
+        - Çë´ò¿ªËùÓĞHttpApiµÄ·ÃÎÊÈ¨ÏŞ£¬ÎŞĞèµÇÂ¼
+        - ÔÚĞèÒªÈÏÖ¤µÄ·½·¨ÉÏ¼ÓÉÏÒÔÉÏ±êÇ©
+    - ÏêÏ¸ÄÚÈİ¿É²Î¿¼ TestAuth.aspx Ê¾ÀıÒ³Ãæ
+/ĞŞ¸Ä»º´æÂß¼­£¬¸ù¾İÓĞĞ§ÊäÈë²ÎÊıÀ´»º´æ£¬ÎŞĞ§²ÎÊı²»ÓèÀí»á(2013-04-26)
+/nullÖµ´¦Àí
+/jsonÊı¾İ×ª»»ÎªÀàÊµÌå
+    void Update(Person person)
+    json {Name:xxx, First:xxx, Last:xxx, Sex:'male'}
+    Çë²Î¿¼asp.net WebApi
+    http://aspnetwebstack.codeplex.com/
+    return JsonConvert.DeserializeObject<T>(json, _jsonSettings); 
+    JsonSerializerSettings _jsonSettings = new JsonSerializerSettings(); 
+    _jsonSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore; 
+    _jsonSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore; 
+    _jsonSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; 
+    IsoDateTimeConverter datetimeConverter = new IsoDateTimeConverter(); 
+    datetimeConverter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss"; 
+    _jsonSettings.Converters.Add(datetimeConverter); 
+/ÈôÊµÏÖÁËIDisposal½Ó¿Ú£¬×Ô¶¯µ÷ÓÃÊÍ·Å×ÊÔ´
+/Ôö¼Ó·ÃÎÊÈ¨ÏŞ¿ØÖÆ
+    [AccessUsers="xxx,xxx", AccessRoles="xxx,xxx"]
+/Êı¾İ·µ»ØÀàĞÍ¿ÉÓÃAcceptedÀ´¿ØÖÆ£¬¶ø·Ç_type
+/¿Í»§¶Ë¿ÉÖ¸¶¨jsÀàÃû
+/³¢ÊÔ¸ù¾İ·½·¨µÄÊä³öÀà±ğÀ´ÍÆ¶ÏÊä³ö¸ñÊ½
+/Ôö¼ÓÍ¼ÏñÊä³ö£¨png¡¢gif¡¢base64£©
+/Êä³ö·şÎñµØÖ·
+/·Ï³ıextjsºÍjqueryÁ½ÖÖ°æ±¾µÄÊä³ö£¬Ã»É¶ÒâÒå£¬±£ÁôÔ­Ê¼js¾ÍºÃÁË
+/»Ö¸´HttpApiHttpHandler
+/»Ö¸´HttpApiHttpPage£¨¿Í»§¶ËÆÁ±ÎÁËcontentType:json,²»½¨ÒéÊ¹ÓÃ£©
+/Ö§³ÖÊä³öextjs½Å±¾
+/Ö§³ÖÊä³öÆÕÍ¨js½Å±¾
+/WebMethod->HttpApi
+/¿¼ÂÇ·Ï³ı WebMethodHandler ºÍ WebMethodModule
+    (1)Ğ´class£¬²¢ÓÃ [WebMethod] ±ê×¢
+    (2)×¢²áaxd:
+    (3)ashxµ÷ÓÃ£º
+        ×¢²á£º<script src="CallType_xxx.xxx.axd/js"></script>
+        µ÷ÓÃ£ºWebMethod_xxx.xxx.axd/HelloWorld?info=me
+    (4)aspxµ÷ÓÃ£º
+        ×¢²á£º<script src="CallPage_xxx.xxx.axd/js"></script>
+        µ÷ÓÃ£ºWebMethod_xxx.xxx.axd/HelloWorld?info=me
+
+
 -------------------------------------------------------------
-Task
+²Î¿¼´úÂë
 -------------------------------------------------------------
-å¢åŠ æµ‹è¯•é¡µé¢
-    /æ˜¾ç¤ºï¼ˆåç§°ã€åœ°å€ã€è¯´æ˜ã€å‚æ•°ï¼‰
-    æä¾› API æµ‹è¯•é¡µé¢ï¼Œå¯postæ•°æ®
-WrapConditionï¼š 
-	0-text;1-text;2-text;  
-	true:text;false:text; 
-	Ok:text;Finished:text;
+    // »ñÈ¡ajax¶ÔÏó
+    GetAjaxObject : function(){
+        if (window.ActiveXObject) {
+            return new ActiveXObject('Microsoft.XMLHTTP');
+        } else if (window.XMLHttpRequest) {
+            return new XMLHttpRequest();
+        }
+    },
+            if (decoder == null) decoder = new SimpleUrlDecoder(context);
+        <li><a href="HttpApi.App.DemoClass.axd/jq">²é¿´App_CodeÀàÓ³Éäµ½¿Í»§¶ËµÄjsÎÄ¼ş£¨ÒÀÀµjquery)</a></li>
+        <li><a href="HttpApi.App.DemoClass.axd/ext">²é¿´App_CodeÀàÓ³Éäµ½¿Í»§¶ËµÄjsÎÄ¼ş£¨ÒÀÀµExtJs)</a></li>
+        <li><a href="CallClass.aspx">µ÷ÓÃApp_CodeÀà·½·¨£¨ÒÀÀµjquery£©</a></li>
+        <li><a href="CallExt.aspx">µ÷ÓÃApp_CodeÀà·½·¨£¨ÒÀÀµExtJs£©</a></li>
 
-ä¼˜åŒ–è°ƒç”¨è·¯å¾„ä¸ºï¼šHttpAPI/A.B.C/MethodName?p=xï¼Œå¯åœ¨ç¤ºä¾‹é¡¹ç›®ä¸­é…ç½®è·¯ç”±
+        static ResponseDataType ParseDataType(object o)
+        {
+            if (o is string)                return ResponseDataType.Text;
+            if (o is StringBuilder)         return ResponseDataType.Text;
+            if (o is DateTime)              return ResponseDataType.Text;
+            if (o is System.Data.DataTable) return ResponseDataType.JSON;
+            if (o is System.Drawing.Image)  return ResponseDataType.Image;
+
+            return ResponseDataType.JSON;
+        }
+
+
+        private void Call(string typeName, HttpContext context)
+        {
+            // ÏÈ³¢ÊÔ´Ó»º´æÖĞ»ñÈ¡´¦ÀíÆ÷
+            string cacheName = "HttpApi-" + typeName;
+            object o = Cache[cacheName];
+            if (o != null)
+            {
+                App.HttpApi.HttpApiHelper.ProcessRequest(context, o);
+                return;
+            }
+
+            // ÕÒ²»µ½×Å±éÀú³ÌĞò¼¯È¥ÕÒÕâ¸öÀà
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                // ¹ıÂËµôÏµÍ³×Ô´øµÄ³ÌĞò¼¯
+                string name = assembly.FullName;
+                if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
+                    continue;
+
+                // ³¢ÊÔ´´½¨¶ÔÏó£¬ÇÒ´¦ÀíWeb·½·¨µ÷ÓÃÇëÇó
+                object handler = assembly.CreateInstance(typeName, true);
+                if (handler != null)
+                {
+                    App.HttpApi.HttpApiHelper.ProcessRequest(context, handler);
+                    Cache.Add(cacheName, handler, null,
+                        Cache.NoAbsoluteExpiration, new TimeSpan(0, _cacheMinutes, 0),
+                        CacheItemPriority.Default,
+                        null);
+                    break;
+                }
+            }
+        }
+            /*
+            if (result == null)
+                HttpContext.Current.Response.Write("null");
+            else
+                encoder.Write(result);
+            */
+
+
+        /// <summary>
+        /// ÁĞ³ö½Ó¿ÚÇåµ¥
+        /// </summary>
+        static StringBuilder GetInterfaceText(Type type)
+        {
+            // ¶ÁÈ¡¶ÔÓ¦µÄÄ£°å
+            string script = "";
+            Uri uri = HttpContext.Current.Request.Url;
+            string filePath = HttpContext.Current.Request.FilePath;
+            string url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
+
+            // ÒÀ´ÎÉú³Éº¯Êıµ÷ÓÃ½Å±¾
+            StringBuilder scriptBuilder = new StringBuilder(script);
+            MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            foreach (MethodInfo method in methods)
+            {
+                HttpApiAttribute attr = Tool.GetWebMethodAttribute(method);
+                if (attr != null)
+                {
+                    //scriptBuilder.AppendLine("<h2>" + attr.Description + "</h2>");
+                    scriptBuilder.AppendLine(attr.Description);
+                    scriptBuilder.AppendLine("    µØÖ·  : " + GetMethodUrl(url, method));
+                    scriptBuilder.AppendLine("    »º´æ  : " + attr.CacheDuration.ToString() + " Ãë");
+                    scriptBuilder.AppendLine("    ÀàĞÍ  : " + ParseDataType(attr.Type, method.ReturnType).ToString());
+                    scriptBuilder.AppendLine("    ±¸×¢  : " + attr.Remark);
+                    scriptBuilder.AppendLine("    ÏŞµÇÂ¼: " + attr.AuthLogin);
+                    scriptBuilder.AppendLine("    ÏŞÓÃ»§: " + attr.AuthUsers);
+                    scriptBuilder.AppendLine("    ÏŞ½ÇÉ«: " + attr.AuthRoles);
+                    scriptBuilder.AppendLine("");
+                }
+            }
+            return scriptBuilder;
+        }
+            public Api(string name, string description, string type, int cacheDuration, bool authLogin, string authUsers, string authRoles, string remark, string url)
+            {
+                this.Name = name;
+                this.Description = description;
+                this.Type = type;
+                this.CacheDuration = cacheDuration;
+                this.AuthLogin = authLogin;
+                this.AuthUsers = authUsers;
+                this.AuthRoles = authRoles;
+                this.Remark = remark;
+                this.Url = url;
+            }
+
+
+                    /// <summary>
+        /// ÁĞ³ö½Ó¿ÚÇåµ¥£¨¿¼ÂÇÓÃGetInterfaces·½·¨ÖØ¹¹£©
+        /// </summary>
+        static StringBuilder GetInterfaceHtml(Type type)
+        {
+            // ¶ÁÈ¡¶ÔÓ¦µÄÄ£°å
+            string script = "";
+            Uri uri = HttpContext.Current.Request.Url;
+            string filePath = HttpContext.Current.Request.FilePath;
+            string url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
+
+            // ÒÀ´ÎÉú³Éº¯Êıµ÷ÓÃ½Å±¾
+            StringBuilder sb = new StringBuilder(script);
+            MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            //sb.AppendLine("<b>" + url + "</b>");
+            sb.AppendLine("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendLine("<tr><td width='200'>½Ó¿ÚÃû</td><td width='300'>ËµÃ÷</td><td width='70'>ÀàĞÍ</td><td width='70'>»º´æ</td><td width='70'>ÏŞµÇÂ¼</td><td width='70'>ÏŞÓÃ»§</td><td width='70'>ÏŞ½ÇÉ«</td><td>±¸×¢</td><td>ÍêÕûµØÖ·</td></tr>");
+
+            foreach (MethodInfo method in methods)
+            {
+                HttpApiAttribute attr = Tool.GetWebMethodAttribute(method);
+                if (attr != null)
+                {
+                    sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td><td>{5}&nbsp;</td><td>{6}&nbsp;</td><td>{7}&nbsp;</td><td>{8}&nbsp;</td></tr>"
+                        , method.Name
+                        , attr.Description
+                        , ParseDataType(attr.Type, method.ReturnType)
+                        , attr.CacheDuration.ToString() + " Ãë"
+                        , attr.AuthLogin
+                        , attr.AuthUsers
+                        , attr.AuthRoles
+                        , attr.Remark
+                        , GetMethodUrl(url, method)
+                        );
+                }
+            }
+            return sb;
+        }
+
+
+                /// <summary>
+        /// Éú³É¿Í»§¶Ëµ÷ÓÃ·şÎñÆ÷¶Ë·½·¨µÄ½Å±¾£¨¿¼ÂÇÓÃGetInterfaces·½·¨ÖØ¹¹£©
+        /// </summary>
+        static StringBuilder GetJs(Type type, string nameSpace, string className, int cacheDuration, string scriptType="js")
+        {
+            // ¶ÁÈ¡¶ÔÓ¦µÄÄ£°å
+            string script = GetTemplateScript(scriptType);
+            Uri uri = HttpContext.Current.Request.Url;
+            string filePath = HttpContext.Current.Request.FilePath;
+
+            // ²¢½øĞĞ×Ö·û´®Ìæ»»£ºÃèÊö¡¢Ê±¼ä¡¢µØÖ·¡¢ÀàÃû
+            string url = string.Format("{0}://{1}{2}", uri.Scheme, uri.Authority, filePath);
+            script = script.Replace("%DATE%", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            script = script.Replace("%DURATION%", cacheDuration.ToString());
+            script = script.Replace("%URL%", url);
+            script = script.Replace("%NS-BUILD%", GetNamespaceScript(nameSpace));
+            script = script.Replace("%NS%", nameSpace);
+            script = script.Replace("%CLS%", className);
+
+            // ÒÀ´ÎÉú³Éº¯Êıµ÷ÓÃ½Å±¾
+            StringBuilder scriptBuilder = new StringBuilder(script);
+            MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            foreach (MethodInfo method in methods)
+            {
+                HttpApiAttribute attr = Tool.GetWebMethodAttribute(method);
+                if (attr != null)
+                {
+                    scriptBuilder.AppendLine("//-----------------------------------------------------------------");
+                    scriptBuilder.AppendLine("// ËµÃ÷  : " + attr.Description);
+                    scriptBuilder.AppendLine("// µØÖ·  : " + GetMethodUrl(url, method));
+                    scriptBuilder.AppendLine("// »º´æ  : " + attr.CacheDuration.ToString() + " Ãë");
+                    scriptBuilder.AppendLine("// ÀàĞÍ  : " + ParseDataType(attr.Type, method.ReturnType).ToString());
+                    scriptBuilder.AppendLine("// ±¸×¢  : " + attr.Remark);
+                    scriptBuilder.AppendLine("// ÏŞµÇÂ¼: " + attr.AuthLogin);
+                    scriptBuilder.AppendLine("// ÏŞÓÃ»§: " + attr.AuthUsers);
+                    scriptBuilder.AppendLine("// ÏŞ½ÇÉ«: " + attr.AuthRoles);
+                    scriptBuilder.AppendLine("//-----------------------------------------------------------------");
+
+                    string func = GetFunctionScript(nameSpace, className, method, attr.Type);
+                    scriptBuilder.AppendLine(func);
+                }
+            }
+
+            // ²åÈëjson2.js²¢Êä³ö
+            scriptBuilder.Insert(0, GetJsonScript());
+            return scriptBuilder;
+        }
+
+        
+        //---------------------------------------------------
+        // ÄÚ²¿ÊôĞÔ
+        //---------------------------------------------------
+        /// <summary>·½·¨²ÎÊı¸öÊı</summary>
+        internal int ParamsCnt { get; set; }
+
+            if (attr != null)
+            {
+                ParameterInfo[] parameters = info.GetParameters();
+                if (parameters != null)
+                    attr.ParamsCnt = parameters.Length;
+            }
+
+            
+        #region ICloneable Members
+        public object Clone()
+        {
+            HttpApiAttribute obj = new HttpApiAttribute();
+            obj.Type = this.Type;
+            obj.Description = this.Description;
+            obj.CacheDuration = this.CacheDuration;
+            obj.Description = this.Description;
+            return obj;
+        }
+        #endregion
+
+                /// <summary>×Ö·û´®¸ñÊ½»¯Ê±ÓÃµÄ¸ñÊ½</summary>
+        public string Format { get; set; }
+
+
+                    //.....ÒÔºóÔÙÓÅ»¯£¬Èç¹ûÎŞÊı¾İ£¬¸ÃÊä³öÊ²Ã´£¿
+            //.....ÎÄ±¾ÊÇÊä³önull»¹ÊÇÊ²Ã´¶¼²»Êä³ö£¿Í¼ÏñÄØ£¿
+            //.....¿É¿¼ÂÇÔÚwebconfigÖĞ½øĞĞÈ«¾ÖÉèÖÃ
+            if (obj == null)
+                WriteText("null"); 
+
+
+                        [System.ComponentModel.DefaultValue(ResponseType.Auto)]
+
+						    ´úÂë·½Ê½£ºroutes.MapHttpRoute(
+         name: "DefaultApi",
+         routeTemplate: "api/{controller}/{id}",
+         defaults: new { id = RouteParameter.Optional }
+         );
 
 
 
--------------------------------------------------------------
-å·²å®Œæˆ
--------------------------------------------------------------
-æµ‹è¯• int? n å‚æ•°
 
+
+
+--------------------------------------------------------
+/ĞŞ¸ÄWebCall£¬Ôö¼ÓÊÚÈ¨Âß¼­£¨2014-05-12£©
+	- ¼¯³ÉDataResultÀà
+    - ½«jsÎÄ¼ş¶ªµ½JsÄ¿Â¼ÏÂ
+	- ²ğ·ÖToolsÀà
+	- ÁîÆäÖ§³ÖÒÔÏÂÌØĞÔ(attribute)£º
+		- AllowAnonymous£ºÊÇ·ñÔÊĞíÄäÃû·ÃÎÊ£¨Ä¬ÈÏÎªtrue£©
+		- AllowUsers £ºÔÊĞí·ÃÎÊµÄÓÃ»§
+		- AllowRoles £ºÔÊĞí·ÃÎÊµÄ½ÇÉ«
+	- ÈôÎŞÊÚÈ¨·ÃÎÊ»á·µ»Ø401´íÎó»òDataResult¶ÔÏó £¨¿ÉÔÚWeb.confitÖĞÅäÖÃWebCall-ErrorResponse=HttpError/DataResult£©
+	- Ê¹ÓÃ·½·¨
+		- È·±£ASP.NET Ò³ÃæÊµÏÖ HttpContext.Current.User ½Ó¿Ú£¨ÓÃÓÚ»ñÈ¡µ±Ç°ÓÃ»§µÄĞÅÏ¢£©
+		- Çë´ò¿ªËùÓĞWebCallµÄ·ÃÎÊÈ¨ÏŞ£¬ÎŞĞèµÇÂ¼
+		- ÔÚĞèÒªÈÏÖ¤µÄ·½·¨ÉÏ¼ÓÉÏÒÔÉÏ±êÇ©
+	- ÏêÏ¸ÄÚÈİ¿É²Î¿¼ TestAuth.aspx Ê¾ÀıÒ³Ãæ
+/ĞŞ¸Ä»º´æÂß¼­£¬¸ù¾İÓĞĞ§ÊäÈë²ÎÊıÀ´»º´æ£¬ÎŞĞ§²ÎÊı²»ÓèÀí»á(2013-04-26)
+/nullÖµ´¦Àí
+/jsonÊı¾İ×ª»»ÎªÀàÊµÌå
+    void Update(Person person)
+    json {Name:xxx, First:xxx, Last:xxx, Sex:'male'}
+    Çë²Î¿¼asp.net WebApi
+    http://aspnetwebstack.codeplex.com/
+	return JsonConvert.DeserializeObject<T>(json, _jsonSettings); 
+	JsonSerializerSettings _jsonSettings = new JsonSerializerSettings(); 
+	_jsonSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore; 
+	_jsonSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore; 
+	_jsonSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; 
+	IsoDateTimeConverter datetimeConverter = new IsoDateTimeConverter(); 
+	datetimeConverter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss"; 
+	_jsonSettings.Converters.Add(datetimeConverter); 
+/ÈôÊµÏÖÁËIDisposal½Ó¿Ú£¬×Ô¶¯µ÷ÓÃÊÍ·Å×ÊÔ´
+/Ôö¼Ó·ÃÎÊÈ¨ÏŞ¿ØÖÆ
+    [AccessUsers="xxx,xxx", AccessRoles="xxx,xxx"]
+/Êı¾İ·µ»ØÀàĞÍ¿ÉÓÃAcceptedÀ´¿ØÖÆ£¬¶ø·Ç_type
+/¿Í»§¶Ë¿ÉÖ¸¶¨jsÀàÃû
+/³¢ÊÔ¸ù¾İ·½·¨µÄÊä³öÀà±ğÀ´ÍÆ¶ÏÊä³ö¸ñÊ½
+/Ôö¼ÓÍ¼ÏñÊä³ö£¨png¡¢gif¡¢base64£©
+/Êä³ö·şÎñµØÖ·
+/·Ï³ıextjsºÍjqueryÁ½ÖÖ°æ±¾µÄÊä³ö£¬Ã»É¶ÒâÒå£¬±£ÁôÔ­Ê¼js¾ÍºÃÁË
+/»Ö¸´WebCallHttpHandler
+/»Ö¸´WebCallHttpPage£¨¿Í»§¶ËÆÁ±ÎÁËcontentType:json,²»½¨ÒéÊ¹ÓÃ£©
+/Ö§³ÖÊä³öextjs½Å±¾
+/Ö§³ÖÊä³öÆÕÍ¨js½Å±¾
+/WebMethod->WebCall
+/¿¼ÂÇ·Ï³ı WebMethodHandler ºÍ WebMethodModule
+    (1)Ğ´class£¬²¢ÓÃ [WebMethod] ±ê×¢
+    (2)×¢²áaxd:
+    (3)ashxµ÷ÓÃ£º
+        ×¢²á£º<script src="CallType_xxx.xxx.axd/js"></script>
+        µ÷ÓÃ£ºWebMethod_xxx.xxx.axd/HelloWorld?info=me
+    (4)aspxµ÷ÓÃ£º
+        ×¢²á£º<script src="CallPage_xxx.xxx.axd/js"></script>
+        µ÷ÓÃ£ºWebMethod_xxx.xxx.axd/HelloWorld?info=me
+
+
+    // »ñÈ¡ajax¶ÔÏó
+    GetAjaxObject : function(){
+        if (window.ActiveXObject) {
+            return new ActiveXObject('Microsoft.XMLHTTP');
+        } else if (window.XMLHttpRequest) {
+            return new XMLHttpRequest();
+        }
+    },
+            if (decoder == null) decoder = new SimpleUrlDecoder(context);
+        <li><a href="WebCall.App.DemoClass.axd/jq">²é¿´App_CodeÀàÓ³Éäµ½¿Í»§¶ËµÄjsÎÄ¼ş£¨ÒÀÀµjquery)</a></li>
+        <li><a href="WebCall.App.DemoClass.axd/ext">²é¿´App_CodeÀàÓ³Éäµ½¿Í»§¶ËµÄjsÎÄ¼ş£¨ÒÀÀµExtJs)</a></li>
+        <li><a href="CallClass.aspx">µ÷ÓÃApp_CodeÀà·½·¨£¨ÒÀÀµjquery£©</a></li>
+        <li><a href="CallExt.aspx">µ÷ÓÃApp_CodeÀà·½·¨£¨ÒÀÀµExtJs£©</a></li>
+
+        static ResponseDataType ParseDataType(object o)
+        {
+            if (o is string)                return ResponseDataType.Text;
+            if (o is StringBuilder)         return ResponseDataType.Text;
+            if (o is DateTime)              return ResponseDataType.Text;
+            if (o is System.Data.DataTable) return ResponseDataType.JSON;
+            if (o is System.Drawing.Image)  return ResponseDataType.Image;
+
+            return ResponseDataType.JSON;
+        }
+
+
+        private void Call(string typeName, HttpContext context)
+        {
+            // ÏÈ³¢ÊÔ´Ó»º´æÖĞ»ñÈ¡´¦ÀíÆ÷
+            string cacheName = "WebCall-" + typeName;
+            object o = Cache[cacheName];
+            if (o != null)
+            {
+                Kingsoc.Web.WebCall.WebCallHelper.ProcessRequest(context, o);
+                return;
+            }
+
+            // ÕÒ²»µ½×Å±éÀú³ÌĞò¼¯È¥ÕÒÕâ¸öÀà
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                // ¹ıÂËµôÏµÍ³×Ô´øµÄ³ÌĞò¼¯
+                string name = assembly.FullName;
+                if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
+                    continue;
+
+                // ³¢ÊÔ´´½¨¶ÔÏó£¬ÇÒ´¦ÀíWeb·½·¨µ÷ÓÃÇëÇó
+                object handler = assembly.CreateInstance(typeName, true);
+                if (handler != null)
+                {
+                    Kingsoc.Web.WebCall.WebCallHelper.ProcessRequest(context, handler);
+                    Cache.Add(cacheName, handler, null,
+                        Cache.NoAbsoluteExpiration, new TimeSpan(0, _cacheMinutes, 0),
+                        CacheItemPriority.Default,
+						null);
+                    break;
+                }
+            }
+        }
+
+		            string errorResponse = System.Configuration.ConfigurationManager.AppSettings["HttpApi-ErrorResponse"];
+            if (string.IsNullOrEmpty(errorResponse))
+                errorResponse = "DataResult";
+            if (errorResponse == "HttpError")
+            {
+                context.Response.Write(info);
+                context.Response.StatusCode = errorCode;
+                context.Response.StatusDescription = info;
+                context.Response.End();
+            }
+            else
+            {
+                DataResult dr = new DataResult("false", info, errorCode, null);
+                WriteResult(context, dr, ResponseType.JSON);
+            }
+
+			    
+    
+  <appSettings>
+    <add key="HttpApi-ErrorResponse" value="DataResult"/>   <!-- HttpApi´íÎóÊ±·µ»ØµÄ¶ÔÏó£º HttpError »ò DataResult -->
+  </appSettings>
+                  object result = "Api " + methodName + "() fail. Please check parameters. " + ex.Message;
+
+				  
+            // »º´æÖĞÃ»ÓĞ, Ôò±éÀú³ÌĞò¼¯È¥ÕÒÕâ¸öÀà
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                // ¹ıÂËµôÏµÍ³×Ô´øµÄ³ÌĞò¼¯
+                string name = assembly.FullName;
+                if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
+                    continue;
+
+                // ³¢ÊÔ´´½¨¶ÔÏó£¬ÇÒ´¦ÀíWeb·½·¨µ÷ÓÃÇëÇó
+                handler = assembly.CreateInstance(typeName, true);
+                if (handler != null)
+                {
+                    HttpApiHelper.ProcessRequest(context, handler);
+                    DisposeIfNeed(handler);
+                    SaveHandlerInCache(typeName, assembly, handler);
+                    break;
+                }
+            }
+
+			    [XmlInclude(typeof(ErrorResponse))]
+
+
+        public DataResult(bool result, String info = "", object data = null, object extra = null)
+        {
+            Result = result.ToString();
+            Info = info;
+            Data = data;
+            Extra = extra;
+        }
+
+		        /// <summary>
+        /// ¹¹Ôì½Ó¿ÚÇåµ¥Ò³Ãæ
+        /// </summary>
+        static StringBuilder GetApiHtml(API api)
+        {
+            // ¸ÅÊöĞÅÏ¢
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<h1>" + api.Name + "</h1>");
+            sb.AppendLine("<h3>" + api.Description + "</h3>");
+
+            // ÊôĞÔ
+            sb.AppendLine("<h2>ÊôĞÔ</h2>");
+            sb.AppendLine("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendFormat("<tr><td width='100'>Ãû³Æ    </td><td>Öµ</td></tr>");
+            sb.AppendFormat("<tr><td width='100'>·µ»ØÀàĞÍ</td><td>{0}&nbsp;</td></tr>", api.ReturnType);
+            sb.AppendFormat("<tr><td width='100'>»º´æ(Ãë)</td><td>{0}&nbsp;</td></tr>", api.CacheDuration);
+            sb.AppendFormat("<tr><td width='100'>ÏŞµÇÂ½  </td><td>{0}&nbsp;</td></tr>", api.AuthLogin);
+            sb.AppendFormat("<tr><td width='100'>ÏŞÓÃ»§  </td><td>{0}&nbsp;</td></tr>", api.AuthUsers);
+            sb.AppendFormat("<tr><td width='100'>ÏŞ½ÇÉ«  </td><td>{0}&nbsp;</td></tr>", api.AuthRoles);
+            sb.AppendFormat("<tr><td width='100'>·ÃÎÊ·½Ê½</td><td>{0}&nbsp;</td></tr>", api.Verbs);
+            sb.AppendFormat("<tr><td width='100'>×´Ì¬    </td><td>{0}&nbsp;</td></tr>", api.Status);
+            sb.AppendFormat("<tr><td width='100'>±¸×¢    </td><td>{0}&nbsp;</td></tr>", api.Remark);
+            sb.AppendFormat("<tr><td width='100'>²âÊÔURL </td><td>{0}&nbsp;</td></tr>", api.UrlTest);
+            sb.AppendLine("</tr></table>");
+
+            // ²ÎÊı
+            sb.AppendLine("<h2>²ÎÊı</h2>");
+            sb.AppendLine("<br/><table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendFormat("<tr><td width='100'>²ÎÊıÃû</td><td>ÃèÊö</td><td>ÀàĞÍ</td><td>ËµÃ÷</td><td>È±Ê¡Öµ</td></tr>");
+            foreach (var p in api.Params)
+            {
+                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
+                    ,p.Name
+                    ,p.Description
+                    ,p.Type
+                    ,p.Info
+                    ,p.DefaultValue
+                    );
+            }
+            sb.AppendLine("</tr></table>");
+            return sb;
+        }
+
+
+		        // ¼ì²â¿Í»§¶ËIPÊÇ·ñÔÚÊÚÈ¨ÁĞ±íÄÚ
+        bool CheckIP()
+        {
+            string[] ips = HttpApiConfig.Instance.AuthIPs?.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            if (ips == null || ips.Length == 0)
+                return true;
+            else
+            {
+                string ip = Asp.GetClientIP();
+                return (ips.Contains(ip));
+            }
+        }
+
+		
+        [ConfigurationProperty("authIPs")]
+        public string AuthIPs
+        {
+            get { return (string)this["authIPs"]; }
+            set { this["authIPs"] = value; }
+        }
+
+		    public event AuthHandler OnAuth;
+    public delegate bool AuthHandler(IPrincipal pricipal);
+		sb.AppendFormat("<{0}>", field.Name);
+
+                // Ò»Ö±µİ¹éµ½»ù´¡Êı¾İÀà±ğ£¨¸÷ÖÖÀàĞÍ£»±ÜÃâÎŞÏŞµİ¹é»¥ÏàÒıÓÃ£»µİ¹é²ã´ÎÏŞÖÆ£©
+                var o = field.GetValue(obj);
+                var t = field.DeclaringType;
+                var cfg = HttpApiConfig.Instance;
+                if (o == null)
+                    sb.Append("");
+                else if (o is string)
+                    sb.Append(GetObjText(o));
+                else if (o is DateTime)
+                    sb.Append(GetDateText(o, cfg.FormatDateTime));
+                else if (t.IsEnum)
+                    sb.Append(GetEnumText(o, cfg.FormatEnum));
+                else if (t.IsValueType)
+                    sb.Append(GetObjText(o));
+                else if (o is IEnumerable)
+                    VisitCollection(sb, o as IEnumerable);
+                else
+                {
+                    var subFields = field.PropertyType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                    if (subFields.Count() > 0)
+                        VisitFields(sb, o, subFields);
+                    else
+                        sb.Append(GetObjText(o));
+                }
+
+                sb.AppendFormat("</{0}>", field.Name);
+
+
+
+				        /// <summary>
+        /// ¹¹ÔìAPI²ÎÊıÒ³Ãæ
+        /// </summary>
+        static string BuildApiParamsHtml(API api)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(BuildCss());
+            sb.AppendFormat("<br/><table class='table table-sm'>");
+            sb.AppendFormat("<thead><tr><td width='100'>²ÎÊıÃû</td><td>ÃèÊö</td><td>ÀàĞÍ</td><td>ËµÃ÷</td><td>È±Ê¡Öµ</td></tr></thead>");
+            foreach (var p in api.Params)
+            {
+                sb.AppendFormat("<tr><td>{0}&nbsp;</td><td>{1}&nbsp;</td><td>{2}&nbsp;</td><td>{3}&nbsp;</td><td>{4}&nbsp;</td></tr>"
+                    , p.Name
+                    , p.Description
+                    , p.Type
+                    , p.Info
+                    , p.DefaultValue
+                    );
+            }
+            sb.AppendFormat("</tr></table>");
+            return sb.ToString();
+        }
+ style='width:200px; border:none'
+
+
+                 <td width='70'>·µ»ØÀàĞÍ</td>
+                <td width='70'>»º´æ(Ãë)</td>
+                <td width='70'>Ğ£ÑéIP</td>
+                <td width='80'>Ğ£ÑéToken</td>
+                <td width='70'>Ğ£ÑéµÇÂ¼</td>
+                <td width='70'>Ğ£ÑéÓÃ»§</td>
+                <td width='70'>Ğ£Ñé½ÇÉ«</td>
+                <td width='70'>Ğ£Ñé¶¯×÷</td>
+                <td width='70'>·ÃÎÊÈÕÖ¾</td>
+                <td width='70'>×´Ì¬</td>
+                <td>±¸×¢</td>
+
+				            sb.AppendLine(@"<thead><tr>
+                <td width='200'>½Ó¿ÚÃû</td>
+                <td width='200'>ËµÃ÷</td>
+                <td width='70'>·µ»ØÀàĞÍ</td>
+                <td width='70'>»º´æ(Ãë)</td>
+                <td width='70'>Ğ£ÑéIP</td>
+                <td width='80'>Ğ£ÑéToken</td>
+                <td width='70'>Ğ£ÑéµÇÂ¼</td>
+                <td width='70'>Ğ£ÑéÓÃ»§</td>
+                <td width='70'>Ğ£Ñé½ÇÉ«</td>
+                <td width='70'>Ğ£Ñé¶¯×÷</td>
+                <td width='70'>·ÃÎÊÈÕÖ¾</td>
+                <td width='70'>×´Ì¬</td>
+                <td>±¸×¢</td>
+                </tr></thead>");
+
+				            /*
+            return @"
+                <style>
+                table {border-collapse: collapse}
+                tr:first-child {background: #f2f2f2;}
+                input[type=""text""] {background-color: #f2f2f2;}
+                input[type=""submit""] {
+                    width: 120px;
+                    height: 28px;
+                    background-color: #68c9e8;
+                    border-radius: 5px;
+                    color: white;
+                    border: none;
+                    font-size: 14;
+                }
+                input[type=""submit""]:hover {
+                    cursor: hand
+                }
+                </style>
+            ";
+            */
+
+			        // ÇëÇóÒ³Ãæ
+        private void Application_BeginRequest(object sender, EventArgs e)
+        {
+            var u = HttpContext.Current.Request.Url.AbsolutePath;
+            var url = u.ToString().ToLower();
+
+            // ÒÔ Page.aspx/Method »ò Handler.ashx/Method ·½Ê½µ÷ÓÃ
+            if (!url.Contains("httpapi/"))
+            {
+                int m = url.LastIndexOf(".");
+                int n = url.LastIndexOf("/");
+                if (m != -1 && n != -1 && m < n)
+                {
+                    url = url.Substring(0, n);
+                    var ext = url.Substring(m);
+                    var exts = new List<string>() { ".aspx", "ashx" };
+                    if (exts.Contains(ext))
+                        HttpApiHandler.HandlerHttpApiRequest(HttpContext.Current);
+                }
+            }
+        }
+
+        private void Application_EndRequest(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+		            application.BeginRequest += Application_BeginRequest;
+            application.EndRequest += Application_EndRequest;
+
+
+			
+                int m = url.LastIndexOf(".");
+                if (m != -1 && n != -1 && m < n)
+                {
+                    var ext = url.Substring(m);
+
+                    if (ext == ".aspx")
+                    {
+                        var factory = (PageHandlerFactory)Activator.CreateInstance(typeof(PageHandlerFactory), true);
+                        handler = factory.GetHandler(HttpContext.Current, req.HttpMethod, url, url);
+                    }
+                    else if (ext == ".ashx")
+                    {
+                        //var factory = Activator.CreateInstance("System.Web.dll", "System.Web.UI.SimpleHandlerFactory", new object[] { }) as IHttpHandlerFactory;  // ÎŞ·¨´´½¨
+                        //handler = factory.GetHandler(HttpContext.Current, req.HttpMethod, url, url);
+                        type = WebHandlerParser.GetCompiledType(url, url, context);
+                        handler = Activator.CreateInstance(type) as IHttpHandler;
+                    }
+                }
+
+
+
+
+
+				                sb.AppendFormat("//-----------------------------------------------------------------\r\n");
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.Url, api.Url);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.CacheSeconds,  api.CacheDuration);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.ReturnType,  api.ReturnType);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.Description, api.Description);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthVerbs, api.AuthVerbs);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthIP,  api.AuthIP);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthToken,  api.AuthToken);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthLogin,  api.AuthLogin);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthUser,  api.AuthUsers);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthRole,  api.AuthRoles);
+                sb.AppendFormat("// {0} : {1}\r\n", Resources.Remark, api.Remark);
+                sb.AppendFormat("//-----------------------------------------------------------------\r\n");

@@ -184,13 +184,13 @@ http://...../HttpApi/Demo/HelloWorld?_type=xml
 
 - Use Https to transport api data, to avoiding be listenned and modified.
 - Full open api: This kinds of api is only use in inner trusted system environment.
-- Fix Token protected api: This kind of token is fix string, such as appid.
-- Dynamic token protected api: Token is create by appid + appsecret + timestamp.
-- Need Login api: such as get my order.
+- Fixed Token protected api: This kind of token is fixed string, such as appid.
+- Dynamic token protected api: Token is created by appid + appsecret + timestamp.
+- Need Login api: such as GetMyOrder.
 - Other limit: IP, Frequence, Action.
 
 
-#### HttpAPI make some AuthXXX properties to support api security.
+#### HttpAPI makes some AuthXXX properties to support api security.
 
 ```
 [HttpApi("...", AuthVerbs="Get,Post")]      // check visit verb
@@ -272,7 +272,7 @@ public class Global : System.Web.HttpApplication
 
 ### (7)  Uniform data frmat: APIResult
 
-HttpApi support union api rsult format to simply client calling.
+HttpApi support uniform api result format to simply client calling.
 
 ```
 [HttpApi("Ouput system datetime")]
@@ -455,10 +455,10 @@ public static APIResult GetPersons()
 ```      
 
 ## 7. Project motivation
-- Basic motivation: (1) Simply api coding amount for http server; (2) Auth create client javascript
-- And more complex function, such as auth, security, caching, format, exception, uniform api result, etc.
+- Basic motivation: (1) Simplify api coding for http server; (2) Auto create client calling javascript
+- And more complex functions, such as auth, security, caching, format, exception, uniform api result, etc.
 - WebAPI has many limits: http://blog.csdn.net/leeyue_1982/article/details/51305950
-- WebAPI don't support my target, so I create this project, and maintain so many years.
+- So I create this project, and maintain it for so many years.
 
 
 

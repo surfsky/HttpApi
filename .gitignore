@@ -6,3 +6,4 @@
 /.vs
 /Nuget/TestNuget/TestNuget/obj
 /Nuget/TestNuget/packages
+/packages

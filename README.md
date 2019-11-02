@@ -44,7 +44,8 @@ Nuget: install-package App.HttpApi
 
 ## 4.Usage
 
-Skip to step 3 if use neget to install httpapi.
+Skip to step 3 if use nuget to install httpapi.
+
 (1) Import App.HttpApi.dll      
 (2) Modify web.config file
 ```

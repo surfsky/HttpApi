@@ -142,6 +142,15 @@ namespace App.HttpApi.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Expire Date 的本地化字符串。
+        /// </summary>
+        internal static string Expire {
+            get {
+                return ResourceManager.GetString("Expire", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Log 的本地化字符串。
         /// </summary>
         internal static string Log {

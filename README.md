@@ -1,58 +1,52 @@
-﻿# App.HttpApi
+# App.HttpApi
 
+Chinese readme file is [here](README-CN.md)
 
-## 1.说明
+## 1.Description
 
-* (01) 一种便利的提供数据接口服务的框架，可作为 WebAPI 的升级方案。
-* (02) 可将类中的方法暴露为http接口，如：
+* (01) HttpApi is a convinent framework to provide data by http, It can be the upgrating replacement for WebAPI.
+* (02) HttpApi can export class function to http interface, eg.
 ```
 http://.../HttpApi/TypeName/Method?p1=x&p2=x
 ```
-* (03) 可将页面类中的方法暴露为http接口，如：
+* (03) HttpApi can export page's method to http interface, eg.
 ```
 http://.../Page1.aspx/GetData?page=1&rows=2&sort=abc&order=desc
 http://.../Handler1.ashx/GetData?page=1&rows=2&sort=abc&order=desc
 ```
-* (04) 自动生成客户端调用脚本
+* (04) HttpApi can auto create client javascript.
 ```
 http://.../HttpApi/TypeName/js
 ```
-* (05) 自动生成API清单、API接口测试页面
+* (05) HttpApi can auto create api list page, api test page. eg.
 ```
 HttpApi/TypeName/api
 HttpApi/TypeName/apis
 HttpApi/TypeName/Method$
 ```
 
-* (06) 带缓存机制：可指定方法返回值的缓存时间、方式; 客户端可控强制刷新缓存。
-* (07) 带鉴权机制：访问IP、动作、 是否登录、用户名、角色、Token。可自定义接口鉴权逻辑。
-* (08) 带封装机制：可将方法返回值自动包裹为 APIResult 结构体。
-* (09）可配置输出格式：枚举、递进、日期、长数字、错误时的输出方式等。
-* (10）服务器端和客户端都可指定接口返回的数据格式，如 text, xml，json, file, image, base64image 等。
-* (11）支持可空数据类型参数、默认参数。
+* (06) Caching: You can assign api result caching duration. And client can refresh cache by '_refresh=true' parameter.
+* (07) Auth: IP, Method, LoginStatus, UserName, UserRole, Token, and custom logic.
+* (08) Capsule: return standard APIResult object to client.
+* (09) Output configuration: You can config output format, such as enum, datetime, long number, error.
+* (10) Server site and client can assign api output data format, such as  text, xml, json, file, image, base64image.
+* (11) Support nullable and default parameter.
 
-## 2.作者
+## 2.Author
 ```
 http://github.com/surfsky
 ```
 
-## 3.安装
+## 3.Install
 ```
 Nuget: install-package App.HttpApi
 ```
 
-## 4.使用
+## 4.Usage
 
-(1) 引用类库（用nuget安装的话会自动完成）
-```
-App.Core.dll
-App.HttpApi.dll
-```
-注：App.HttpApi 引用了 App.Core 类库，用到其：
-- ASP.NET 建权验票相关方法
-- 类型解析相关方法
-       
-(2) 修改 web.config 文件（用nuget安装的话会自动修改）
+Skip to step 3 if use neget to install httpapi.
+(1) Import App.HttpApi.dll      
+(2) Modify web.config file
 ```
 <system.webServer>
   <modules>
@@ -61,7 +55,7 @@ App.HttpApi.dll
 </system.webServer>
 ```
        
-(3) 在需要导出HttpApi的方法上写上标注
+(3) Modify method, add [HttpApi] Attribute
 ```
 namespace App
 {
@@ -77,53 +71,59 @@ namespace App
 }
 ```
       
-(4) 客户端调用
+(4) Ok, Client can call this api by url:
 ```
 http://...../HttpApi/Demo/HelloWorld?info=x
 ```
+or test api:
+```
+http://...../HttpApi/Demo/HelloWorld$
+```
+
         
 
 
-## 5.高级操作
-### （1） 控制 HttpApi 输出
-Web.Config
+## 5.Senior guidline
+### (1) Control HttpApi output format
 ```
+Web.Config
 <configSections>
   <section name="httpApi" type="App.HttpApi.HttpApiConfig, App.HttpApi"/>
 </configSections>
 <httpApi 
-  formatEnum="Text"                      // 枚举输出格式: Text | Int
-  formatIndented="Indented"              // json加空格换行递进格式化后输出
-  formatDateTime="yyyy-MM-dd"            // 时间类型输出格式
-  formatLowCamel="false"                 // 是否用小字母开头驼峰方式输出
-  formatLongNumber="Int64,Decimal"       // 长数字输出为字符串，避免客户端js因为精度问题出错
-  errorResponse="APIResult"              // 错误时的输出：APIResult | HttpError
-  typePrefix="App."                      // 可省略的API类型前缀，如原始路径为 /HttpAPI/App.Base/Demo 可简化为 /HttpApi/Base/Demo
-  language="en"                          // 国际化支持。现支持 en, zh-CN
+  formatEnum="Text"                      // Decide how to export Enum: Text | Int
+  formatIndented="Indented"              // Decide whether to beautify json output by and space indent and line break
+  formatDateTime="yyyy-MM-dd"            // Decide how to export DateTime
+  formatLowCamel="false"                 // Decide whether to use low camel for property name
+  formatLongNumber="Int64,Decimal"       // Decide which number type to string, to avoiding javascript number precision error
+  errorResponse="APIResult"              // Decide error output when catch exception: APIResult | HttpError
+  typePrefix="App."                      // Url abbr support. eg. Raw url /HttpAPI/App.Base/Demo can change to the short path: /HttpApi/Base/Demo
+  language="en"                          // Culture support: en, zh-CN
   />
 ```
 
-### （2）自动生成客户端调用的 javascript 脚本
+### (2) Auto create client javascript
 ```
 <script src="http://.../HttpApi/Demo/js"></script>
 ```
-可在类上附上标签，控制生成的脚本内容
+You can add [Script] attrubute to class, to control the js content:
 ```
 [Script(CacheDuration =0, ClassName ="Demo", NameSpace ="App")]
 ```
 
-### (3) 自动生成 Api 列表、详情及测试页面
+### (3) Auto create api list, api test page.
 ```
 http://..../HttpApi/Demo/api
 http://..../HttpApi/Demo/HelloWorld$
 ```
-可附上标签，显示 Api 修改历史/参数信息/输出类型/缓存等
+You can add [History] attribute, to display api modify history.
+You can add [Param] attribute, to display api parameter infomation.
 ```
 [History("2016-11-01", "SURFSKY", "modify A")]
 public class Demo
 {
     [HttpApi("HelloWorld", CacheSeconds=10)]
-    [Param("info", "信息")]
+    [Param("info", "information")]
     public static string HelloWorld(string info)
     {
         ....
@@ -132,28 +132,28 @@ public class Demo
 ```
 
 
-### （4） 缓存控制
+### (4)  Caching
 ```
-[HttpApi("输出系统时间", CacheSeconds=30)]
+[HttpApi("Output system time", CacheSeconds=30)]
 public DateTime GetTime()
 {
     return System.DateTime.Now;
 }
 ```
 
-调用时数据将会缓存30秒再刷新：
+The api result will cache 30 seconds:
 ```
 /HttpAPI/Common/GetTime
 ```
 
-如果需要强制刷新缓存，可增加一个_refresh参数，常用于接口调测用。如:
+Add _refresh parameter if you want to refresh cache right now. It's useful when testing:
 ```
 /HttpAPI/Common/GetTime?_refresh=true
 ```
 
 
-### (5) 输出数据类型控制
-服务器端指定输出类型
+### (5) Control the output data type
+*Server site*
 ```
 [HttpApi("...", Type = ResponseType.JSON)]
 [HttpApi("...", Type = ResponseType.XML)]
@@ -166,129 +166,127 @@ public DateTime GetTime()
 [HttpApi("...", Type = ResponseType.BinaryFile)]
 ```
 
-客户端指定输出类型为xml
+*Client side*
 ```
 http://...../HttpApi/Demo/HelloWorld?_type=xml
-```
-
-该接口将输出 XML：
-```
 <APIResult>
     <Result>True</Result>
-    <Info>获取成功</Info>
+    <Info>��ȡ�ɹ�</Info>
     <CreateDt>2019-07-16 10:26:30</CreateDt>
     <Data>Hello world!</Data>
     <Extra/>
 </APIResult>
 ```
 
-### （6） 访问鉴权控制
+### (6)  Auth
 
-#### 常见的数据接口安全性策略及HttpAPI解决方案
+#### The usualy api security protection, and HttpApi solution:
 
-- 用 Https 传输接口数据：从网络层上着手，避免交互数据被监听、篡改。
-- 完全公开的接口：这种接口无需任何鉴权即可调用。这种方式现在很少见了，仅用于内部系统。
-- 安全参数保护的接口：访问者必须事先和接口提供网站约定安全参数，访问者调用接口时必须附上该安全参数。HttpAPI可用 AuthToken 方式实现。
-- 动态授权访问的接口：是方法2的升级版本，此时的安全参数是动态分配且有时间限制的（通常由appid+appsecret+timestamp生成，也就是常见的oauth token机制）。HttpAPI可用 AuthToken 方式实现。
-- 需要登陆访问的接口：如获取自己的订单，该类接口需要先登陆生成cookie验票（包含用户及角色信息），访问此类接口需带上cookie，服务器端解析该cookie以判断当前访问者的登陆状态、名称、角色等信息。HttpApi可用AuthLogin、AuthUser、AuthRole方式实现。
-- 其它限制：如访问IP、访问频率、访问动作等HttpAPI都有相应处理方法。
+- Use Https to transport api data, to avoiding be listenned and modified.
+- Full open api: This kinds of api is only use in inner trusted system environment.
+- Fix Token protected api: This kind of token is fix string, such as appid.
+- Dynamic token protected api: Token is create by appid + appsecret + timestamp.
+- Need Login api: such as get my order.
+- Other limit: IP, Frequence, Action.
 
 
-#### HttpAPI支持以下标签来控制接口访问鉴权
+#### HttpAPI make some AuthXXX properties to support api security.
 
 ```
-[HttpApi("...", AuthVerbs="Get,Post")]      // 校验访问动作
-[HttpApi("...", AuthLogin=true)]            // 校验登陆状态
-[HttpApi("...", AuthUsers="A,B")]           // 校验登陆用户名
-[HttpApi("...", AuthRoles="A,B")]           // 校验登陆用户角色
-[HttpApi("...", AuthIP=true)]               // 校验IP
-[HttpApi("...", AuthToken=true)]            // 校验Token
+[HttpApi("...", AuthVerbs="Get,Post")]      // check visit verb
+[HttpApi("...", AuthLogin=true)]            // check user login status
+[HttpApi("...", AuthUsers="A,B")]           // check user name
+[HttpApi("...", AuthRoles="A,B")]           // check user role
+[HttpApi("...", AuthIP=true)]               // check visit IP
+[HttpApi("...", AuthToken=true)]            // check Token
 ```
 
-#### 登陆状态、用户名、角色的鉴权
+#### Check login status, user name, user role
 ```
-[HttpApi("登录")]
+[HttpApi("Login")]
 public string Login()
 {
     AuthHelper.Login("Admin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
     System.Threading.Thread.Sleep(200);
-    return "访问成功（已登录）";
+    return "Login success ";
 }
 
-[HttpApi("注销")]
+[HttpApi("Sign out")]
 public string Logout()
 {
     AuthHelper.Logout();
     System.Threading.Thread.Sleep(200);
-    return "注销成功";
+    return "Sign ok";
 }
 
-[HttpApi("用户必须登录后才能访问该接口，若无授权则返回401错误", AuthLogin=true)]
+[HttpApi("User must login", AuthLogin=true)]
 public string LimitLogin()
 {
     System.Threading.Thread.Sleep(200);
-    return "访问成功（已登录）";
+    return "OK(Logined) ";
 }
 
-[HttpApi("限制用户访问，若无授权则返回401错误", AuthUsers = "Admin,Kevin")]
+[HttpApi("User must be admin or kevin", AuthUsers = "Admin,Kevin")]
 public string LimitUser()
 {
     System.Threading.Thread.Sleep(200);
-    return "访问成功（限制用户Admin,Kevin）";
+    return "OK(Limit Admin,Kevin) ";
 }
 
-[HttpApi("限制角色访问，若无授权则返回401错误", AuthRoles = "Admins")]
+[HttpApi("Use must has 'admins' role", AuthRoles = "Admins")]
 public string LimitRole()
 {
     System.Threading.Thread.Sleep(200);
-    return "访问成功（限制角色Admins）";
+    return "OK(Limit Admins) ";
 }
 ```
 
 
 
-#### AuthToken 及 AuthIP 的实现
+#### AuthToken and AuthIP
 
-出于灵活性和统一性考虑，这两种方法需要编写自定义访问鉴权代码（如从数据库中获取授权IP和token进行校对），示例代码如下：
+
+You can check token and ip in custom way, eg.
 
 ```
 public class Global : System.Web.HttpApplication
 {
     protected void Application_Start(object sender, EventArgs e)
     {
-        // HttpApi 自定义访问校验
+        // HttpApi custom auth
         HttpApiConfig.Instance.OnAuth += (ctx, method, attr, token) =>
         {
             if (attr.AuthIP && !CheckIP(ip))
-                throw new HttpApiException("该IP禁止访问本接口", 401);
+                throw new HttpApiException("This ip is forbidden", 401);
             if (attr.AuthToken && !CheckToken(token))
-                throw new HttpApiException("请核对授权token", 401);
+                throw new HttpApiException("Please check token", 401);
             if (attr.Log)
                 Logger.Log(...);
-            // 其它自定义的鉴权逻辑，如访问频率等。如果鉴权失败，抛出HttpApiException即可。
+            // Other auth logic, such as visit frequence.
+            // Throw HttpApiException if auth fail.
         };
     }
 }
 ```
 
 
-### （7） 统一的接口数据格式 APIResult
+### (7)  Uniform data frmat: APIResult
 
-我们常常将接口吐出的数据统一格式，便于客户端调用，HttpAPI中内置了APIResult结构体，可在输出时指定。
+HttpApi support union api rsult format to simply client calling.
 
 ```
-[HttpApi("输出系统时间")]
+[HttpApi("Ouput system datetime")]
 public APIResult GetTime()
 {
-    return new APIResult(true, "操作成功", System.DateTime.Now);
+    return new APIResult(true, "OK", System.DateTime.Now);
 }
 ```
 
-输出格式为
+Then the output maybe
 ```
 {
     Result: true,
-    Info: "操作成功",
+    Info: "OK",
     CreateDt: "2019-07-16 10:24:14",
     Data: '2019-01-01',
     Extra: {...}
@@ -296,55 +294,34 @@ public APIResult GetTime()
 ```
 
 
-### （8） 更多可控参数
+### (8)  Other parameter
 ```
-/// <summary>描述信息</summary>
 public string Description { get; set; }
-
-/// <summary>示例</summary>
 public string Example { get; set; }
-
-/// <summary>备注</summary>
 public string Remark { get; set; }
-
-/// <summary>导出文件的MIME类别</summary>
 public string MimeType { get; set; }
-
-/// <summary>导出文件名</summary>
 public string FileName { get; set; }
-
-/// <summary>是否对文本类型（Json, Text, Xml, ImageBase64)的数据进行 DataResult 封装</summary>
 public bool Wrap { get; set; } = false;
-
-/// <summary>封装条件</summary>
-public string WrapCondition { get; set; }
-
-/// <summary>状态（Testing, Published, Deprecated)</summary>
 public ApiStatus Status { get; set; }
 ```
 
 
-## 6.更多示例
+## 6. More examples
 ```
-[HttpApi("静态方法示例", Type = ResponseType.JS)]
-public static object GetStaticObject()
-{
-    return new { h = "3", a = "1", b = "2", c = "3" };
-}
 
-[HttpApi("Json结果包裹器示例", Wrap = true, WrapCondition ="获取数据成功")]
+[HttpApi("Json Wrapper", Wrap = true)]
 public static object TestWrap()
 {
     return new { h = "3", a = "1", b = "2", c = "3" };
 }
 
-[HttpApi("默认方法参数示例", Remark = "p2的默认值为a", Status = ApiStatus.Deprecated, AuthVerbs ="GET")]
+[HttpApi("Default paramter", Status = ApiStatus.Delete, AuthVerbs ="GET")]
 public static object TestDefaultParameter(string p1, string p2="a")
 {
     return new { p1 = p1, p2 = p2};
 }
 
-[HttpApi("测试错误")]
+[HttpApi("Exception Test")]
 public static object TestError()
 {
     int n = 0;
@@ -352,35 +329,35 @@ public static object TestError()
     return true;
 }
 
-[HttpApi("限制访问方式", AuthVerbs ="Post")]
+[HttpApi("Auth verb", AuthVerbs ="Post")]
 public static string TestVerbs()
 {
     return HttpContext.Current.Request.HttpMethod;
 }
 
-[HttpApi("测试枚举返回值（可在web.config中设置）")]
+[HttpApi("Return enum")]
 public static Sex TestEnum()
 {
     return Sex.Male;
 }
 
 //---------------------------------------------
-// 返回各种基础对象
+// Other basic data type
 //---------------------------------------------
-[HttpApi("plist文件下载示例", CacheSeconds = 30, MimeType="text/plist", FileName="app.plist")]
+[HttpApi("plist file", CacheSeconds = 30, MimeType="text/plist", FileName="app.plist")]
 public string GetFile(string info)
 {
     System.Threading.Thread.Sleep(200);
     return string.Format("This is plist file demo! {0} {1}", info, DateTime.Now);
 }
 
-[HttpApi("输出系统时间", CacheSeconds=30)]
+[HttpApi("date time", CacheSeconds=30)]
 public DateTime GetTime()
 {
     return System.DateTime.Now;
 }
 
-[HttpApi("输出DataTable")]
+[HttpApi("DataTable")]
 public DataTable GetDataTable()
 {
     DataTable dt = new DataTable("test");
@@ -391,7 +368,7 @@ public DataTable GetDataTable()
     return dt;
 }
 
-[HttpApi("输出DataRow")]
+[HttpApi("DataRow")]
 public DataRow GetDataRow()
 {
     DataTable dt = new DataTable("test");
@@ -402,7 +379,7 @@ public DataRow GetDataRow()
     return dt.Rows[0];
 }
 
-[HttpApi("输出Dictionary")]
+[HttpApi("Dictionary")]
 public IDictionary GetDictionary()
 {
     var dict = new Dictionary<int, Person>();
@@ -411,7 +388,7 @@ public IDictionary GetDictionary()
     return dict;
 }
 
-[HttpApi("输出图像", CacheSeconds=60)]
+[HttpApi("Image", CacheSeconds=60)]
 public Image GetImage(string text)
 {
     Bitmap bmp = new Bitmap(200, 200);
@@ -427,9 +404,9 @@ public Image GetImage(string text)
 
 
 //---------------------------------------------
-// 自定义类
+// Class
 //---------------------------------------------
-[HttpApi("解析自定义类。father:{Name:'Kevin', Birth:'1979-12-01', Sex:0};")]
+[HttpApi("father:{Name:'Kevin', Birth:'1979-12-01', Sex:0};")]
 public Person CreateGirl(Person father)
 {
     return new Person()
@@ -441,32 +418,32 @@ public Person CreateGirl(Person father)
     };
 }
 
-[HttpApi("null值处理")]
+[HttpApi("null")]
 public static Person CreateNull()
 {
     return null;
 }
 
-[HttpApi("返回复杂对象")]
+[HttpApi("Output class object")]
 public static Person GetPerson()
 {
     return new Person() { Name = "Cherry" };
 }
 
 
-[HttpApi("返回Xml对象", Type=ResponseType.XML)]
+[HttpApi("Output Xml", Type=ResponseType.XML)]
 public static Person GetPersonXml()
 {
     return new Person() { Name = "Cherry" };
 }
 
-[HttpApi("返回复杂对象，并用DataResult进行封装", Wrap =true)]
+[HttpApi("Output class, and wrap with APIResult", Wrap =true)]
 public static Person GetPersonDataResult()
 {
     return new Person() { Name = "Kevin" };
 }
 
-[HttpApi("返回APIResult对象")]
+[HttpApi("Output APIResult")]
 public static APIResult GetPersons()
 {
     var persons = new List<Person>(){
@@ -477,109 +454,122 @@ public static APIResult GetPersons()
 }
 ```      
 
-## 7.项目目标
-- 立项初衷：（1）简化服务器端接口开发代码量；（2）自动完成客户端js代码，减少出错率；
-- 后来又想集成鉴权、缓存、输出格式、错误控制、统一输出结构等逻辑；
-- WebAPI 有众多限制：http://blog.csdn.net/leeyue_1982/article/details/51305950
-- Restful 方式的API动作过少（GET/POST/DELETE/)，无法覆盖到所有动作，干脆放开方法名，让开发者自己定义好了
-- WebAPI 要想实现我的目标，有很大的代码工作量，故全新开发本框架。
+## 7. Project motivation
+- Basic motivation: (1) Simply api coding amount for http server; (2) Auth create client javascript
+- And more complex function, such as auth, security, caching, format, exception, uniform api result, etc.
+- WebAPI has many limits: http://blog.csdn.net/leeyue_1982/article/details/51305950
+- WebAPI don't support my target, so I create this project, and maintain so many years.
 
 
 
-## 8.截图
+## 8.Snapshots
 
-接口定义<br/>
+Api define<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apicode.png?raw=true)
 
-接口清单页面<br/>
+Api list page<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apilist.png?raw=true)
 
-接口详情页面<br/>
+Api test page<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/api.png?raw=true)
 
-接口返回值（默认为json）<br/>
+Api output(defautl is json) <br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apiresult.png?raw=true)
 
-接口返回值（xml格式）<br/>
+Api output xml <br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apixml.png?raw=true)
 
-Token 鉴权访问示例<br/>
+Token demo<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/token.png?raw=true)
 
-Auth 鉴权访问示例<br/>
+Auth demo<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/auth.png?raw=true)
 
 
-## 9.参考
+## 9.Reference
 - http://www.cnblogs.com/wzcheng/archive/2010/05/20/1739810.html
 
 
 
 
-## 10.任务
-- XML 格式控制：属性/成员、递进、大小写等
+## 10.More targets
+- XML format control: property/field, indent, case...
+- AuthInterval
+- File upload
+- Long time connect api
+
+
 
 
 ## 11.History
 2012-08  
-	- 初版
+- Init
 
 2014-06
-	- 支持默认参数；
-	- 增加问授权（角色、用户、登录）；
-	- 错误输出可控（APIResult 或 HTTP ERROR）
+- Support defaul parameter; 
+- Auth login, user, role; 
+- Exception output format(APIResult or HTTP ERROR) 
 
 2016-06  
-	- 增加api展示窗口
-	- 修正Image方式输出故障
+- Add api display page
+- Fix Image output error
 
 2017-11  
-	- 简化和优化 HttpApiAttribute
-	- 可选缓存方式
+- Simply HttpApiAttribute
+- Caching
 
 2017-12  
-	- Nuget发布：install-package App.HttpApi
-	- 增加 HttpApiConfig 配置节
+- Nuget: install-package App.HttpApi
+- Add  HttpApiConfig configuration section
 
 2018-10  
-	- 增加自定义鉴权事件；
-	- 实现Api展示页面；
-	- 用配置节控制Json输出格式；
-	- 简化访问路径；
-	- 完善 XML 输出；
+- Support custom auth event; 
+- Add Api display page; 
+- Config json output format;
+- Simply visit path
+- Fix XML output; 
 
 2018-11  
-	- 默认参数可为空也可不填写；
-	- 可空类型参数可为空也可不填写；
-	- 可在 API 介绍页面上输出枚举类型成员信息；
+- Default parameter can be null or leased.
+- Nullable parameter can be null or leased.
+- Add enum parameter description; 
 
 2019-03  
-	- 实现Api 测试页面（填写参数；选择方法Get/Post；发送请求；显示输出结果）
+- Add Api test page
 
 2019-06  
-	- 客户端可控强制刷新缓存（url参数中增加 _refresh=true）
+- Client can refresh cache by parameter(_refresh=true) 
 
 2019-07  
-	- 长数字类型可控输出为文本，避免客户端js因为精度问题导致的各种错误。
+- Long number can be outputed to string.
 
 2019-08
-	- 应用 Bootstrap 样式
-	- 简化 Page.aspx/Method 或 Handler.ashx/Method 方式调用，无需继承任何类（废除 HttpApiPageBase 和 HttpApiHandlerBase)
-	- 国际化支持。增加配置项：language="zh-CN"
-	- 新增动态 token 示例页面。
-	- 升级 Json.Net 到 11.0.2
-	- 简化和修正 App.HttpApi.Test 项目。
-	- 修正复杂参数可空类型属性转换异常 BUG。
-	- 修正 AuthToken 自动生成 js 的参数遗漏问题。
+- Apply  Bootstrap style
+- Simply Page.aspx/Method or Handler.ashx/Method api call, Need't inherit any class(absolete HttpApiPageBase and HttpApiHandlerBase)
+- Global culture support. Add configuration parameter: language="zh-CN"
+- Add dynamic token example page.
+- Update  Json.Net to version 11.0.2
+- simply and fix App.HttpApi.Test project.
+- Fix nullable parameter error bug
+- Fix javascript parameter leasing problem when AuthToken=true.
 
 2.4.0
-	- 删除 App.Core 依赖
+- Remove App.Core reliation.
 
 2.5
-	- 彻底删除 App.Core 依赖，但保持 Enum GetUIDescription的能力
-	- 将Json输出的MIMETYPE改为"text/json"; 原先用 "application/json" 有些浏览器会把这个当作文件下载来处理
-	- 补充 Web.Config 配置
- 	  <!-- 有些服务器有问题，Module RemapHandler 后无法获取 Session，要加这两行 -->
-      <remove name="Session" />
-      <add name="Session" type="System.Web.SessionState.SessionStateModule"/>
+- Remove App.Core reliation, but keepping Enum GetUIDescription capacility by reflection.
+- Modifey Json MIMETYPE from "application/json" to "text/json";
+- Fix Web.Config
+    ```
+    <!-- Some server will lost session, so add this two lines -->
+    <remove name="Session" />
+    <add name="Session" type="System.Web.SessionState.SessionStateModule"/>
+    ```
 
+2.5.3
+* ParseCookie don't throw exception
+
+2.5.4
++ HttpApiAttribute.Deprecated -> Obsolete
++ HttpApiAttribute.Delete
+* fix bug:  "Object of type 'System.Int32' cannot be converted to type 'System.Nullable`1[App.Sex]'. See example: GetNullalbeEnum2

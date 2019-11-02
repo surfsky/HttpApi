@@ -8,7 +8,7 @@ using System.Web.UI;
 namespace App.HttpApi
 {
     /// <summary>
-    /// WebMethod脚本特性，用于控制输出 js 脚本时的一些的命名及缓存
+    /// 脚本特性，用于控制输出 js 脚本时的一些的命名及缓存
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class ScriptAttribute : Attribute
@@ -19,9 +19,31 @@ namespace App.HttpApi
     }
 
     /// <summary>
+    /// 资源特性（尚未启用）
+    /// 类似UIAttribute，可以给枚举字段增加注释信息，信息来自Resource
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
+    public class RAttribute : Attribute
+    {
+        public string Name { get; set; }
+
+        public RAttribute(string name)
+        {
+            this.Name = name;
+        }
+
+        public string GetText()
+        {
+            var culture = System.Threading.Thread.CurrentThread.CurrentUICulture;
+            var manager = new System.Resources.ResourceManager("App.HttpApi.Properties.Resources", this.GetType().Assembly);
+            return manager.GetString(this.Name, culture);
+        }
+    }
+
+    /// <summary>
     /// 历史版本信息
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class HistoryAttribute : Attribute
     {
         public string Date { get; set; }
@@ -37,30 +59,28 @@ namespace App.HttpApi
     }
 
 
-
-
     /// <summary>
     /// 参数信息
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class ParamAttribute : Attribute
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
         public string DefaultValue { get; set; }
-        public string Info { get; set; }
+        public string Remark { get; set; }
 
         public ParamAttribute(string name, string description)
             : this(name, description, "", "", "")
         {
         }
-        internal ParamAttribute(string name, string description, string type, string info, string defaultValue)
+        internal ParamAttribute(string name, string description, string type, string remark, string defaultValue)
         {
             this.Name = name;
             this.Description = description;
             this.Type = type;
-            this.Info = info;
+            this.Remark = remark;
             this.DefaultValue = defaultValue;
         }
     }

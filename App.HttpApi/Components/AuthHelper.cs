@@ -88,17 +88,21 @@ namespace App.HttpApi
             // 获取鉴权Cookie值
             string cookieName = FormsAuthentication.FormsCookieName;
             string cookieValue = CookieHelper.FindCookie(cookieName);
+            if (cookieValue.IsEmpty())
+                return null;
 
             // 解析Cookie
-            if (cookieValue.IsNotEmpty())
+            try
             {
                 FormsAuthenticationTicket authTicket = ParseTicket(cookieValue, out string user, out string[] roles);
                 HttpContext.Current.User = new UserRolePrincipal(new FormsIdentity(authTicket), roles);
-                return HttpContext.Current.User;
             }
-            return null;
+            catch (Exception ex)
+            {
+                HttpContext.Current.User = null;
+            }
+            return HttpContext.Current.User;
         }
-
 
 
         //-----------------------------------------------

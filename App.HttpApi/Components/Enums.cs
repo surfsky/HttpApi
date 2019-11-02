@@ -33,10 +33,12 @@ namespace App.HttpApi
     public enum ApiStatus : int
     {
         /// <summary>正式发布</summary>
-        Published = 0,
+        [R("Publish")]   Publish = 0,
         /// <summary>测试接口</summary>
-        Testing = 1,
+        [R("Test")]      Test = 1,
         /// <summary>该接口已废弃，随时可能被删除</summary>
-        Deprecated = 2
+        [R("Obsolete")]  Obsolete = 2,
+        /// <summary>该接口已删除</summary>
+        [R("Delete")]    Delete = 3
     }
 }

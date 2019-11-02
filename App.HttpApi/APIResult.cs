@@ -10,6 +10,9 @@ namespace App.HttpApi
         /// <summary>结果（字符串类型）</summary>
         public bool Result { get; set; }
 
+        /// <summary>错误编码</summary>
+        public String Code { get; set; }
+
         /// <summary>详细信息（文本类型，一些说明性的文字）</summary>
         public String Info { get; set; }
 

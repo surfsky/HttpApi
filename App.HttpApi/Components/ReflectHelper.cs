@@ -301,7 +301,11 @@ namespace App.HttpApi
                 // 如果值为空字符串，且不是字符串类型，尝试取方法的默认参数
                 if (o == "" && type != typeof(string) && pi.HasDefaultValue)
                 {
-                    array.Add(pi.DefaultValue);
+                    var v = pi.DefaultValue;
+                    // 枚举的默认值是数字，直接作为可空类型参数值，会报错。故需要转化为枚举
+                    if (realType.IsEnum())
+                        v = v.ToText().ParseBasicType(type);
+                    array.Add(v);
                     continue;
                 }
 

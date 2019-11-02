@@ -100,6 +100,8 @@
     <Content Include="TestAPI.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Demo.Class.cs" />
+    <Compile Include="API\Demo.Type.cs" />
     <Compile Include="API\Demo.Security.cs" />
     <Compile Include="API\Demo.cs" />
     <Compile Include="API\Person.cs" />

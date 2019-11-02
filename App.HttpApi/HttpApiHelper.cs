@@ -243,6 +243,10 @@ namespace App.HttpApi
         // 检测方法的可用性
         static void CheckMethodEnable(HttpContext context, MethodInfo method, HttpApiAttribute attr)
         {
+            // API 已经删除
+            if (attr.Status == ApiStatus.Delete)
+                throw new HttpApiException(400, "Api deleted.");
+
             // 校验访问方式
             if (!attr.AuthVerbs.IsEmpty())
             {
@@ -431,7 +435,7 @@ namespace App.HttpApi
                     ));
             }
             if (authToken)
-                items.Add(new ParamAttribute("token", "授权Token", "String", "", ""));
+                items.Add(new ParamAttribute("token", "Token", "String", "", ""));
             return items;
         }
 

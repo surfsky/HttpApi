@@ -144,6 +144,9 @@
   <data name="Description" xml:space="preserve">
     <value>说明</value>
   </data>
+  <data name="Expire" xml:space="preserve">
+    <value>过期时间</value>
+  </data>
   <data name="Log" xml:space="preserve">
     <value>记录日志</value>
   </data>

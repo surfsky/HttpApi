@@ -68,7 +68,6 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}</td>", Resources.AuthVerbs);
             sb.AppendFormat("<td>{0}</td>", Resources.Log);
             sb.AppendFormat("<td>{0}</td>", Resources.Status);
-            sb.AppendFormat("<td>{0}</td>", Resources.Remark);
             sb.AppendFormat("</tr></thead>");
             foreach (var api in typeapi.Apis)
             {
@@ -84,8 +83,10 @@ namespace App.HttpApi
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.Log);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);
+                if (api.Status == ApiStatus.Publish)
+                    sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
+                else
+                    sb.AppendFormat("<td class='text-warning'>{0}&nbsp;</td>", api.Status);
                 sb.AppendFormat("</tr>");
             }
             sb.AppendLine("</table>");
@@ -121,7 +122,6 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}</td>", Resources.AuthVerbs);
             sb.AppendFormat("<td>{0}</td>", Resources.Log);
             sb.AppendFormat("<td>{0}</td>", Resources.Status);
-            sb.AppendFormat("<td>{0}</td>", Resources.Remark);
             sb.AppendFormat("</tr></thead>");
             sb.AppendFormat("<tr>");
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.ReturnType);
@@ -133,8 +133,12 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.Log);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);
+
+            if (api.Status == ApiStatus.Publish)
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
+            else
+                sb.AppendFormat("<td class='text-warning'>{0}&nbsp;</td>", api.Status);
+
             sb.AppendFormat("</tr>");
             sb.AppendLine("</table>");
 
@@ -170,7 +174,7 @@ namespace App.HttpApi
                 sb.AppendFormat("<td>{0}&nbsp;</td>", p.Type);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", p.DefaultValue);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", p.Description);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", p.Info);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", p.Remark);
                 sb.AppendFormat("</tr>");
             }
             sb.AppendFormat("</tr></table>");

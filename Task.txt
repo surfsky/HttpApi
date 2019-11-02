@@ -1,19 +1,19 @@
 -------------------------------------------------
 任务
 -------------------------------------------------
-移除 App.Core 依赖，但还是要用到 UIAttribute
-
-
-
-
-优先
-	尝试合并HttpApiAttribute 和 API 类，基本重叠
-	完善API展示页面: 显示输出值类型: ReturnType（
+考虑
+	尝试合并HttpApiAttribute 和 API 类，基本重叠。
+		合并会很麻烦，很多冗余字段
+		可考虑用继承的方式实现
+			HttpApiAttribute 继承自 Attribute
+			API 可继承自 HttpApiAttribute
 	增加访问间隔控制
 		AuthInterval/VisitInterval，限制访问间隔
 		需维护一个字典或内存表：ClientIP, Api, LastVisitDt，会自动删除老数据
 		需要限制的接口如：登录、获取用户信息
-	Cache 方案重叠，测试一下
+	增加文件上传处理能力, 参数如：string Upload(byte[] file, string name)
+	实现异步长连接接口，可用于发送消息
+	编纂英文版的readme
 
 增加
 	完善自动封装能力（WrapCondition） ，仅支持基础数据类型
@@ -29,7 +29,7 @@
 			支持 XmlAttribute 标签
 		维护一个输出对象表，避免无限循环
 		考虑构建一个 XmlDocument 对象，最后再根据格式参数生成 xml 文本
-	增加文件上传处理能力, 参数如：string Upload(byte[] file, string name)
+
 
 
 
@@ -37,6 +37,21 @@
 -------------------------------------------------
 已完成
 -------------------------------------------------
+2019-11
+	/增加接口过期时间，可用于逐步更替老旧接口。算了，增加Delete状态，不提供服务。
+    /ApiStatus fix
+    /fix bug
+	    http://doc.oa.wz.zj.cn:88/HttpApi/Knowledge/GetArticles
+        public static APIResult GetArticles(string keywords, string dirIds="", ArticleSortType? sort = ArticleSortType.Date, int pageIndex = 0, int pageSize = 50)
+	    如果 sort参数不填写的话，报错: "Object of type 'System.Int32' cannot be converted to type 'System.Nullable`1[App.DAL.ArticleSortType]'."
+	    策略：枚举可空类型的默认值预先处理一下，转化为枚举类型
+
+
+
+
+2019-10
+	移除 App.Core 依赖，但还是要用到 UIAttribute（用反射避免了使用）
+
 2019-05-10
 	/修正 HttpApi 方法未找到的提示错误
 
@@ -935,3 +950,8 @@
                 sb.AppendFormat("// {0} : {1}\r\n", Resources.AuthRole,  api.AuthRoles);
                 sb.AppendFormat("// {0} : {1}\r\n", Resources.Remark, api.Remark);
                 sb.AppendFormat("//-----------------------------------------------------------------\r\n");
+
+				            sb.AppendFormat("<td>{0}</td>", Resources.Expire);
+                sb.AppendFormat("<td>{0:yyyy-MM-dd}&nbsp;</td>", api.Expire);
+            sb.AppendFormat("<td>{0}</td>", Resources.Remark);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);

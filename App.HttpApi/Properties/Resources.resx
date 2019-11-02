@@ -144,6 +144,9 @@
   <data name="Description" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="Expire" xml:space="preserve">
+    <value>Expire Date</value>
+  </data>
   <data name="Log" xml:space="preserve">
     <value>Log</value>
   </data>

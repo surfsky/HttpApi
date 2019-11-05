@@ -20,7 +20,7 @@ namespace App
         // 自定义类
         //---------------------------------------------
         [HttpApi("Complex type parameter")]
-        [Param("father", "Father，如：{Name:'Kevin', Birth:'1979-12-01', Sex:0}")]
+        [HttpParam("father", "Father，如：{Name:'Kevin', Birth:'1979-12-01', Sex:0}")]
         public Person CreateGirl(Person father)
         {
             return new Person()

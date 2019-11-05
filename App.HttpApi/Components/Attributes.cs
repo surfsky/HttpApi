@@ -63,7 +63,7 @@ namespace App.HttpApi
     /// 参数信息
     /// </summary>
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
-    public class ParamAttribute : Attribute
+    public class HttpParamAttribute : Attribute
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -71,11 +71,11 @@ namespace App.HttpApi
         public string DefaultValue { get; set; }
         public string Remark { get; set; }
 
-        public ParamAttribute(string name, string description)
+        public HttpParamAttribute(string name, string description)
             : this(name, description, "", "", "")
         {
         }
-        internal ParamAttribute(string name, string description, string type, string remark, string defaultValue)
+        internal HttpParamAttribute(string name, string description, string type, string remark, string defaultValue)
         {
             this.Name = name;
             this.Description = description;

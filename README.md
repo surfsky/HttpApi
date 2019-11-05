@@ -574,3 +574,8 @@ Auth demo<br/>
 + HttpApiAttribute.Deprecated -> Obsolete
 + HttpApiAttribute.Delete
 * fix bug:  "Object of type 'System.Int32' cannot be converted to type 'System.Nullable`1[App.Sex]'. See example: GetNullalbeEnum2
+
+
+2.6
+* ParamAttribute -> HttpParamAttribute  to avoid confliction with App.Core.ParamAttribute
+* 

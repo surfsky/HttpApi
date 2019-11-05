@@ -217,12 +217,12 @@ namespace App.HttpApi
         }
 
         /// <summary>获取参数信息元数据</summary>
-        public static List<ParamAttribute> GetParamAttributes(this MethodInfo method)
+        public static List<HttpParamAttribute> GetParamAttributes(this MethodInfo method)
         {
-            var objs = method.GetCustomAttributes(typeof(ParamAttribute), false);
-            List<ParamAttribute> p = new List<ParamAttribute>();
+            var objs = method.GetCustomAttributes(typeof(HttpParamAttribute), false);
+            List<HttpParamAttribute> p = new List<HttpParamAttribute>();
             foreach (object obj in objs)
-                p.Add(obj as ParamAttribute);
+                p.Add(obj as HttpParamAttribute);
             return p;
         }
 

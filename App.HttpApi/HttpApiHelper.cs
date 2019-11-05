@@ -417,16 +417,16 @@ namespace App.HttpApi
         }
 
         /// <summary>获取方法参数信息</summary>
-        private static List<ParamAttribute> GetMethodParams(MethodInfo method, bool authToken)
+        private static List<HttpParamAttribute> GetMethodParams(MethodInfo method, bool authToken)
         {
-            var items = new List<ParamAttribute>();
+            var items = new List<HttpParamAttribute>();
             var attrs = ReflectHelper.GetParamAttributes(method);
             var paras = method.GetParameters();
             foreach (var p in paras)
             {
                 var attr = attrs.AsQueryable().FirstOrDefault(t => t.Name == p.Name);
                 string desc = attr?.Description;
-                items.Add(new ParamAttribute(
+                items.Add(new HttpParamAttribute(
                     p.Name,
                     desc,
                     ReflectHelper.GetTypeString(p.ParameterType),
@@ -435,7 +435,7 @@ namespace App.HttpApi
                     ));
             }
             if (authToken)
-                items.Add(new ParamAttribute("token", "Token", "String", "", ""));
+                items.Add(new HttpParamAttribute("token", "Token", "String", "", ""));
             return items;
         }
 

@@ -9,8 +9,6 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Web;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 using System.Globalization;
 //using App.Core;
 
@@ -70,36 +68,7 @@ namespace App.HttpApi
             if (obj == null)
                 return "{}";
             else
-            {
-                var cfg = HttpApiConfig.Instance;
-                var settings = new JsonSerializerSettings();
-                settings.MissingMemberHandling = MissingMemberHandling.Ignore;
-                settings.NullValueHandling = NullValueHandling.Ignore;
-                settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-
-                // 小驼峰命名法
-                if (cfg.FormatLowCamel)
-                    settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-
-                // 递进格式
-                settings.Formatting = cfg.FormatIndented;
-
-                // 时间格式
-                var datetimeConverter = new IsoDateTimeConverter();
-                datetimeConverter.DateTimeFormat = cfg.FormatDateTime;
-                settings.Converters.Add(datetimeConverter);
-
-                // 枚举格式
-                if (cfg.FormatEnum == EnumFomatting.Text)
-                    settings.Converters.Add(new StringEnumConverter());
-
-                // 长数字格式化（转化为字符串）
-                var types = cfg.FormatLongNumber.ParseEnums<TypeCode>();
-                settings.Converters.Add(new LongNumberToStringConverter(types));
-
-                //
-                return JsonConvert.SerializeObject(obj, settings);
-            }
+                return JsonConvert.SerializeObject(obj, HttpApiConfig.Instance.JsonSetting);
         }
 
         // 转化为xml（对于未知类型会转化出错，考虑用三方类库）

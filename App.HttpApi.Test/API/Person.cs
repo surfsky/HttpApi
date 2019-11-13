@@ -29,6 +29,7 @@ namespace App
         public DateTime? Birth { get; set; }
         public Sex? Sex { get; set; }
         public Person Father { get; set; }
+        public List<Person> Children { get; set; } = new List<Person>();
 
         [JsonIgnore]
         [XmlIgnore]

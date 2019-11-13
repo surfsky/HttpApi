@@ -578,4 +578,6 @@ Auth demo<br/>
 
 2.6
 * ParamAttribute -> HttpParamAttribute  to avoid confliction with App.Core.ParamAttribute
-* 
+
+2.6.1
++ Add HttpApiConfig.Instance.JsonSetting

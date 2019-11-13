@@ -41,7 +41,13 @@ namespace App
         [HttpApi("返回复杂对象")]
         public static Person GetPerson()
         {
-            return new Person() { Name = "Cherry" };
+            var father = new Person() { Name = "Father" };
+            var mother = new Person() { Name = "Mother" };
+            var son = new Person() { Name = "Son", Father = father, Mather=mother};
+            var grandson = new Person() { Name = "GrandSon", Father = son };
+            son.Children.Add(grandson);
+            father.Children.Add(son);
+            return father;
         }
 
 

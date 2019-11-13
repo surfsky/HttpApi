@@ -2,6 +2,7 @@
 任务
 -------------------------------------------------
 考虑
+    实现 MaxDepth 逻辑，限制json输出层次。。。。。
 	尝试合并HttpApiAttribute 和 API 类，基本重叠。
 		合并会很麻烦，很多冗余字段
 		可考虑用继承的方式实现
@@ -955,3 +956,31 @@
                 sb.AppendFormat("<td>{0:yyyy-MM-dd}&nbsp;</td>", api.Expire);
             sb.AppendFormat("<td>{0}</td>", Resources.Remark);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);
+
+                            var cfg = HttpApiConfig.Instance;
+                var settings = new JsonSerializerSettings();
+                settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                settings.NullValueHandling = NullValueHandling.Ignore;
+                settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+
+                // 小驼峰命名法
+                if (cfg.FormatLowCamel)
+                    settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+                // 递进格式
+                settings.Formatting = cfg.FormatIndented;
+
+                // 时间格式
+                var datetimeConverter = new IsoDateTimeConverter();
+                datetimeConverter.DateTimeFormat = cfg.FormatDateTime;
+                settings.Converters.Add(datetimeConverter);
+
+                // 枚举格式
+                if (cfg.FormatEnum == EnumFomatting.Text)
+                    settings.Converters.Add(new StringEnumConverter());
+
+                // 长数字格式化（转化为字符串）
+                var types = cfg.FormatLongNumber.ParseEnums<TypeCode>();
+                settings.Converters.Add(new LongNumberToStringConverter(types));
+
+                //

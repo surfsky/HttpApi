@@ -17,6 +17,7 @@ namespace Test
         protected void Application_Start(object sender, EventArgs e)
         {
             // HttpApi 自定义访问校验
+            var setting = HttpApiConfig.Instance.JsonSetting;
             HttpApiConfig.Instance.OnAuth += (ctx, method, attr, token) =>
             {
                 if (attr.AuthToken && Token.Check(token) == null)

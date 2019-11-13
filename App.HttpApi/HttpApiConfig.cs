@@ -5,6 +5,9 @@ using System.Configuration;
 using System.Reflection;
 using System.Web;
 using App.HttpApi.Properties;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
+
 
 namespace App.HttpApi
 {
@@ -78,6 +81,13 @@ namespace App.HttpApi
             set { this["wrap"] = value; }
         }
 
+        [ConfigurationProperty("maxDepth")]
+        public int? MaxDepth
+        {
+            get { return (int?)this["maxDepth"]; }
+            set { this["maxDepth"] = value; }
+        }
+
         [ConfigurationProperty("language", DefaultValue="zh-CN")]
         public string Language
         {
@@ -85,32 +95,69 @@ namespace App.HttpApi
             set { this["language"] = value; }
         }
 
+        /// <summary>Json Serializer Settings</summary>
+        public JsonSerializerSettings JsonSetting { get; set; }
+
 
         //--------------------------------------------------
         // 单例
         //--------------------------------------------------
         private static HttpApiConfig _instance = null;
-        public static HttpApiConfig Instance {get {return _instance;}}
-
-        /// <summary>静态初始化</summary>
-        static HttpApiConfig()
+        public static HttpApiConfig Instance 
         {
-            if (_instance == null)
+            get 
             {
-                // 尝试从配置节中恢复配置。若未找到配置节，则赋予默认值。
-                _instance = (HttpApiConfig)ConfigurationManager.GetSection("httpApi");
                 if (_instance == null)
                 {
-                    _instance = new HttpApiConfig();
-                    _instance.FormatIndented = Formatting.Indented;
-                    _instance.FormatEnum = EnumFomatting.Text;
-                    _instance.Language = "en";
-                }
+                    // 尝试从配置节中恢复配置。若未找到配置节，则赋予默认值。
+                    _instance = (HttpApiConfig)ConfigurationManager.GetSection("httpApi");
+                    if (_instance == null)
+                    {
+                        _instance = new HttpApiConfig();
+                        _instance.FormatIndented = Formatting.Indented;
+                        _instance.FormatEnum = EnumFomatting.Text;
+                        _instance.Language = "en";
+                    }
+                    _instance.JsonSetting = _instance.GetJsonSetting();
 
-                // 设置国际化支持
-                Resources.Culture = new System.Globalization.CultureInfo(_instance.Language);
+                    // 设置国际化支持
+                    Resources.Culture = new System.Globalization.CultureInfo(_instance.Language);
+                }
+                return _instance;
             }
         }
+
+        /// <summary>从配置中获取 Json 序列化信息</summary>
+        public JsonSerializerSettings GetJsonSetting()
+        {
+            var settings = new JsonSerializerSettings();
+            settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            settings.NullValueHandling = NullValueHandling.Ignore;
+            settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            settings.MaxDepth = this.MaxDepth;  // 没什么用，不是用于控制输出的json层次的，而是读取层次的
+
+            // 小驼峰命名法
+            if (this.FormatLowCamel)
+                settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+            // 递进格式
+            settings.Formatting = this.FormatIndented;
+
+            // 时间格式
+            var datetimeConverter = new IsoDateTimeConverter();
+            datetimeConverter.DateTimeFormat = this.FormatDateTime;
+            settings.Converters.Add(datetimeConverter);
+
+            // 枚举格式
+            if (this.FormatEnum == EnumFomatting.Text)
+                settings.Converters.Add(new StringEnumConverter());
+
+            // 长数字格式化（转化为字符串）
+            var types = this.FormatLongNumber.ParseEnums<TypeCode>();
+            settings.Converters.Add(new LongNumberToStringConverter(types));
+            return settings;
+        }
+
 
         //--------------------------------------------------
         // HttpApi访问事件，请在Global中设置

@@ -67,6 +67,7 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}</td>", Resources.AuthRole);
             sb.AppendFormat("<td>{0}</td>", Resources.AuthVerbs);
             sb.AppendFormat("<td>{0}</td>", Resources.Log);
+            sb.AppendFormat("<td>{0}</td>", Resources.PostFile);
             sb.AppendFormat("<td>{0}</td>", Resources.Status);
             sb.AppendFormat("</tr></thead>");
             foreach (var api in typeapi.Apis)
@@ -83,6 +84,7 @@ namespace App.HttpApi
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.Log);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.PostFile);
                 if (api.Status == ApiStatus.Publish)
                     sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
                 else
@@ -121,6 +123,7 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}</td>", Resources.AuthRole);
             sb.AppendFormat("<td>{0}</td>", Resources.AuthVerbs);
             sb.AppendFormat("<td>{0}</td>", Resources.Log);
+            sb.AppendFormat("<td>{0}</td>", Resources.PostFile);
             sb.AppendFormat("<td>{0}</td>", Resources.Status);
             sb.AppendFormat("</tr></thead>");
             sb.AppendFormat("<tr>");
@@ -133,6 +136,7 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.Log);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.PostFile);
 
             if (api.Status == ApiStatus.Publish)
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
@@ -155,7 +159,10 @@ namespace App.HttpApi
         static string BuildApiTestHtml(API api)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("<form action='{0}' method='post'>", api.Url.TrimEnd('_', '$', '!'));
+            if (api.PostFile)
+                sb.AppendFormat("<form action='{0}' method='post' enctype='multipart/form-data'>", api.Url.TrimEnd('_', '$', '!'));
+            else
+                sb.AppendFormat("<form action='{0}' method='post'>", api.Url.TrimEnd('_', '$', '!'));
             sb.AppendFormat("<br/><table class='table table-sm table-hover'>");
             sb.AppendFormat("<thead><tr>");
             sb.AppendFormat("<td>{0}</td>", Resources.ParamName);
@@ -170,7 +177,10 @@ namespace App.HttpApi
             {
                 sb.AppendFormat("<tr>");
                 sb.AppendFormat("<td>{0}&nbsp;</td>", p.Name);
-                sb.AppendFormat("<td><input type='text' name='{0}' class='form-control form-control-sm'/></td>", p.Name);
+                if (p.Type == "File")
+                    sb.AppendFormat("<td><input type='file' name='{0}' class='form-control form-control-sm'/></td>", p.Name);
+                else
+                    sb.AppendFormat("<td><input type='text' name='{0}' class='form-control form-control-sm'/></td>", p.Name);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", p.Type);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", p.DefaultValue);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", p.Description);

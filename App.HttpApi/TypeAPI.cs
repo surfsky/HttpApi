@@ -37,6 +37,7 @@ namespace App.HttpApi
         public string Url { get; set; }
         public string UrlTest { get; set; }
         public bool Log { get; set; }
+        public bool PostFile { get; set; }
 
         public List<HttpParamAttribute> Params { get; set; }
 

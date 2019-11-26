@@ -378,13 +378,14 @@ namespace App.HttpApi
                         AuthUsers = attr.AuthUsers,
                         AuthRoles = attr.AuthRoles,
                         AuthVerbs = attr.AuthVerbs.IsEmpty() ? "" : attr.AuthVerbs.ToUpper(),
+                        PostFile = attr.PostFile,
                         Status = attr.Status,
                         Log = attr.Log,
                         Remark = attr.Remark,
                         Example = attr.Example,
                         Url = GetMethodDisplayUrl(rootUrl, method),
                         UrlTest = GetMethodTestUrl(rootUrl, method, attr.AuthToken),
-                        Params = GetMethodParams(method, attr.AuthToken),
+                        Params = GetMethodParams(method, attr),
                         Method = method,
                         RType = attr.Type
                     };
@@ -417,7 +418,7 @@ namespace App.HttpApi
         }
 
         /// <summary>获取方法参数信息</summary>
-        private static List<HttpParamAttribute> GetMethodParams(MethodInfo method, bool authToken)
+        private static List<HttpParamAttribute> GetMethodParams(MethodInfo method, HttpApiAttribute attri)
         {
             var items = new List<HttpParamAttribute>();
             var attrs = ReflectHelper.GetParamAttributes(method);
@@ -434,8 +435,10 @@ namespace App.HttpApi
                     GetObjectString(p.DefaultValue)
                     ));
             }
-            if (authToken)
+            if (attri.AuthToken)
                 items.Add(new HttpParamAttribute("token", "Token", "String", "", ""));
+            if (attri.PostFile)
+                items.Add(new HttpParamAttribute("file", "File", "File", "", ""));
             return items;
         }
 

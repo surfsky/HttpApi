@@ -146,6 +146,8 @@ namespace App.HttpApi
                     var attrType = attr.GetType();
                     if (attrType.FullName == "App.Core.UIAttribute")
                         return attr.GetPropertyValue("Title") as string;
+                    if (attrType.FullName == "App.Core.TAttribute")
+                        return attr.GetPropertyValue("Title") as string;
                     if (attr is DescriptionAttribute)
                         return attr.GetPropertyValue("Description") as string;
                 }

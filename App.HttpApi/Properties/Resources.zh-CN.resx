@@ -162,6 +162,9 @@
   <data name="ParamValue" xml:space="preserve">
     <value>参数值</value>
   </data>
+  <data name="PostFile" xml:space="preserve">
+    <value>上传文件</value>
+  </data>
   <data name="Property" xml:space="preserve">
     <value>属性</value>
   </data>

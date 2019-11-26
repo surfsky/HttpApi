@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Xml.Serialization;
 using System.Web.Script.Serialization;
 using System.Collections;
+using System.IO;
 
 namespace App
 {
@@ -86,5 +87,46 @@ namespace App
             return sex;
         }
 
+
+        [HttpApi("文件上传", PostFile=true)]
+        [HttpParam("filePath", "文件路径，如 Article")]
+        [HttpParam("fileName", "文件名，如 a.png")]
+        public APIResult Up(string filePath, string fileName)
+        {
+            var exts = new List<string> { ".jpg", ".png", ".gif", ".mp3", ".mp4" };
+            var ext = fileName.GetFileExtension();
+            if (!exts.Contains(ext))
+                return new APIResult(false, "没有文件权限", 13);
+
+            // 构造存储路径
+            var url = GetUploadPath(filePath, fileName);
+            var path = Asp.MapPath(url);
+            var fi = new FileInfo(path);
+            if (!fi.Directory.Exists)
+                Directory.CreateDirectory(fi.Directory.FullName);
+
+            // 存储第一个文件
+            var files = Asp.Request.Files;
+            if (HttpContext.Current.Request.Files.Count == 0)
+                return new APIResult(false, "文件不存在", 11);
+            Asp.Request.Files[0].SaveAs(path);
+            return new APIResult(true, url);
+        }
+
+        /// <summary>获取上传文件要保存的虚拟路径</summary>
+        public static string GetUploadPath(string folderName, string fileName = ".png")
+        {
+            // 默认保存在 /Files/ 目录下
+            string folder = string.Format("~/Files/{0}", folderName);
+
+            // 如果 folderName 以/开头，则保存在 folderName 目录下
+            if (folderName != null && folderName.StartsWith("/"))
+                folder = folderName;
+
+            // 合并目录和文件名
+            string extension = fileName.GetFileExtension();
+            string path = string.Format("{0}/{1}{2}", folder, new SnowflakeID().NewID(), extension);
+            return Asp.ResolveUrl(path);
+        }
     }
 }

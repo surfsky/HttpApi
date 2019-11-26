@@ -152,6 +152,8 @@ namespace App.HttpApi
         /// <summary>可访问的角色（用逗号隔开）</summary>
         public string AuthRoles { get; set; }
 
+        /// <summary>是否上传文件</summary>
+        public bool PostFile { get; set; } = false;
 
 
         /// <summary>访问动作列表</summary>

@@ -196,6 +196,15 @@ namespace App.HttpApi.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Post File 的本地化字符串。
+        /// </summary>
+        internal static string PostFile {
+            get {
+                return ResourceManager.GetString("PostFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Property 的本地化字符串。
         /// </summary>
         internal static string Property {

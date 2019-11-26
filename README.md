@@ -581,3 +581,9 @@ Auth demo<br/>
 
 2.6.1
 + Add HttpApiConfig.Instance.JsonSetting
+
+2.6.2
++ Support TAttribute
+
+2.7
++ support postfile. HttpApiAttribute.PostFile=true

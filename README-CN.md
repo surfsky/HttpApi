@@ -592,3 +592,13 @@ Auth 鉴权访问示例<br/>
 + HttpApiAttribute.Deprecated -> Obsolete
 + HttpApiAttribute.Delete
 * fix bug： "Object of type 'System.Int32' cannot be converted to type 'System.Nullable`1[App.Sex]'. See example: GetNullalbeEnum2
+
+> 更多更新请直接查看英文版的 readme.md
+
+## 11. Thanks
+
+Buy me a coffee if you like this framework, thank you.
+
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_alipay.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_wechatpay.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_paypal.png?raw=true)

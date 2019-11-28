@@ -629,9 +629,9 @@ Auth demo<br/>
 2.8
 + Support AuthTraffic to defence attack (see Demo.Login)
 
-# Thanks
+## 11. Thanks
 
-By me a coffee if you like this framework, thank you.
+Buy me a coffee if you like this framework, thank you.
 
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_alipay.png?raw=true)
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_wechatpay.png?raw=true)

@@ -58,8 +58,10 @@
     <Compile Include="Components\EnumHelper.cs" />
     <Compile Include="Components\Enums.cs" />
     <Compile Include="Components\Extensions.cs" />
+    <Compile Include="Components\IPFilter.cs" />
     <Compile Include="Components\Parser.cs" />
     <Compile Include="Components\StringHelper.cs" />
+    <Compile Include="Components\VisitCounter.cs" />
     <Compile Include="Components\XmlSerializer.cs" />
     <Compile Include="APIResult.cs" />
     <Compile Include="HttpApiConfig.cs" />

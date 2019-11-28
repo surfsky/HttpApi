@@ -19,7 +19,7 @@ http://.../Handler1.ashx/GetData?page=1&rows=2&sort=abc&order=desc
 http://.../HttpApi/TypeName/js
 ```
 * (05) HttpApi can auto create api list page, api test page. eg.
-```
+``` 
 HttpApi/TypeName/api
 HttpApi/TypeName/apis
 HttpApi/TypeName/Method$
@@ -31,6 +31,9 @@ HttpApi/TypeName/Method$
 * (09) Output configuration: You can config output format, such as enum, datetime, long number, error.
 * (10) Server site and client can assign api output data format, such as  text, xml, json, file, image, base64image.
 * (11) Support nullable and default parameter.
+* (12) Support traffic control, see HttpApiAttribute.AuthTraffic
+* (13) Support upload file, see HttpApiAttribute.PostFile
+
 
 ## 2.Author
 ```
@@ -48,7 +51,7 @@ Skip to step 3 if use nuget to install httpapi.
 
 (1) Import App.HttpApi.dll      
 (2) Modify web.config file
-```
+``` xml
 <system.webServer>
   <modules>
     <add name="HttpApiModule" type="App.HttpApi.HttpApiModule" />
@@ -57,7 +60,7 @@ Skip to step 3 if use nuget to install httpapi.
 ```
        
 (3) Modify method, add [HttpApi] Attribute
-```
+``` c#
 namespace App
 {
     public class Demo
@@ -76,17 +79,18 @@ namespace App
 ```
 http://...../HttpApi/Demo/HelloWorld?info=x
 ```
-or test api:
+or test:
 ```
 http://...../HttpApi/Demo/HelloWorld$
 ```
+
 
         
 
 
 ## 5.Senior guidline
 ### (1) Control HttpApi output format
-```
+``` xml
 Web.Config
 <configSections>
   <section name="httpApi" type="App.HttpApi.HttpApiConfig, App.HttpApi"/>
@@ -119,7 +123,7 @@ http://..../HttpApi/Demo/HelloWorld$
 ```
 You can add [History] attribute, to display api modify history.
 You can add [Param] attribute, to display api parameter infomation.
-```
+``` csharp
 [History("2016-11-01", "SURFSKY", "modify A")]
 public class Demo
 {
@@ -131,10 +135,15 @@ public class Demo
     }
 }
 ```
+Api list page<br/>
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apilist.png?raw=true)
+
+Api test page<br/>
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/api.png?raw=true)
 
 
 ### (4)  Caching
-```
+``` csharp
 [HttpApi("Output system time", CacheSeconds=30)]
 public DateTime GetTime()
 {
@@ -155,7 +164,7 @@ Add _refresh parameter if you want to refresh cache right now. It's useful when 
 
 ### (5) Control the output data type
 *Server site*
-```
+``` csharp
 [HttpApi("...", Type = ResponseType.JSON)]
 [HttpApi("...", Type = ResponseType.XML)]
 [HttpApi("...", Type = ResponseType.Text)]
@@ -168,7 +177,7 @@ Add _refresh parameter if you want to refresh cache right now. It's useful when 
 ```
 
 *Client side*
-```
+``` csharp
 http://...../HttpApi/Demo/HelloWorld?_type=xml
 <APIResult>
     <Result>True</Result>
@@ -193,17 +202,18 @@ http://...../HttpApi/Demo/HelloWorld?_type=xml
 
 #### HttpAPI makes some AuthXXX properties to support api security.
 
-```
+``` csharp
 [HttpApi("...", AuthVerbs="Get,Post")]      // check visit verb
 [HttpApi("...", AuthLogin=true)]            // check user login status
 [HttpApi("...", AuthUsers="A,B")]           // check user name
 [HttpApi("...", AuthRoles="A,B")]           // check user role
 [HttpApi("...", AuthIP=true)]               // check visit IP
-[HttpApi("...", AuthToken=true)]            // check Token
+[HttpApi("...", AuthToken=true)]            // check token
+[HttpApi("...", AuthTraffic=1)]             // check traffic for: 1 times per second
 ```
 
 #### Check login status, user name, user role
-```
+``` csharp
 [HttpApi("Login")]
 public string Login()
 {
@@ -249,7 +259,7 @@ public string LimitRole()
 
 You can check token and ip in custom way, eg.
 
-```
+``` csharp
 public class Global : System.Web.HttpApplication
 {
     protected void Application_Start(object sender, EventArgs e)
@@ -271,11 +281,53 @@ public class Global : System.Web.HttpApplication
 ```
 
 
-### (7)  Uniform data frmat: APIResult
+#### AuthTraffic
+
+HttpApi supports traffic control. 
+To enable this capability, just set `HttpApiAttribute.AuthTraffic=n` 
+(n means visit times per second).
+The engine will count and detect the visit ip and url. 
+If the traffic is too heavy, the engine will abort the connection 
+for a long time (Setted in HttpApiConfig.Instance.BanMinutes). 
+This capability is offen openned for login api to protect website security.
+ 
+``` csharp
+[HttpApi("User login", AuthTraffic=1)]
+public string Login()
+{
+    AuthHelper.Login("Admin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
+    System.Threading.Thread.Sleep(200);
+    return "Login success";
+}
+```
+If you refresh the login api page too quickly, you will see the unreachable page error for a long time.
+
+
+### (7) Upload
+
+HttpApi supports upload file. To enable this capability, just set HttpApiAttribute.PostFile=true,
+the engine will auto create test page with a file input field.
+
+``` csharp
+[HttpApi("UploadFile", PostFile=true)]
+public APIResult Up(string filePath, string fileName)
+{
+    ...
+    if (HttpContext.Current.Request.Files.Count == 0)
+        return new APIResult(false, "File doesn't exist", 11);
+    Asp.Request.Files[0].SaveAs(path);
+    return new APIResult(true, url);
+}
+```
+The test page may be:
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/upload.png?raw=true)
+
+
+### (8)  Uniform data frmat: APIResult
 
 HttpApi support uniform api result format to simply client calling.
 
-```
+``` csharp
 [HttpApi("Ouput system datetime")]
 public APIResult GetTime()
 {
@@ -284,7 +336,7 @@ public APIResult GetTime()
 ```
 
 Then the output maybe
-```
+``` csharp
 {
     Result: true,
     Info: "OK",
@@ -295,8 +347,8 @@ Then the output maybe
 ```
 
 
-### (8)  Other parameter
-```
+### (8)  Other HttpApiAttribute properties
+``` csharp
 public string Description { get; set; }
 public string Example { get; set; }
 public string Remark { get; set; }
@@ -304,12 +356,12 @@ public string MimeType { get; set; }
 public string FileName { get; set; }
 public bool Wrap { get; set; } = false;
 public ApiStatus Status { get; set; }
+public bool PostFile {get; set;}
 ```
 
 
 ## 6. More examples
-```
-
+``` csharp
 [HttpApi("Json Wrapper", Wrap = true)]
 public static object TestWrap()
 {
@@ -468,12 +520,6 @@ public static APIResult GetPersons()
 Api define<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apicode.png?raw=true)
 
-Api list page<br/>
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apilist.png?raw=true)
-
-Api test page<br/>
-![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/api.png?raw=true)
-
 Api output(defautl is json) <br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/apiresult.png?raw=true)
 
@@ -487,22 +533,14 @@ Auth demo<br/>
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/auth.png?raw=true)
 
 
-## 9.Reference
-- http://www.cnblogs.com/wzcheng/archive/2010/05/20/1739810.html
 
 
-
-
-## 10.More targets
+## 9.Roadmap
+- Long time connect
 - XML format control: property/field, indent, case...
-- AuthInterval
-- File upload
-- Long time connect api
 
 
-
-
-## 11.History
+## 10.History
 2012-08  
 - Init
 
@@ -583,7 +621,19 @@ Auth demo<br/>
 + Add HttpApiConfig.Instance.JsonSetting
 
 2.6.2
-+ Support TAttribute
++ Support TAttribute to get enum description
 
 2.7
-+ support postfile. HttpApiAttribute.PostFile=true
++ Support Postfile (see Demo.Up)
+
+2.8
++ Support AuthTraffic to defence attack (see Demo.Login)
+
+# Thanks
+
+By me a coffee if you like this framework, thank you.
+
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_alipay.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_wechatpay.png?raw=true)
+![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_paypal.png?raw=true)
+

@@ -129,6 +129,9 @@
   <data name="AuthToken" xml:space="preserve">
     <value>校验Token</value>
   </data>
+  <data name="AuthTraffic" xml:space="preserve">
+    <value>校验流量</value>
+  </data>
   <data name="AuthUser" xml:space="preserve">
     <value>校验用户</value>
   </data>

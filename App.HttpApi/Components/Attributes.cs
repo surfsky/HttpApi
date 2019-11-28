@@ -19,15 +19,14 @@ namespace App.HttpApi
     }
 
     /// <summary>
-    /// 资源特性（尚未启用）
-    /// 类似UIAttribute，可以给枚举字段增加注释信息，信息来自Resource
+    /// 文本资源特性（可以给枚举字段增加注释信息，信息来自Resource）
     /// </summary>
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
-    public class RAttribute : Attribute
+    internal class TAttribute : Attribute
     {
         public string Name { get; set; }
 
-        public RAttribute(string name)
+        public TAttribute(string name)
         {
             this.Name = name;
         }
@@ -154,6 +153,9 @@ namespace App.HttpApi
 
         /// <summary>是否上传文件</summary>
         public bool PostFile { get; set; } = false;
+
+        /// <summary>访问流量限制（每秒最多访问次数）</summary>
+        public int AuthTraffic { get; set; }
 
 
         /// <summary>访问动作列表</summary>

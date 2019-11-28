@@ -97,6 +97,15 @@ namespace App.HttpApi.Properties {
         }
         
         /// <summary>
+        ///   查找类似 AuthTraffic 的本地化字符串。
+        /// </summary>
+        internal static string AuthTraffic {
+            get {
+                return ResourceManager.GetString("AuthTraffic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 AuthUser 的本地化字符串。
         /// </summary>
         internal static string AuthUser {
@@ -115,7 +124,7 @@ namespace App.HttpApi.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Cache Seconds 的本地化字符串。
+        ///   查找类似 CacheSeconds 的本地化字符串。
         /// </summary>
         internal static string CacheSeconds {
             get {
@@ -124,7 +133,7 @@ namespace App.HttpApi.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Default Value 的本地化字符串。
+        ///   查找类似 DefaultValue 的本地化字符串。
         /// </summary>
         internal static string DefaultValue {
             get {
@@ -142,7 +151,7 @@ namespace App.HttpApi.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Expire Date 的本地化字符串。
+        ///   查找类似 ExpireDate 的本地化字符串。
         /// </summary>
         internal static string Expire {
             get {
@@ -196,7 +205,7 @@ namespace App.HttpApi.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Post File 的本地化字符串。
+        ///   查找类似 PostFile 的本地化字符串。
         /// </summary>
         internal static string PostFile {
             get {
@@ -223,7 +232,7 @@ namespace App.HttpApi.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Return Type 的本地化字符串。
+        ///   查找类似 ReturnType 的本地化字符串。
         /// </summary>
         internal static string ReturnType {
             get {

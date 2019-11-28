@@ -4,6 +4,7 @@ using System.Web;
 using System.Reflection;
 using System.Text;
 using System.Linq;
+using App.HttpApi.Components;
 
 namespace App.HttpApi
 {
@@ -43,6 +44,25 @@ namespace App.HttpApi
             var methodName = decoder.MethodName;
             var method = ReflectHelper.GetMethod(type, methodName);
             var attr = ReflectHelper.GetHttpApiAttribute(method);
+
+            // 流量限制
+            var ip = Asp.GetClientIP();
+            var url = context.Request.Url.AbsolutePath.ToLower();
+            System.Diagnostics.Trace.WriteLine($"IP={ip}, URL={url}");
+            if (IPFilter.IsBanned(ip))
+            {
+                HttpContext.Current.Request.Abort();
+                return;
+            }
+            if (attr != null && attr.AuthTraffic > 0)
+            {
+                if (VisitCounter.IsHeavy(ip, url, 10, attr.AuthTraffic * 10))  // 每10秒为一个周期
+                {
+                    IPFilter.Ban(ip, HttpApiConfig.Instance.BanMinutes);
+                    HttpApiConfig.Instance.DoBan(ip, url);
+                    return;
+                }
+            }
 
             // 处理预留方法
             if (ProcessReservedMethod(context, type, methodName, args))
@@ -378,6 +398,7 @@ namespace App.HttpApi
                         AuthUsers = attr.AuthUsers,
                         AuthRoles = attr.AuthRoles,
                         AuthVerbs = attr.AuthVerbs.IsEmpty() ? "" : attr.AuthVerbs.ToUpper(),
+                        AuthTraffic = attr.AuthTraffic,
                         PostFile = attr.PostFile,
                         Status = attr.Status,
                         Log = attr.Log,

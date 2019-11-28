@@ -88,15 +88,15 @@ namespace App
         }
 
 
-        [HttpApi("文件上传", PostFile=true)]
-        [HttpParam("filePath", "文件路径，如 Article")]
-        [HttpParam("fileName", "文件名，如 a.png")]
+        [HttpApi("Upload file", PostFile=true)]
+        [HttpParam("filePath", "file path, eg. Article")]
+        [HttpParam("fileName", "file name, eg. a.png")]
         public APIResult Up(string filePath, string fileName)
         {
             var exts = new List<string> { ".jpg", ".png", ".gif", ".mp3", ".mp4" };
             var ext = fileName.GetFileExtension();
             if (!exts.Contains(ext))
-                return new APIResult(false, "没有文件权限", 13);
+                return new APIResult(false, "File deny", 13);
 
             // 构造存储路径
             var url = GetUploadPath(filePath, fileName);
@@ -108,7 +108,7 @@ namespace App
             // 存储第一个文件
             var files = Asp.Request.Files;
             if (HttpContext.Current.Request.Files.Count == 0)
-                return new APIResult(false, "文件不存在", 11);
+                return new APIResult(false, "File doesn't exist", 11);
             Asp.Request.Files[0].SaveAs(path);
             return new APIResult(true, url);
         }

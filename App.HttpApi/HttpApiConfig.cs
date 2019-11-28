@@ -95,6 +95,13 @@ namespace App.HttpApi
             set { this["language"] = value; }
         }
 
+        [ConfigurationProperty("banMinutes", DefaultValue = "30")]
+        public int? BanMinutes
+        {
+            get { return (int?)this["banMinutes"]; }
+            set { this["banMinutes"] = value; }
+        }
+
         /// <summary>Json Serializer Settings</summary>
         public JsonSerializerSettings JsonSetting { get; set; }
 
@@ -126,6 +133,7 @@ namespace App.HttpApi
                 return _instance;
             }
         }
+
 
         /// <summary>从配置中获取 Json 序列化信息</summary>
         public JsonSerializerSettings GetJsonSetting()
@@ -166,6 +174,7 @@ namespace App.HttpApi
         public delegate void AuthHandler(HttpContext context, MethodInfo method, HttpApiAttribute attr, string token);
         public delegate void EndHandler(HttpContext context);
         public delegate void ExceptionHandler(MethodInfo method, Exception ex);
+        public delegate void BanHandler(string ip, string url);
 
         /// <summary>访问事件（有异常请直接抛出 HttpApiException 异常）</summary>
         public event VisitHandler OnVisit;
@@ -176,8 +185,11 @@ namespace App.HttpApi
         /// <summary>结束事件（有异常请直接抛出 HttpApiException 异常）</summary>
         public event EndHandler OnEnd;
 
-        /// <summary>异常处理</summary>
+        /// <summary>异常时间</summary>
         public event ExceptionHandler OnException;
+
+        /// <summary>禁止事件</summary>
+        public event BanHandler OnBan;
 
 
         //--------------------------------------------
@@ -205,6 +217,12 @@ namespace App.HttpApi
         public void DoException(MethodInfo method, Exception ex)
         {
             this.OnException?.Invoke(method, ex);
+        }
+
+        /// <summary>禁止访问</summary>
+        public void DoBan(string ip, string url)
+        {
+            this.OnBan?.Invoke(ip, url);
         }
     }
 }

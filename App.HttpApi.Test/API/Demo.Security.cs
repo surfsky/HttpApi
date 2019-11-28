@@ -41,12 +41,12 @@ namespace App
         //---------------------------------------------
         // 控制访问权限
         //---------------------------------------------
-        [HttpApi("登录")]
+        [HttpApi("User login", AuthTraffic=1)]
         public string Login()
         {
             AuthHelper.Login("Admin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
             System.Threading.Thread.Sleep(200);
-            return "访问成功（已登录）";
+            return "Login success";
         }
  
         [HttpApi("注销")]

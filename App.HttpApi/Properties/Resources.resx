@@ -129,6 +129,9 @@
   <data name="AuthToken" xml:space="preserve">
     <value>AuthToken</value>
   </data>
+  <data name="AuthTraffic" xml:space="preserve">
+    <value>AuthTraffic</value>
+  </data>
   <data name="AuthUser" xml:space="preserve">
     <value>AuthUser</value>
   </data>
@@ -136,16 +139,16 @@
     <value>AuthVerbs</value>
   </data>
   <data name="CacheSeconds" xml:space="preserve">
-    <value>Cache Seconds</value>
+    <value>CacheSeconds</value>
   </data>
   <data name="DefaultValue" xml:space="preserve">
-    <value>Default Value</value>
+    <value>DefaultValue</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>Description</value>
   </data>
   <data name="Expire" xml:space="preserve">
-    <value>Expire Date</value>
+    <value>ExpireDate</value>
   </data>
   <data name="Log" xml:space="preserve">
     <value>Log</value>
@@ -163,7 +166,7 @@
     <value>Value</value>
   </data>
   <data name="PostFile" xml:space="preserve">
-    <value>Post File</value>
+    <value>PostFile</value>
   </data>
   <data name="Property" xml:space="preserve">
     <value>Property</value>
@@ -172,7 +175,7 @@
     <value>Remark</value>
   </data>
   <data name="ReturnType" xml:space="preserve">
-    <value>Return Type</value>
+    <value>ReturnType</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Status</value>

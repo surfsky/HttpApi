@@ -33,6 +33,7 @@ namespace App.HttpApi
         h2 {font-size:1.6rem;}
         h3 {font-size:1.4rem;}
         form {width: 100%;}
+        thead {background-color: ghostwhite;}
     </style>
 </head>
     ";
@@ -66,8 +67,9 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}</td>", Resources.AuthUser);
             sb.AppendFormat("<td>{0}</td>", Resources.AuthRole);
             sb.AppendFormat("<td>{0}</td>", Resources.AuthVerbs);
-            sb.AppendFormat("<td>{0}</td>", Resources.Log);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthTraffic);
             sb.AppendFormat("<td>{0}</td>", Resources.PostFile);
+            sb.AppendFormat("<td>{0}</td>", Resources.Log);
             sb.AppendFormat("<td>{0}</td>", Resources.Status);
             sb.AppendFormat("</tr></thead>");
             foreach (var api in typeapi.Apis)
@@ -83,8 +85,9 @@ namespace App.HttpApi
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthUsers);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
-                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Log);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthTraffic);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.PostFile);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Log);
                 if (api.Status == ApiStatus.Publish)
                     sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);
                 else
@@ -122,8 +125,9 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}</td>", Resources.AuthUser);
             sb.AppendFormat("<td>{0}</td>", Resources.AuthRole);
             sb.AppendFormat("<td>{0}</td>", Resources.AuthVerbs);
-            sb.AppendFormat("<td>{0}</td>", Resources.Log);
+            sb.AppendFormat("<td>{0}</td>", Resources.AuthTraffic);
             sb.AppendFormat("<td>{0}</td>", Resources.PostFile);
+            sb.AppendFormat("<td>{0}</td>", Resources.Log);
             sb.AppendFormat("<td>{0}</td>", Resources.Status);
             sb.AppendFormat("</tr></thead>");
             sb.AppendFormat("<tr>");
@@ -135,8 +139,9 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthUsers);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthRoles);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthVerbs);
-            sb.AppendFormat("<td>{0}&nbsp;</td>", api.Log);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.AuthTraffic);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.PostFile);
+            sb.AppendFormat("<td>{0}&nbsp;</td>", api.Log);
 
             if (api.Status == ApiStatus.Publish)
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.Status);

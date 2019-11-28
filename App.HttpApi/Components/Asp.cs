@@ -11,6 +11,14 @@ namespace App.HttpApi
     /// </summary>
     internal class Asp
     {
+        /// <summary>输出 HTTP 错误</summary>
+        public static void WriteError(int errorCode)
+        {
+            HttpContext context = HttpContext.Current;
+            context.Response.StatusCode = errorCode;
+            context.Response.End();
+        }
+
         /// <summary>获取客户端真实IP</summary>
         public static string GetClientIP()
         {

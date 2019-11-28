@@ -5,30 +5,11 @@ using System.Web.SessionState;
 using System.Reflection;
 using System.Web.UI;
 using System.Collections.Generic;
+using System.Web.Compilation;
+using App.HttpApi.Components;
 
 namespace App.HttpApi
 {
-    /// <summary>
-    /// 页面请求处理器解析器。可获取页面请求对应的处理类。
-    /// （抄的 Asp.net 源码）
-    /// </summary>
-    internal class WebHandlerParser : SimpleWebHandlerParser
-    {
-        private WebHandlerParser(HttpContext context, string virtualPath, string physicalPath)
-            : base(context, virtualPath, physicalPath)
-        {
-        }
-        internal static Type GetCompiledType(string virtualPath, string physicalPath, HttpContext context)
-        {
-            var parser = new WebHandlerParser(context, virtualPath, physicalPath);
-            return parser.GetCompiledTypeFromCache();
-        }
-        protected override string DefaultDirectiveName
-        {
-            get { return "webhandler"; }
-        }
-    }
-
     /// <summary>
     /// Web方法调用，可调用任何类（包括动态编译的）中标记了[HttpApi]特性标签的方法。
     /// </summary>
@@ -99,7 +80,7 @@ namespace App.HttpApi
                 // 以 Page.aspx/Method 方式调用
                 int n = url.LastIndexOf("/");
                 url = url.Substring(0, n);
-                Type type = WebHandlerParser.GetCompiledType(url, url, context);
+                Type type = BuildManager.GetCompiledType(url);
                 handler = Activator.CreateInstance(type);
             }
 

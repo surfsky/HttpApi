@@ -2,19 +2,19 @@
 任务
 -------------------------------------------------
 考虑
+	/增加访问间隔控制
+		/AuthInterval/VisitInterval，限制访问间隔
+		/需维护一个字典或内存表：ClientIP, Api, LastVisitDt，会自动删除老数据
+		/需要限制的接口如：登录、获取用户信息
+	/增加文件上传处理能力, 参数如：string Upload(byte[] file, string name)
+	/编纂英文版的readme
     实现 MaxDepth 逻辑，限制json输出层次。。。。。
 	尝试合并HttpApiAttribute 和 API 类，基本重叠。
 		合并会很麻烦，很多冗余字段
 		可考虑用继承的方式实现
 			HttpApiAttribute 继承自 Attribute
 			API 可继承自 HttpApiAttribute
-	增加访问间隔控制
-		AuthInterval/VisitInterval，限制访问间隔
-		需维护一个字典或内存表：ClientIP, Api, LastVisitDt，会自动删除老数据
-		需要限制的接口如：登录、获取用户信息
-	增加文件上传处理能力, 参数如：string Upload(byte[] file, string name)
 	实现异步长连接接口，可用于发送消息
-	编纂英文版的readme
 
 增加
 	完善自动封装能力（WrapCondition） ，仅支持基础数据类型
@@ -987,3 +987,24 @@
                 settings.Converters.Add(new LongNumberToStringConverter(types));
 
                 //
+
+   /// <summary>
+    /// 页面请求处理器解析器。可获取页面请求对应的处理类。
+    /// （抄的 Asp.net 源码）
+    /// </summary>
+    internal class WebHandlerParser : SimpleWebHandlerParser
+    {
+        private WebHandlerParser(HttpContext context, string virtualPath, string physicalPath)
+            : base(context, virtualPath, physicalPath)
+        {
+        }
+        internal static Type GetCompiledType(string virtualPath, string physicalPath, HttpContext context)
+        {
+            var parser = new WebHandlerParser(context, virtualPath, physicalPath);
+            return parser.GetCompiledTypeFromCache();
+        }
+        protected override string DefaultDirectiveName
+        {
+            get { return "webhandler"; }
+        }
+    }

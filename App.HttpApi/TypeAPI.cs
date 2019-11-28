@@ -29,6 +29,7 @@ namespace App.HttpApi
         public bool AuthIP { get; set; }
         public bool AuthToken { get; set; }
         public bool AuthLogin { get; set; }
+        public int AuthTraffic { get; set; }
         public string AuthUsers { get; set; }
         public string AuthRoles { get; set; }
         public string AuthVerbs { get; set; }

@@ -323,7 +323,7 @@ The test page may be:
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/upload.png?raw=true)
 
 
-### (8)  Uniform data frmat: APIResult
+### (8)  Uniform data format: APIResult
 
 HttpApi support uniform api result format to simply client calling.
 
@@ -633,7 +633,12 @@ Auth demo<br/>
 
 Buy me a coffee if you like this framework, thank you.
 
+AliPay
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_alipay.png?raw=true)
+
+WechatPay
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_wechatpay.png?raw=true)
+
+Paypal
 ![](https://github.com/surfsky/App.HttpApi/blob/master/Snap/cjh_paypal.png?raw=true)
 

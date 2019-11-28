@@ -42,7 +42,7 @@ namespace App
         // 控制访问权限
         //---------------------------------------------
         [HttpApi("User login", AuthTraffic=1)]
-        public string Login()
+        public string Login(string name, string password)
         {
             AuthHelper.Login("Admin", new string[] { "Admins" }, DateTime.Now.AddDays(1));
             System.Threading.Thread.Sleep(200);

@@ -1,35 +1,30 @@
 -------------------------------------------------
 任务
 -------------------------------------------------
+
 考虑
-	/增加访问间隔控制
-		/AuthInterval/VisitInterval，限制访问间隔
-		/需维护一个字典或内存表：ClientIP, Api, LastVisitDt，会自动删除老数据
-		/需要限制的接口如：登录、获取用户信息
-	/增加文件上传处理能力, 参数如：string Upload(byte[] file, string name)
-	/编纂英文版的readme
     实现 MaxDepth 逻辑，限制json输出层次。。。。。
-	尝试合并HttpApiAttribute 和 API 类，基本重叠。
-		合并会很麻烦，很多冗余字段
-		可考虑用继承的方式实现
-			HttpApiAttribute 继承自 Attribute
-			API 可继承自 HttpApiAttribute
-	实现异步长连接接口，可用于发送消息
+    尝试合并HttpApiAttribute 和 API 类，基本重叠。
+        合并会很麻烦，很多冗余字段
+        可考虑用继承的方式实现
+            HttpApiAttribute 继承自 Attribute
+            API 可继承自 HttpApiAttribute
+    实现异步长连接接口，可用于发送消息（直接用SignalR？）
 
 增加
-	完善自动封装能力（WrapCondition） ，仅支持基础数据类型
-		0-text;1-text;2-text;  
-		true:text;false:text; 
-		Ok:text;Finished:text;
-	完善导出 Xml 能力
-		可控制：
-			以属性方式还是以成员方式展示，以精简xml输出
-				基础类型数据（string、number、datetime、bool、enum），都可以简单.ToText() 输出数据
-				复杂对象类型，以成员方式展示（类似XAML）
-				列表类型、字典类型。
-			支持 XmlAttribute 标签
-		维护一个输出对象表，避免无限循环
-		考虑构建一个 XmlDocument 对象，最后再根据格式参数生成 xml 文本
+    完善自动封装能力（WrapCondition） ，仅支持基础数据类型
+        0-text;1-text;2-text;  
+        true:text;false:text; 
+        Ok:text;Finished:text;
+    完善导出 Xml 能力
+        可控制：
+            以属性方式还是以成员方式展示，以精简xml输出
+                基础类型数据（string、number、datetime、bool、enum），都可以简单.ToText() 输出数据
+                复杂对象类型，以成员方式展示（类似XAML）
+                列表类型、字典类型。
+            支持 XmlAttribute 标签
+        维护一个输出对象表，避免无限循环
+        考虑构建一个 XmlDocument 对象，最后再根据格式参数生成 xml 文本
 
 
 
@@ -40,158 +35,165 @@
 -------------------------------------------------
 2019-11-26
     /PostFile
+     /HttpApiAttribute.PostFile 可以删除掉。构造测试表单时都采用multipart方式即可？算了，保留，表示需要添加文件
+    /增加访问间隔控制
+        /AuthInterval/VisitInterval，限制访问间隔
+        /需维护一个字典或内存表：ClientIP, Api, LastVisitDt，会自动删除老数据
+        /需要限制的接口如：登录、获取用户信息
+    /增加文件上传处理能力, 参数如：string Upload(byte[] file, string name)
+    /编纂英文版的readme
 
 2019-11
-	/增加接口过期时间，可用于逐步更替老旧接口。算了，增加Delete状态，不提供服务。
+    /增加接口过期时间，可用于逐步更替老旧接口。算了，增加Delete状态，不提供服务。
     /ApiStatus fix
     /fix bug
-	    http://doc.oa.wz.zj.cn:88/HttpApi/Knowledge/GetArticles
+        http://doc.oa.wz.zj.cn:88/HttpApi/Knowledge/GetArticles
         public static APIResult GetArticles(string keywords, string dirIds="", ArticleSortType? sort = ArticleSortType.Date, int pageIndex = 0, int pageSize = 50)
-	    如果 sort参数不填写的话，报错: "Object of type 'System.Int32' cannot be converted to type 'System.Nullable`1[App.DAL.ArticleSortType]'."
-	    策略：枚举可空类型的默认值预先处理一下，转化为枚举类型
+        如果 sort参数不填写的话，报错: "Object of type 'System.Int32' cannot be converted to type 'System.Nullable`1[App.DAL.ArticleSortType]'."
+        策略：枚举可空类型的默认值预先处理一下，转化为枚举类型
 
 
 
 
 2019-10
-	移除 App.Core 依赖，但还是要用到 UIAttribute（用反射避免了使用）
+    移除 App.Core 依赖，但还是要用到 UIAttribute（用反射避免了使用）
 
 2019-05-10
-	/修正 HttpApi 方法未找到的提示错误
+    /修正 HttpApi 方法未找到的提示错误
 
 2019-04-30
-	/增加测试页面：/HttpApi/Common/Echo$  /HttpApi/Common/Echo!
+    /增加测试页面：/HttpApi/Common/Echo$  /HttpApi/Common/Echo!
 
 2019-04-28
-	/增加 HttpApiAttribute.Log 属性，可在OnVisit事件中判断并做日志
-	/增加 HttpApiConfig.OnVisit 事件，可查看访问时的详细情况
-	
+    /增加 HttpApiAttribute.Log 属性，可在OnVisit事件中判断并做日志
+    /增加 HttpApiConfig.OnVisit 事件，可查看访问时的详细情况
+    
 2018-11-30
-	/修正bug：可空类型，若输入为空会出错，如：
-	/https://bearmanager.cn/HttpApi/Mall/GetProducts?type=
+    /修正bug：可空类型，若输入为空会出错，如：
+    /https://bearmanager.cn/HttpApi/Mall/GetProducts?type=
 
 2018-11-26
-	/方法名支持下划线
+    /方法名支持下划线
 
 2018-11-21
-	/增加事件：HttpApiConfig.OnException
+    /增加事件：HttpApiConfig.OnException
 
 2018-10-31
-	/App.Components 拆分出 App.Core 项目，稳定基本不变更
-	/优化默认参数逻辑，请求时可留空也可以不填写
-		http://localhost:5625/HttpApi/Base/GetArticles?type=normal&pageSize=&pageIndex=
-		http://localhost:5625/HttpApi/Base/GetArticles?type=normal
-	/优化httpapi，支持枚举类型参数用字符串表示
-		http://localhost:5625/HttpApi/Base/GetArticles?type=normal&pageSize=5&pageIndex=1
-		http://localhost:5625/HttpApi/Base/GetArticles?type=1&pageSize=5&pageIndex=1
+    /App.Components 拆分出 App.Core 项目，稳定基本不变更
+    /优化默认参数逻辑，请求时可留空也可以不填写
+        http://localhost:5625/HttpApi/Base/GetArticles?type=normal&pageSize=&pageIndex=
+        http://localhost:5625/HttpApi/Base/GetArticles?type=normal
+    /优化httpapi，支持枚举类型参数用字符串表示
+        http://localhost:5625/HttpApi/Base/GetArticles?type=normal&pageSize=5&pageIndex=1
+        http://localhost:5625/HttpApi/Base/GetArticles?type=1&pageSize=5&pageIndex=1
 
 2018-10-30
-	/HttpApiAttribute 增加 Example 参数
-	/测试可空类型 int? n 参数
-	/Bug：Xml 报错时的输出格式应该也是 xml，现在是json（算了）
+    /HttpApiAttribute 增加 Example 参数
+    /测试可空类型 int? n 参数
+    /Bug：Xml 报错时的输出格式应该也是 xml，现在是json（算了）
 
 2018-10-23
-	/增加日志能力（放弃，可丢到鉴权接口，由用户自己去完成）
-	/完善Xml导出
-		/考虑使用通用的attribute来标注字段格式和输出
-			/通用标注
-				System.ComponentModel.DataAnnotations
-				Required
-				StringLength
-				DataType
-				[AcceptVerbs("Get", "Post")]
-				[RegularExpression(pattern:"d+",ErrorMessage ="不符合正则规则")]
-			/或只使用JsonXXXXX, 其它的以Json为准（采用）
-		/null值处理
-		/字符串类型（含CData处理: < &）
-		/枚举处理
-		/值类型
-		/时间类型
-		/可空类型
-		/匿名类型
-		/字典类型
-	/输出 xml 类型出错
-		/http://localhost:4350/HttpApi/DemoClass/GetPersonData?_type=xml
-		/对于未知类型，用 System.Xml.Serialization.XmlSerializer 会报错，必须预先 [XmlInclude(typeof(MyType)])]
-		/考虑用三方 xml 序列化类(Ok)，或者用 Json.net 好像也可以(NO)
+    /增加日志能力（放弃，可丢到鉴权接口，由用户自己去完成）
+    /完善Xml导出
+        /考虑使用通用的attribute来标注字段格式和输出
+            /通用标注
+                System.ComponentModel.DataAnnotations
+                Required
+                StringLength
+                DataType
+                [AcceptVerbs("Get", "Post")]
+                [RegularExpression(pattern:"d+",ErrorMessage ="不符合正则规则")]
+            /或只使用JsonXXXXX, 其它的以Json为准（采用）
+        /null值处理
+        /字符串类型（含CData处理: < &）
+        /枚举处理
+        /值类型
+        /时间类型
+        /可空类型
+        /匿名类型
+        /字典类型
+    /输出 xml 类型出错
+        /http://localhost:4350/HttpApi/DemoClass/GetPersonData?_type=xml
+        /对于未知类型，用 System.Xml.Serialization.XmlSerializer 会报错，必须预先 [XmlInclude(typeof(MyType)])]
+        /考虑用三方 xml 序列化类(Ok)，或者用 Json.net 好像也可以(NO)
 
 
 2018-10-22
-	/简化Api路径(增加 HttpConfig.ApiTypePrefix 属性)，路径名如：/HttpApi/Common/GetThumbnail
-	/修正Js导出路径问题
-	/增加json配置：formatSmallCamel 小驼峰命名法
-	/实现导出 xml
-		/null值处理
-		/字符串类型（CData处理）
-		/枚举处理
-		/值类型
-		/时间类型
-		/可空类型
-		/匿名类型
+    /简化Api路径(增加 HttpConfig.ApiTypePrefix 属性)，路径名如：/HttpApi/Common/GetThumbnail
+    /修正Js导出路径问题
+    /增加json配置：formatSmallCamel 小驼峰命名法
+    /实现导出 xml
+        /null值处理
+        /字符串类型（CData处理）
+        /枚举处理
+        /值类型
+        /时间类型
+        /可空类型
+        /匿名类型
 
 2018-10-19
-	/移除 AuthIPs 配置项，用事件替代
-	/移除 HttpApiAuth，使用 App.Components.AuthHelper
-	/增加自定义鉴权事件
-	/增加鉴权标签：AuthIP, AuthSecurityCode
-	/优化调用目录
-		/如 HttpApi/A.B.C/Method，用 Module 或者 RouteTable 实现
-		/改为HttpModule
+    /移除 AuthIPs 配置项，用事件替代
+    /移除 HttpApiAuth，使用 App.Components.AuthHelper
+    /增加自定义鉴权事件
+    /增加鉴权标签：AuthIP, AuthSecurityCode
+    /优化调用目录
+        /如 HttpApi/A.B.C/Method，用 Module 或者 RouteTable 实现
+        /改为HttpModule
 
 2018-10-18
-	/引用App.Components
-	/生成Api展示页面
-	/修改API清单页面
-	/增加 ParameterAttribute：Name，Description，Default
-	/AuthHelper 更名为 HttpApiAuth
-	/HttpApi 可空类型的枚举类型展示
-	/优化参数类型字符串
-		基础数值类型：String, Int, Decimal
-		枚举类型
-		可空类型
+    /引用App.Components
+    /生成Api展示页面
+    /修改API清单页面
+    /增加 ParameterAttribute：Name，Description，Default
+    /AuthHelper 更名为 HttpApiAuth
+    /HttpApi 可空类型的枚举类型展示
+    /优化参数类型字符串
+        基础数值类型：String, Int, Decimal
+        枚举类型
+        可空类型
 
 2018-10-17
-	/增加DataResult(object) 构造函数
+    /增加DataResult(object) 构造函数
     /修改分页组建参数名称：Total, PageSize, PageCount, PageIndex, 
 
 2018-10-11
-	/增加 ApiStatus, Verbs
-	/修改 ApiHtml 的显示
-	/增加配置：jsonEnumFormatting="Text" jsonIndented="Indented" jsonDateTimeFormat="yyyy-MM-dd"
+    /增加 ApiStatus, Verbs
+    /修改 ApiHtml 的显示
+    /增加配置：jsonEnumFormatting="Text" jsonIndented="Indented" jsonDateTimeFormat="yyyy-MM-dd"
 
 2018-10-10
-	/DataResult 构造方法第一个参数可为bool值
-	/接口排序
-	/a=xxx -> a=x
-	/升级Newtonsoft.Json -> 6.0
+    /DataResult 构造方法第一个参数可为bool值
+    /接口排序
+    /a=xxx -> a=x
+    /升级Newtonsoft.Json -> 6.0
 
 2018-02-23
     /更改内嵌资源名称（去除下划线）
 
 2017-12-14
-	/重构Tool类，拆分为多个类
-	/重构HttpApiHandler类，更清晰
-	/增加全局配置：SuccessInfo 成功时返回的信息。
-	/增加全局配置：AuthIPs，仅指定ip内的客户端才可以访问。
-	/增加全局配置：EnumResponse，指定枚举类型的返回方式
-	/增加方法特性：Verbs=“Get,Post"，可限制访问的动词
-	/将SuccessInfo-》WrapInfo，移到方法特性里面去，无需全局配置
+    /重构Tool类，拆分为多个类
+    /重构HttpApiHandler类，更清晰
+    /增加全局配置：SuccessInfo 成功时返回的信息。
+    /增加全局配置：AuthIPs，仅指定ip内的客户端才可以访问。
+    /增加全局配置：EnumResponse，指定枚举类型的返回方式
+    /增加方法特性：Verbs=“Get,Post"，可限制访问的动词
+    /将SuccessInfo-》WrapInfo，移到方法特性里面去，无需全局配置
 
 2017-12-12
-	/Nuget发布: install-package App.HttpApi
-	/增加全局配置
-		public HttpApiConfig
-		{
-		   public string SuccessInfo {get; set;}
-		   public string FailInfo {get; set;}
-		   public string AuthIPs {get; set;}
-		   public string LoggerName {get; set;}
-		}
+    /Nuget发布: install-package App.HttpApi
+    /增加全局配置
+        public HttpApiConfig
+        {
+           public string SuccessInfo {get; set;}
+           public string FailInfo {get; set;}
+           public string AuthIPs {get; set;}
+           public string LoggerName {get; set;}
+        }
 
 
 2017-12-01
-	/更改名称: HttpApi, WebApi, Api
-	/增加日志能力：结合nlog。算了，页面访问一般网站都有全局的model来监控
+    /更改名称: HttpApi, WebApi, Api
+    /增加日志能力：结合nlog。算了，页面访问一般网站都有全局的model来监控
 
 
 2017-11-24
@@ -215,14 +217,14 @@
         /注：现在的Wrap只影响到 Json 类型的输出
         /还是另外定一个 ResponseType=JsonWrap。放弃。
         /使用单独的 Wrap 属性。并扩展到xml、imagebase64、普通text的输出
-	/增加Wrapper特性
-		- None: 不封装，直接输出到客户端
-		- DataResult: 用DataResult类封装
-		该方案用于服务器端和客户端的适配
-		- 服务器端可能只需要直接的数据；
-		- 而对于接口而言，可能需要用统一的结构来封装（如DataResult）
-		或者使用全局appsetting设定
-		<item key=webcall-wrapper value="DataResult"/>
+    /增加Wrapper特性
+        - None: 不封装，直接输出到客户端
+        - DataResult: 用DataResult类封装
+        该方案用于服务器端和客户端的适配
+        - 服务器端可能只需要直接的数据；
+        - 而对于接口而言，可能需要用统一的结构来封装（如DataResult）
+        或者使用全局appsetting设定
+        <item key=webcall-wrapper value="DataResult"/>
 
 /增加historyattribute/DescriptionAttribute
 /修正getimage错误（去掉response.end)
@@ -532,7 +534,7 @@
 
                         [System.ComponentModel.DefaultValue(ResponseType.Auto)]
 
-						    代码方式：routes.MapHttpRoute(
+                            代码方式：routes.MapHttpRoute(
          name: "DefaultApi",
          routeTemplate: "api/{controller}/{id}",
          defaults: new { id = RouteParameter.Optional }
@@ -545,19 +547,19 @@
 
 --------------------------------------------------------
 /修改WebCall，增加授权逻辑（2014-05-12）
-	- 集成DataResult类
+    - 集成DataResult类
     - 将js文件丢到Js目录下
-	- 拆分Tools类
-	- 令其支持以下特性(attribute)：
-		- AllowAnonymous：是否允许匿名访问（默认为true）
-		- AllowUsers ：允许访问的用户
-		- AllowRoles ：允许访问的角色
-	- 若无授权访问会返回401错误或DataResult对象 （可在Web.confit中配置WebCall-ErrorResponse=HttpError/DataResult）
-	- 使用方法
-		- 确保ASP.NET 页面实现 HttpContext.Current.User 接口（用于获取当前用户的信息）
-		- 请打开所有WebCall的访问权限，无需登录
-		- 在需要认证的方法上加上以上标签
-	- 详细内容可参考 TestAuth.aspx 示例页面
+    - 拆分Tools类
+    - 令其支持以下特性(attribute)：
+        - AllowAnonymous：是否允许匿名访问（默认为true）
+        - AllowUsers ：允许访问的用户
+        - AllowRoles ：允许访问的角色
+    - 若无授权访问会返回401错误或DataResult对象 （可在Web.confit中配置WebCall-ErrorResponse=HttpError/DataResult）
+    - 使用方法
+        - 确保ASP.NET 页面实现 HttpContext.Current.User 接口（用于获取当前用户的信息）
+        - 请打开所有WebCall的访问权限，无需登录
+        - 在需要认证的方法上加上以上标签
+    - 详细内容可参考 TestAuth.aspx 示例页面
 /修改缓存逻辑，根据有效输入参数来缓存，无效参数不予理会(2013-04-26)
 /null值处理
 /json数据转换为类实体
@@ -565,14 +567,14 @@
     json {Name:xxx, First:xxx, Last:xxx, Sex:'male'}
     请参考asp.net WebApi
     http://aspnetwebstack.codeplex.com/
-	return JsonConvert.DeserializeObject<T>(json, _jsonSettings); 
-	JsonSerializerSettings _jsonSettings = new JsonSerializerSettings(); 
-	_jsonSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore; 
-	_jsonSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore; 
-	_jsonSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; 
-	IsoDateTimeConverter datetimeConverter = new IsoDateTimeConverter(); 
-	datetimeConverter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss"; 
-	_jsonSettings.Converters.Add(datetimeConverter); 
+    return JsonConvert.DeserializeObject<T>(json, _jsonSettings); 
+    JsonSerializerSettings _jsonSettings = new JsonSerializerSettings(); 
+    _jsonSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore; 
+    _jsonSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore; 
+    _jsonSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; 
+    IsoDateTimeConverter datetimeConverter = new IsoDateTimeConverter(); 
+    datetimeConverter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss"; 
+    _jsonSettings.Converters.Add(datetimeConverter); 
 /若实现了IDisposal接口，自动调用释放资源
 /增加访问权限控制
     [AccessUsers="xxx,xxx", AccessRoles="xxx,xxx"]
@@ -652,13 +654,13 @@
                     Cache.Add(cacheName, handler, null,
                         Cache.NoAbsoluteExpiration, new TimeSpan(0, _cacheMinutes, 0),
                         CacheItemPriority.Default,
-						null);
+                        null);
                     break;
                 }
             }
         }
 
-		            string errorResponse = System.Configuration.ConfigurationManager.AppSettings["HttpApi-ErrorResponse"];
+                    string errorResponse = System.Configuration.ConfigurationManager.AppSettings["HttpApi-ErrorResponse"];
             if (string.IsNullOrEmpty(errorResponse))
                 errorResponse = "DataResult";
             if (errorResponse == "HttpError")
@@ -674,14 +676,14 @@
                 WriteResult(context, dr, ResponseType.JSON);
             }
 
-			    
+                
     
   <appSettings>
     <add key="HttpApi-ErrorResponse" value="DataResult"/>   <!-- HttpApi错误时返回的对象： HttpError 或 DataResult -->
   </appSettings>
                   object result = "Api " + methodName + "() fail. Please check parameters. " + ex.Message;
 
-				  
+                  
             // 缓存中没有, 则遍历程序集去找这个类
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly assembly in assemblies)
@@ -702,7 +704,7 @@
                 }
             }
 
-			    [XmlInclude(typeof(ErrorResponse))]
+                [XmlInclude(typeof(ErrorResponse))]
 
 
         public DataResult(bool result, String info = "", object data = null, object extra = null)
@@ -713,7 +715,7 @@
             Extra = extra;
         }
 
-		        /// <summary>
+                /// <summary>
         /// 构造接口清单页面
         /// </summary>
         static StringBuilder GetApiHtml(API api)
@@ -757,7 +759,7 @@
         }
 
 
-		        // 检测客户端IP是否在授权列表内
+                // 检测客户端IP是否在授权列表内
         bool CheckIP()
         {
             string[] ips = HttpApiConfig.Instance.AuthIPs?.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
@@ -770,7 +772,7 @@
             }
         }
 
-		
+        
         [ConfigurationProperty("authIPs")]
         public string AuthIPs
         {
@@ -778,9 +780,9 @@
             set { this["authIPs"] = value; }
         }
 
-		    public event AuthHandler OnAuth;
+            public event AuthHandler OnAuth;
     public delegate bool AuthHandler(IPrincipal pricipal);
-		sb.AppendFormat("<{0}>", field.Name);
+        sb.AppendFormat("<{0}>", field.Name);
 
                 // 一直递归到基础数据类别（各种类型；避免无限递归互相引用；递归层次限制）
                 var o = field.GetValue(obj);
@@ -811,7 +813,7 @@
 
 
 
-				        /// <summary>
+                        /// <summary>
         /// 构造API参数页面
         /// </summary>
         static string BuildApiParamsHtml(API api)
@@ -848,7 +850,7 @@
                 <td width='70'>状态</td>
                 <td>备注</td>
 
-				            sb.AppendLine(@"<thead><tr>
+                            sb.AppendLine(@"<thead><tr>
                 <td width='200'>接口名</td>
                 <td width='200'>说明</td>
                 <td width='70'>返回类型</td>
@@ -864,7 +866,7 @@
                 <td>备注</td>
                 </tr></thead>");
 
-				            /*
+                            /*
             return @"
                 <style>
                 table {border-collapse: collapse}
@@ -886,7 +888,7 @@
             ";
             */
 
-			        // 请求页面
+                    // 请求页面
         private void Application_BeginRequest(object sender, EventArgs e)
         {
             var u = HttpContext.Current.Request.Url.AbsolutePath;
@@ -913,11 +915,11 @@
             throw new NotImplementedException();
         }
 
-		            application.BeginRequest += Application_BeginRequest;
+                    application.BeginRequest += Application_BeginRequest;
             application.EndRequest += Application_EndRequest;
 
 
-			
+            
                 int m = url.LastIndexOf(".");
                 if (m != -1 && n != -1 && m < n)
                 {
@@ -941,7 +943,7 @@
 
 
 
-				                sb.AppendFormat("//-----------------------------------------------------------------\r\n");
+                                sb.AppendFormat("//-----------------------------------------------------------------\r\n");
                 sb.AppendFormat("// {0} : {1}\r\n", Resources.Url, api.Url);
                 sb.AppendFormat("// {0} : {1}\r\n", Resources.CacheSeconds,  api.CacheDuration);
                 sb.AppendFormat("// {0} : {1}\r\n", Resources.ReturnType,  api.ReturnType);
@@ -955,7 +957,7 @@
                 sb.AppendFormat("// {0} : {1}\r\n", Resources.Remark, api.Remark);
                 sb.AppendFormat("//-----------------------------------------------------------------\r\n");
 
-				            sb.AppendFormat("<td>{0}</td>", Resources.Expire);
+                            sb.AppendFormat("<td>{0}</td>", Resources.Expire);
                 sb.AppendFormat("<td>{0:yyyy-MM-dd}&nbsp;</td>", api.Expire);
             sb.AppendFormat("<td>{0}</td>", Resources.Remark);
             sb.AppendFormat("<td>{0}&nbsp;</td>", api.Remark);

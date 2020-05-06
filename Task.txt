@@ -1,6 +1,9 @@
 -------------------------------------------------
 任务
 -------------------------------------------------
+hebin decoder
+
+
 
 考虑
     实现 MaxDepth 逻辑，限制json输出层次。。。。。
@@ -1010,3 +1013,131 @@
             get { return "webhandler"; }
         }
     }
+
+
+    /// <summary>
+    /// 浏览器验证
+    /// </summary>
+    public class ValidateBrowserMiddleware
+    {
+        private readonly RequestDelegate _next;
+        public ValidateBrowserMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task Invoke(HttpContext httpContext)
+        {
+            if (httpContext.Request.Headers["User-Agent"].Any(h => h.ToLower().Contains("trident")))
+                httpContext.Response.StatusCode = 403;
+            else
+                await _next.Invoke(httpContext);
+        }
+    }
+
+
+
+
+    
+        //----------------------------------------------------------------------
+        // ASP.NET 2.0 用WebResource.axd封装，可提供资源的url地址
+        //----------------------------------------------------------------------
+        /// <summary>获取资源url</summary>
+        /// <param name="resourceName"></param>
+        /// <returns>
+        /// 类似：WebResource.axd?a=pWebCtrl&amp;r=WebCtrl.cutecat.jpg&amp;t=632390947985312500
+        /// a  - assembly
+        /// r  - resourceName
+        /// t  - assembly's timeStamp
+        /// </returns>
+        public string GetResourceUrl(string resourceName)
+        {
+            return (Asp.Current.Handler as Page).ClientScript.GetWebResourceUrl(this.GetType(), resourceName);
+        }
+
+        /// <summary>将资源注册为css</summary>
+        /// <param name="resourceName"></param>
+        public void RegistCss(string resourceName)
+        {
+            Page page = Asp.Current.Handler as Page;
+            if (page != null)
+            {
+                string url = page.ClientScript.GetWebResourceUrl(this.GetType(), resourceName);
+                string text = string.Format("<link rel='stylesheet' text='text/css' href='{0}' />", url);
+                LiteralControl lc = new LiteralControl(text);
+                page.Header.Controls.Add(lc);
+            }
+        }
+
+        /// <summary>将资源注册为script</summary>
+        /// <param name="resourceName"></param>
+        public void RegistScript(string resourceName)
+        {
+            Page page = Asp.Current.Handler as Page;
+            if (page != null)
+            {
+                string url = page.ClientScript.GetWebResourceUrl(this.GetType(), resourceName);
+                page.ClientScript.RegisterClientScriptInclude(resourceName, url);
+            }
+        }
+
+                    /*
+            ASP.NET Core附带以下中间件组件：
+            Authentication	            提供身份验证支持
+            CORS	                    配置跨域资源共享
+            Response Caching	        提供缓存响应支持
+            Response Compression	    提供响应压缩支持
+            Routing	                    定义和约束请求路由
+            Session	                    提供用户会话管理
+            Static Files	            为静态文件和目录浏览提供服务提供支持
+            URL Rewriting Middleware	用于重写 Url，并将请求重定向的支持
+            */
+
+
+                    private static void SignInHandler(IApplicationBuilder app)
+        {
+            app.Run(async context =>
+            {
+                AuthMiddleware.SignIn(context, 1, "kevin", "kevin@some.com", "12345678");
+                await context.Response.WriteAsync("SingIn ok");
+            });
+        }
+        private static void SignOutHandler(IApplicationBuilder app)
+        {
+            app.Run(async context =>
+            {
+                AuthMiddleware.SignOut(context);
+                await context.Response.WriteAsync("SignOut ok");
+            });
+        }
+
+        
+    /// <summary>
+    /// AspCore 扩展方法
+    /// </summary>
+    public static class AspCore
+    {
+        public static string GetUrl(this HttpRequest request)
+        {
+            return new StringBuilder()
+                .Append(request.Scheme)
+                .Append("://")
+                .Append(request.Host)
+                .Append(request.PathBase)
+                .Append(request.Path)
+                .Append(request.QueryString)
+                .ToString();
+        }
+    }
+
+
+
+    
+        /// <summary></summary>
+        /// <param name="host"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static string MapPath(IHostingEnvironment host, string url)
+        {
+            return Path.Combine(host.ContentRootPath, .Replace(@"/", @"\"));
+        }

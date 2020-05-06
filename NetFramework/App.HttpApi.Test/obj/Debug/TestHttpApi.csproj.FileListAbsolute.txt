@@ -1,0 +1,9 @@
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\Test\bin\TestHttpApi.dll.config
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\Test\bin\TestHttpApi.dll
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\Test\bin\TestHttpApi.pdb
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\Test\bin\App.HttpApi.dll
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\Test\bin\Newtonsoft.Json.dll
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\Test\bin\App.HttpApi.pdb
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\Test\obj\Debug\TestHttpApi.csprojResolveAssemblyReference.cache
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\Test\obj\Debug\TestHttpApi.dll
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\Test\obj\Debug\TestHttpApi.pdb

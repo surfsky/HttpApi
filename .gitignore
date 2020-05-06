@@ -8,3 +8,5 @@
 /Nuget/TestNuget/packages
 /packages
 /Nuget/TestNuget/.vs
+/NetCore/App.HttpApiCore/obj
+/NetCore/App.HttpApiCore.Test/obj

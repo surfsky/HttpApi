@@ -1,0 +1,8 @@
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\TestWebMethod\bin\Newtonsoft.Json.dll
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\TestWebMethod\obj\Debug\ResolveAssemblyReference.cache
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\TestWebMethod\bin\TestWebMethod.dll
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\TestWebMethod\bin\TestWebMethod.pdb
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\TestWebMethod\obj\Debug\TestWebMethod.dll
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\TestWebMethod\obj\Debug\TestWebMethod.pdb
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\TestWebMethod\bin\Kingsoc.Web.WebMethod.pdb
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\TestWebMethod\bin\Kingsoc.Web.WebMethod.dll

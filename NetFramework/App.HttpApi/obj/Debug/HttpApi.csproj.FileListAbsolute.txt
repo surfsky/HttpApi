@@ -1,0 +1,5 @@
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\HttpApi\obj\Debug\HttpApi.csprojResolveAssemblyReference.cache
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\HttpApi\bin\Debug\App.HttpApi.dll
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\HttpApi\bin\Debug\App.HttpApi.pdb
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\HttpApi\obj\Debug\App.HttpApi.dll
+C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\HttpApi\obj\Debug\App.HttpApi.pdb

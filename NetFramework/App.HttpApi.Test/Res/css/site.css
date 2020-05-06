@@ -1,0 +1,16 @@
+﻿.btn {
+    background: lightblue;
+    width: 300px;
+    border-radius: 4px;
+    margin: 5px;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h3 {
+    text-indent: -10px;
+    font-size: 10px;
+}

@@ -1,0 +1,5 @@
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\Kingsoc.Web.WebMethod\obj\Debug\ResolveAssemblyReference.cache
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\Kingsoc.Web.WebMethod\bin\Debug\Kingsoc.Web.WebMethod.dll
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\Kingsoc.Web.WebMethod\bin\Debug\Kingsoc.Web.WebMethod.pdb
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\Kingsoc.Web.WebMethod\obj\Debug\Kingsoc.Web.WebMethod.dll
+F:\coding\KevinStudio\Kingsoc.Utility\Kingsoc.Utility.3\Kingsoc.Web.WebMethod\obj\Debug\Kingsoc.Web.WebMethod.pdb

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.HttpApi", "NetFramework\App.HttpApi\App.HttpApi.csproj", "{F74D6B50-EF4D-4521-A7D5-D5CAC6422F24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpApi", "NetFramework\HttpApi\HttpApi.csproj", "{F74D6B50-EF4D-4521-A7D5-D5CAC6422F24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.HttpApi.Test", "NetFramework\App.HttpApi.Test\App.HttpApi.Test.csproj", "{1D132C72-95C0-4401-B2E3-19039D6EB0C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpApi.Test", "NetFramework\HttpApi.Test\HttpApi.Test.csproj", "{1D132C72-95C0-4401-B2E3-19039D6EB0C3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DD772976-24A5-4C80-BBBD-655F00B8F1C2}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,13 +14,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Task.txt = Task.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.HttpApiCore.Test", "NetCore\App.HttpApiCore.Test\App.HttpApiCore.Test.csproj", "{255EF00E-BE0B-429D-9D8B-C601E70E4DD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpApiCore.Test", "NetCore\HttpApiCore.Test\HttpApiCore.Test.csproj", "{255EF00E-BE0B-429D-9D8B-C601E70E4DD8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetFramework", "NetFramework", "{D3444337-92DE-4624-AE0E-E390CB321A0D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetCore", "NetCore", "{D575CC06-760E-4440-86CC-70FB5E5B3A45}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.HttpApiCore", "NetCore\App.HttpApiCore\App.HttpApiCore.csproj", "{DFE7CEFE-C2DA-464E-8EB0-3CC541B6970E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpApiCore", "NetCore\HttpApiCore\HttpApiCore.csproj", "{DFE7CEFE-C2DA-464E-8EB0-3CC541B6970E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

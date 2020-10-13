@@ -1,4 +1,4 @@
-# App.HttpApi
+# HttpApi
 
 Chinese readme file is [here](README-CN.md)
 

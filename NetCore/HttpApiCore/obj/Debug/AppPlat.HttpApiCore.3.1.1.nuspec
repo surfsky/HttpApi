@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>AppPlat.HttpApiCore</id>
+    <version>3.1.1</version>
+    <authors>surfsky</authors>
+    <owners>surfsky</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/surfsky/AppPlat.HttpApi</projectUrl>
+    <description>HttpApiCore is a convinent framework to provide data by http, It can be the upgrating replacement for WebAPI. It supports aspnetcore v3.1.
+HttpApiCore 是一种便利的提供数据服务接口的框架，可作为 WebAPI 的升级方案，此类库支持 aspnetcore v3.1.</description>
+    <releaseNotes>app.UseHttpApi(options =&gt; ....)</releaseNotes>
+    <copyright>MIT</copyright>
+    <repository type="git" url="https://github.com/surfsky/AppPlat.HttpApi" />
+    <dependencies>
+      <group targetFramework=".NETCoreApp3.1">
+        <dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.2.5" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Caching.Memory" version="3.1.3" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="11.0.2" exclude="Build,Analyzers" />
+        <dependency id="ZKWeb.System.Drawing" version="4.0.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="\\Mac\Home\Downloads\Dev\AppPlat\AppPlat.HttpApi\AppPlat.HttpApi-GitHub\NetCore\AppPlat.HttpApiCore\bin\Debug\netcoreapp3.1\zh-CN\AppPlat.HttpApiCore.resources.dll" target="lib\netcoreapp3.1\zh-CN\AppPlat.HttpApiCore.resources.dll" />
+    <file src="\\Mac\Home\Downloads\Dev\AppPlat\AppPlat.HttpApi\AppPlat.HttpApi-GitHub\NetCore\AppPlat.HttpApiCore\bin\Debug\netcoreapp3.1\AppPlat.HttpApiCore.dll" target="lib\netcoreapp3.1\AppPlat.HttpApiCore.dll" />
+  </files>
+</package>

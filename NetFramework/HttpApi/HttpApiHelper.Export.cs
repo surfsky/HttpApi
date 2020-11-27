@@ -57,6 +57,7 @@ namespace App.HttpApi
             sb.AppendFormat("<br/>");
             sb.AppendFormat("<table class='table table-sm table-hover'>");
             sb.AppendFormat("<thead><tr>");
+            sb.AppendFormat("<td>{0}</td>", Resources.Group);
             sb.AppendFormat("<td>{0}</td>", Resources.Name);
             sb.AppendFormat("<td>{0}</td>", Resources.Description);
             sb.AppendFormat("<td>{0}</td>", Resources.ReturnType);
@@ -75,6 +76,7 @@ namespace App.HttpApi
             foreach (var api in typeapi.Apis)
             {
                 sb.AppendFormat("<tr>");
+                sb.AppendFormat("<td>{0}&nbsp;</td>", api.Group);
                 sb.AppendFormat("<td><a target='_blank' href='{0}'>{1}&nbsp;</a></td>", api.Url, api.Name);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.Description);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", api.ReturnType);
@@ -109,9 +111,9 @@ namespace App.HttpApi
             sb.AppendLine(BuildCss());
             sb.AppendFormat("<h1>{0}</h1>", api.Name);
             sb.AppendFormat("<h3>{0}</h3>", api.Description);
-            sb.AppendFormat("<div>{0}</div></br>", api.UrlTest);
-            sb.AppendFormat("<div>{0}</div></br>", api.Remark);
-            sb.AppendFormat("<div>{0}</div></br>", api.Example);
+            sb.AppendFormat("<small>{0}</small></br>", api.UrlTest);
+            sb.AppendFormat("<small>{0}</small></br>", api.Remark);
+            sb.AppendFormat("<code>{0}</code></br>", api.Example);
 
             // 属性
             sb.AppendFormat("<h3>{0}</h3><br/>", Resources.Property);

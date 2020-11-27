@@ -339,8 +339,9 @@ namespace App.HttpApi
             }
             else
             {
-                APIResult dr = new APIResult(false, info, errorCode, null);
-                WriteResult(context, dr, ResponseType.JSON);
+                var result = new APIResult(false, info, "", null);
+                result.Code = errorCode.ToString();
+                WriteResult(context, result, ResponseType.JSON);
             }
         }
 
@@ -384,6 +385,7 @@ namespace App.HttpApi
             foreach (MethodInfo method in methods)
             {
                 HttpApiAttribute attr = ReflectHelper.GetHttpApiAttribute(method);
+                var desc = ReflectHelper.GetDescription(method);
                 if (attr != null)
                 {
                     var api = new API()
@@ -403,7 +405,7 @@ namespace App.HttpApi
                         PostFile = attr.PostFile,
                         Status = attr.Status,
                         Log = attr.Log,
-                        Remark = attr.Remark,
+                        Remark = attr.Remark.IsEmpty() ? desc : attr.Remark,
                         Example = attr.Example,
                         Url = GetMethodDisplayUrl(rootUrl, method),
                         UrlTest = GetMethodTestUrl(rootUrl, method, attr.AuthToken),

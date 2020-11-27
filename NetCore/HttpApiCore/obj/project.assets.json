@@ -1659,11 +1659,12 @@
       ]
     },
     "System.Collections.NonGeneric/4.3.0": {
-      "sha512": "LE/oChpRvkSi3U25u0KnJcI44JeDZ1QJCyN4qFDx2uusEypdqR24w7lKYw21eYe5esuCBuc862wRmpF63Yy1KQ==",
+      "sha512": "prtjIEMhGUnQq6RnPEYLpFt8AtLbp9yq2zxOSrY7KJJZrw25Fi97IzBqY7iqssbM61Ek5b8f3MG/sG1N2sN5KA==",
       "type": "package",
       "path": "system.collections.nongeneric/4.3.0",
       "files": [
         ".nupkg.metadata",
+        ".signature.p7s",
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "lib/MonoAndroid10/_._",
@@ -3667,13 +3668,13 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "3.2.0",
+    "version": "3.2.3",
     "restore": {
-      "projectUniqueName": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
+      "projectUniqueName": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
       "projectName": "HttpApiCore",
-      "projectPath": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
+      "projectPath": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
       "packagesPath": "C:\\Users\\CJH\\.nuget\\packages\\",
-      "outputPath": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\obj\\",
+      "outputPath": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",

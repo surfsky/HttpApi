@@ -150,6 +150,9 @@
   <data name="Expire" xml:space="preserve">
     <value>过期时间</value>
   </data>
+  <data name="Group" xml:space="preserve">
+    <value>组</value>
+  </data>
   <data name="Log" xml:space="preserve">
     <value>记录日志</value>
   </data>

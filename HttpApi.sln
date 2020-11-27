@@ -17,8 +17,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpApiCore.Test", "NetCore\HttpApiCore.Test\HttpApiCore.Test.csproj", "{255EF00E-BE0B-429D-9D8B-C601E70E4DD8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetFramework", "NetFramework", "{D3444337-92DE-4624-AE0E-E390CB321A0D}"
+	ProjectSection(SolutionItems) = preProject
+		NetFramework\History.md = NetFramework\History.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetCore", "NetCore", "{D575CC06-760E-4440-86CC-70FB5E5B3A45}"
+	ProjectSection(SolutionItems) = preProject
+		NetCore\History.md = NetCore\History.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpApiCore", "NetCore\HttpApiCore\HttpApiCore.csproj", "{DFE7CEFE-C2DA-464E-8EB0-3CC541B6970E}"
 EndProject

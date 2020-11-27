@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Bs6kAe+aGYMx/kt3KcLYn0mger4B4eLQSL/SO8nAM8CGngnGQmt2EvK1UNHOytIEHu5oUXL3wgm/qD7jbg4KMA==",
+  "dgSpecHash": "JWNe52TcGq3MAbj2DSL88VIuRZUKx5yPFmDt9p4gYPjI5p2p1aE5yqG5nMqQ8wRAVF/TEIbq+ex66L1Uup7hBg==",
   "success": true,
-  "projectFilePath": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
+  "projectFilePath": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
   "expectedPackageFiles": [
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.authentication.core\\2.2.0\\microsoft.aspnetcore.authentication.core.2.2.0.nupkg.sha512",
@@ -41,8 +41,8 @@
     "C:\\Users\\CJH\\.nuget\\packages\\system.appcontext\\4.1.0\\system.appcontext.4.1.0.nupkg.sha512",
     "C:\\Users\\CJH\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
     "C:\\Users\\CJH\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.collections.nongeneric\\4.3.0\\system.collections.nongeneric.4.3.0.nupkg.sha512",
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.collections.specialized\\4.3.0\\system.collections.specialized.4.3.0.nupkg.sha512",
+    "C:\\Users\\CJH\\.nuget\\packages\\system.collections.nongeneric\\4.3.0\\system.collections.nongeneric.4.3.0.nupkg.sha512",
+    "C:\\Users\\CJH\\.nuget\\packages\\system.collections.specialized\\4.3.0\\system.collections.specialized.4.3.0.nupkg.sha512",
     "C:\\Users\\CJH\\.nuget\\packages\\system.componentmodel\\4.3.0\\system.componentmodel.4.3.0.nupkg.sha512",
     "C:\\Users\\CJH\\.nuget\\packages\\system.componentmodel.primitives\\4.3.0\\system.componentmodel.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\CJH\\.nuget\\packages\\system.componentmodel.typeconverter\\4.3.0\\system.componentmodel.typeconverter.4.3.0.nupkg.sha512",

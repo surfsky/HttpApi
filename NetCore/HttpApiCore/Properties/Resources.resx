@@ -150,6 +150,9 @@
   <data name="Expire" xml:space="preserve">
     <value>ExpireDate</value>
   </data>
+  <data name="Group" xml:space="preserve">
+    <value>Group</value>
+  </data>
   <data name="Log" xml:space="preserve">
     <value>Log</value>
   </data>

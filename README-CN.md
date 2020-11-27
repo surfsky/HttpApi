@@ -45,22 +45,50 @@ Nuget: install-package App.HttpApi
 
 (1) 引用类库（用nuget安装的话会自动完成）
 ```
-App.Core.dll
 App.HttpApi.dll
+或
+App.HttpApiCore.dll
 ```
 注：App.HttpApi 引用了 App.Core 类库，用到其：
 - ASP.NET 建权验票相关方法
 - 类型解析相关方法
        
-(2) 修改 web.config 文件（用nuget安装的话会自动修改）
+(2) 配置（用nuget安装的话会自动修改）
+(2) Config
+
+netframework 版本
+
+``` xml
+  <configSections>
+    <section name="httpApi" type="App.HttpApi.HttpApiConfig, App.HttpApi"/>
+  </configSections>
+  <httpApi 
+      formatEnum="Text" 
+      formatIndented="Indented" 
+      formatDateTime="yyyy-MM-dd" 
+      formatLongNumber="Int64,UInt64,Decimal"
+      formatLowCamel="false"
+      errorResponse="APIResult" 
+      typePrefix="App." 
+      wrap="false" 
+      language="en"
+      />
+  <system.webServer>
+      <modules>
+        <add name="HttpApiModule" type="App.HttpApi.HttpApiModule" />
+      </modules>
+  </system.webServer>
 ```
-<system.webServer>
-  <modules>
-    <add name="HttpApiModule" type="App.HttpApi.HttpApiModule" />
-  </modules>
-</system.webServer>
-```
-       
+
+net core 版本
+
+``` c#
+app.UseHttpApi(o =>                        // 启用 HttpApi
+{
+    o.TypePrefix = "App.API.";
+    o.FormatEnum = EnumFomatting.Int;
+});
+```       
 (3) 在需要导出HttpApi的方法上写上标注
 ```
 namespace App

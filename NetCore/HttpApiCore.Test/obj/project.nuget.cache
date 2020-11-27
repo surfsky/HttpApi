@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "F7FPkZzID+PIDjv6d6JiJsW9iQBSddgz3OCVB67NmuwJ0Bm9OJ4VZT5J4wZ3iQkLk1FBA1bWXKoT0OpnbSP+oA==",
+  "dgSpecHash": "uHz8HOwqyjbA4xIxx7nBcwIkqqdk0kSMnTJgt7TFaxeRfCgcBB6LlU88u8RTAgWHgHLF5TSoXcNsX2uRZQ1IDQ==",
   "success": true,
-  "projectFilePath": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\HttpApiCore.Test.csproj",
+  "projectFilePath": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\HttpApiCore.Test.csproj",
   "expectedPackageFiles": [
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.authentication.core\\2.2.0\\microsoft.aspnetcore.authentication.core.2.2.0.nupkg.sha512",
@@ -47,8 +47,8 @@
     "C:\\Users\\CJH\\.nuget\\packages\\system.appcontext\\4.1.0\\system.appcontext.4.1.0.nupkg.sha512",
     "C:\\Users\\CJH\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
     "C:\\Users\\CJH\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.collections.nongeneric\\4.3.0\\system.collections.nongeneric.4.3.0.nupkg.sha512",
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.collections.specialized\\4.3.0\\system.collections.specialized.4.3.0.nupkg.sha512",
+    "C:\\Users\\CJH\\.nuget\\packages\\system.collections.nongeneric\\4.3.0\\system.collections.nongeneric.4.3.0.nupkg.sha512",
+    "C:\\Users\\CJH\\.nuget\\packages\\system.collections.specialized\\4.3.0\\system.collections.specialized.4.3.0.nupkg.sha512",
     "C:\\Users\\CJH\\.nuget\\packages\\system.componentmodel\\4.3.0\\system.componentmodel.4.3.0.nupkg.sha512",
     "C:\\Users\\CJH\\.nuget\\packages\\system.componentmodel.primitives\\4.3.0\\system.componentmodel.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\CJH\\.nuget\\packages\\system.componentmodel.typeconverter\\4.3.0\\system.componentmodel.typeconverter.4.3.0.nupkg.sha512",

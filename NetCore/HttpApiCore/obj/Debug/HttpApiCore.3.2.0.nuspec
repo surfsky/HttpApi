@@ -23,7 +23,8 @@ HttpApiCore 是一种便利的提供数据服务接口的框架，可作为 WebA
     </dependencies>
   </metadata>
   <files>
-    <file src="\\Mac\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetCore\HttpApiCore\bin\Debug\netcoreapp3.1\zh-CN\HttpApiCore.resources.dll" target="lib\netcoreapp3.1\zh-CN\HttpApiCore.resources.dll" />
-    <file src="\\Mac\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetCore\HttpApiCore\bin\Debug\netcoreapp3.1\HttpApiCore.dll" target="lib\netcoreapp3.1\HttpApiCore.dll" />
+    <file src="\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetCore\HttpApiCore\bin\Debug\netcoreapp3.1\zh-CN\HttpApiCore.resources.dll" target="lib\netcoreapp3.1\zh-CN\HttpApiCore.resources.dll" />
+    <file src="\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetCore\HttpApiCore\bin\Debug\netcoreapp3.1\HttpApiCore.dll" target="lib\netcoreapp3.1\HttpApiCore.dll" />
+    <file src="\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetCore\HttpApiCore\bin\Debug\netcoreapp3.1\HttpApiCore.xml" target="lib\netcoreapp3.1\HttpApiCore.xml" />
   </files>
 </package>

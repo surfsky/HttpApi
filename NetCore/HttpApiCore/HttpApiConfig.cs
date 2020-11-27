@@ -7,7 +7,7 @@ using System.Web;
 //using AppPlat.HttpApi.Properties;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using App.HttpApiCore.Properties;
+using HttpApiCore.Properties;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 

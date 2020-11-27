@@ -9,3 +9,15 @@
 \\Mac\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\obj\Debug\HttpApi.Test.csproj.CopyComplete
 \\Mac\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\obj\Debug\App.HttpApi.Test.dll
 \\Mac\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\obj\Debug\App.HttpApi.Test.pdb
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\bin\App.HttpApi.Test.dll.config
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\bin\App.HttpApi.Test.dll
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\bin\App.HttpApi.Test.pdb
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\bin\App.HttpApi.dll
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\bin\App.HttpApi.pdb
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\bin\zh-CN\App.HttpApi.resources.dll
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\obj\Debug\HttpApi.Test.csprojAssemblyReference.cache
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\obj\Debug\HttpApi.Test.csproj.CoreCompileInputs.cache
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\obj\Debug\HttpApi.Test.csproj.CopyComplete
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\obj\Debug\App.HttpApi.Test.dll
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\obj\Debug\App.HttpApi.Test.pdb
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi.Test\bin\App.HttpApi.xml

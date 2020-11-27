@@ -211,6 +211,17 @@ namespace App.HttpApi
                 return type.FullName;
         }
 
+        /// <summary>获取DescriptionAttribute</summary>
+        public static string GetDescription(this MethodInfo method)
+        {
+            var objs = method.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            if (objs.Length > 0)
+                return (objs[0] as DescriptionAttribute).Description;
+            else
+                return "";
+        }
+
+
         /// <summary>获取历史信息特性元数据</summary>
         public static object[] GetHistories(this Type type)
         {
@@ -292,7 +303,9 @@ namespace App.HttpApi
                         array.Add(pi.DefaultValue);
                     else if (pi.ParameterType.IsNullable())
                         array.Add(null);
-                    continue;
+                    else
+                        throw new HttpApiException(501, "Missing parameter " + pi.Name);
+                    //continue;
                 }
 
                 // 找到匹配的输入参数
@@ -319,8 +332,16 @@ namespace App.HttpApi
                 }
 
                 // 转换数据类型
-                var value = Cast(o, type);
-                array.Add(value);
+                try
+                {
+                    var value = Cast(o, type);
+                    array.Add(value);
+                }
+                catch (Exception ex)
+                {
+                    var txt = string.Format("Parameter {0} ({1}) is wrong: {2}", pi.Name, type.Name, ex.Message);
+                    throw new HttpApiException(502, txt);
+                }
             }
             return array.ToArray();
         }

@@ -1,0 +1,983 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>App.HttpApi</name>
+    </assembly>
+    <members>
+        <member name="T:App.HttpApi.ScriptAttribute">
+            <summary>
+            脚本特性，用于控制输出 js 脚本时的一些的命名及缓存
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.TAttribute">
+            <summary>
+            文本资源特性（可以给枚举字段增加注释信息，信息来自Resource）
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.HistoryAttribute">
+            <summary>
+            历史版本信息
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.HttpParamAttribute">
+            <summary>
+            参数信息
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.HttpApiAttribute">
+            <summary>
+            HttpApi特性，拥有该特性的方法都可以提供WebAPI服务
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.ReturnType">
+            <summary>返回值类型</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.Type">
+            <summary>响应类型</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.Group">
+            <summary>分类</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.Description">
+            <summary>描述信息</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.Example">
+            <summary>示例</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.Remark">
+            <summary>备注</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.CacheSeconds">
+            <summary>缓存的秒数。默认为0，即没有任何缓存。</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.CacheLocation">
+            <summary>缓存位置（默认服务器和客户端都缓存）</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.MimeType">
+            <summary>导出文件的MIME类别</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.FileName">
+            <summary>导出文件名</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.Wrap">
+            <summary>是否对文本类型（Json, Text, Xml, ImageBase64)的数据进行 DataResult 封装</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.WrapCondition">
+            <summary>封装条件</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.AuthVerbs">
+            <summary>允许的访问动作（Get/Post)</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.Status">
+            <summary>状态（Testing, Published, Deprecated)</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.Log">
+            <summary>是否记录日志</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.AuthIP">
+            <summary>是否校验访问 IP</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.AuthToken">
+            <summary>是否校验授权码</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.AuthLogin">
+            <summary>是否校验登录(User.IsAuthenticated)</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.AuthUsers">
+            <summary>可访问的用户（用逗号隔开）</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.AuthRoles">
+            <summary>可访问的角色（用逗号隔开）</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.PostFile">
+            <summary>是否上传文件</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.AuthTraffic">
+            <summary>访问流量限制（每秒最多访问次数）</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.VerbList">
+            <summary>访问动作列表</summary>
+        </member>
+        <member name="T:App.HttpApi.Asp">
+            <summary>
+            Asp.net 相关辅助方法
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.Asp.WriteError(System.Int32)">
+            <summary>输出 HTTP 错误</summary>
+        </member>
+        <member name="M:App.HttpApi.Asp.GetClientIP">
+            <summary>获取客户端真实IP</summary>
+        </member>
+        <member name="T:App.HttpApi.UserRolePrincipal">
+            <summary>存储用户名及角色列表的Principal</summary>
+        </member>
+        <member name="T:App.HttpApi.AuthHelper">
+            <summary>
+            表单鉴权辅助函数（将用户、角色等信息用加密字符串保存在cookie中）。
+            （1）Login 创建验票，并将用户角色过期时间等信息加密保存在cookie中。
+            （2）LoadPrincipal 从cookie解析验票并设置当前登录人信息。
+            （3）Logout 注销
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.AuthHelper.IsLogin">
+            <summary>是否登录</summary>
+        </member>
+        <member name="M:App.HttpApi.AuthHelper.GetLoginUserName">
+            <summary>当前登录用户名</summary>
+        </member>
+        <member name="M:App.HttpApi.AuthHelper.HasRole(System.String)">
+            <summary>当前登录用户是否具有某个角色</summary>
+        </member>
+        <member name="M:App.HttpApi.AuthHelper.Login(System.String,System.String[],System.DateTime)">
+            <summary>登录（设置当前用户，并创建用户验票Cookie）。</summary>
+            <param name="userId">用户</param>
+            <param name="roles">角色名称列表</param>
+            <param name="expiration">验票到期时间</param>
+            <example>AuthHelper.Login("Admin", new string[] { "Admins" }, DateTime.Now.AddDays(1));</example>
+        </member>
+        <member name="M:App.HttpApi.AuthHelper.LoadPrincipalFromCookie">
+            <summary>从cookie中读取验票并设置当前用户</summary>
+        </member>
+        <member name="M:App.HttpApi.AuthHelper.Logout">
+            <summary>注销。销毁验票</summary>
+        </member>
+        <member name="M:App.HttpApi.AuthHelper.CreateTicket(System.String,System.String[],System.DateTime)">
+            <summary>创建验票字符串</summary>
+            <param name="user">用户名</param>
+            <param name="roles">角色列表</param>
+            <param name="expiration">过期时间</param>
+        </member>
+        <member name="M:App.HttpApi.AuthHelper.ParseTicket(System.String,System.String@,System.String[]@)">
+            <summary>解析验票字符串，获取用户和角色信息</summary>
+            <param name="ticket">验票字符串</param>
+            <param name="user">用户名</param>
+            <param name="roles">角色列表</param>
+            <returns>表单验证票据对象</returns>
+        </member>
+        <member name="M:App.HttpApi.AuthHelper.GetRoles">
+            <summary>当前登录用户的角色列表</summary>
+        </member>
+        <member name="T:App.HttpApi.CookieHelper">
+            <summary>
+            Cookie 辅助处理方式
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.CookieHelper.FindCookie(System.String)">
+            <summary>查找Cookie值（可处理cookie名重复情况）</summary>
+        </member>
+        <member name="M:App.HttpApi.CookieHelper.GetCookies">
+            <summary>将 cookie 字符串解析为键值对列表（键值可重复）</summary>
+        </member>
+        <member name="M:App.HttpApi.CookieHelper.GetCookie(System.String)">
+            <summary>读cookie值</summary>
+            <param name="name">名称</param>
+            <returns>cookie值</returns>
+        </member>
+        <member name="M:App.HttpApi.CookieHelper.SetCookie(System.String,System.String)">
+            <summary>
+            设置cookie
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.CookieHelper.SetCookie(System.String,System.String,System.Int32)">
+            <summary>
+            设置cookie
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.EnumInfo">
+            <summary>
+            枚举值相关信息
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.EnumHelper">
+            <summary>
+            枚举相关辅助方法（扩展方法）
+            尝试去获取 DescriptionAttribute, UIAttribute 的值作为枚举名称，都没有的话才用原Enum名。
+            Historey: 
+                2017-10-31 Init
+                2017-11-01 尝试改为泛型版本失败，泛型不支持枚举约束，但类型转化时又必须指明是类类型还是值类型
+                以后再尝试，可用T : struct 来约束
+            </summary>
+            <example>
+            public enum OrderStatus
+            {
+                [Description("新建")]  New;
+                [UI("完成")]           Finished;
+            }
+            var items = typeof(OrderStatus).ToList();
+            </example>
+        </member>
+        <member name="M:App.HttpApi.EnumHelper.IsEnum(System.Object)">
+            <summary>判断一个对象是否是枚举类型</summary>
+        </member>
+        <member name="M:App.HttpApi.EnumHelper.IsEnum(System.Type)">
+            <summary>判断一个类型是否是枚举类型</summary>
+        </member>
+        <member name="M:App.HttpApi.EnumHelper.GetEnums``1(System.Type)">
+            <summary>获取枚举的值列表</summary>
+        </member>
+        <member name="T:App.HttpApi.ErrorResponse">
+            <summary>
+            错误时返回方式
+            </summary>
+        </member>
+        <member name="F:App.HttpApi.ErrorResponse.HttpError">
+            <summary>输出Http错误</summary>
+        </member>
+        <member name="F:App.HttpApi.ErrorResponse.APIResult">
+            <summary>输出APIResult结构</summary>
+        </member>
+        <member name="T:App.HttpApi.EnumFomatting">
+            <summary>
+            枚举输出方式
+            </summary>
+        </member>
+        <member name="F:App.HttpApi.EnumFomatting.Text">
+            <summary>输出字符串</summary>
+        </member>
+        <member name="F:App.HttpApi.EnumFomatting.Int">
+            <summary>输出整型</summary>
+        </member>
+        <member name="T:App.HttpApi.ApiStatus">
+            <summary>
+            API 状态
+            </summary>
+        </member>
+        <member name="F:App.HttpApi.ApiStatus.Publish">
+            <summary>正式发布</summary>
+        </member>
+        <member name="F:App.HttpApi.ApiStatus.Test">
+            <summary>测试接口</summary>
+        </member>
+        <member name="F:App.HttpApi.ApiStatus.Obsolete">
+            <summary>该接口已废弃，随时可能被删除</summary>
+        </member>
+        <member name="F:App.HttpApi.ApiStatus.Delete">
+            <summary>该接口已删除</summary>
+        </member>
+        <member name="T:App.HttpApi.Extensions">
+            <summary>
+            一些常用的扩展
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.Extensions.IsEmpty(System.String)">
+            <summary>字符串是否为空</summary>
+        </member>
+        <member name="M:App.HttpApi.Extensions.IsEmpty(System.Object)">
+            <summary>对象是否为空或为空字符串</summary>
+        </member>
+        <member name="M:App.HttpApi.Extensions.IsNotEmpty(System.String)">
+            <summary>字符串是否为空</summary>
+        </member>
+        <member name="M:App.HttpApi.Extensions.ToText(System.Object,System.String)">
+            <summary>将可空对象转化为字符串</summary>
+        </member>
+        <member name="M:App.HttpApi.Extensions.ToText(System.Nullable{System.Boolean},System.String,System.String)">
+            <summary>将可空bool对象转化为字符串</summary>
+        </member>
+        <member name="M:App.HttpApi.Extensions.ToLower(System.Collections.IEnumerable)">
+            <summary>转化为小写字符串列表</summary>
+        </member>
+        <member name="T:App.HttpApi.Components.IPFilter">
+            <summary>IP 黑白名单设置</summary>
+        </member>
+        <member name="F:App.HttpApi.Components.IPFilter.All">
+            <summary>列表</summary>
+        </member>
+        <member name="M:App.HttpApi.Components.IPFilter.IsBanned(System.String)">
+            <summary>指定 IP 是否被禁止</summary>
+        </member>
+        <member name="M:App.HttpApi.Components.IPFilter.Ban(System.String,System.Nullable{System.Int32})">
+            <summary>禁止指定IP访问网站</summary>
+            <param name="minutes">封禁分钟数。如果为空，则永久封禁</param>
+        </member>
+        <member name="T:App.HttpApi.Components.VisitCounter">
+            <summary>
+            访问计数器
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.Components.VisitCounter.Visit">
+            <summary>访问记录</summary>
+        </member>
+        <member name="M:App.HttpApi.Components.VisitCounter.IsHeavy(System.String,System.String,System.Int32,System.Int32)">
+            <summary>访问是否过于密集</summary>
+            <param name="seconds">检测周期（秒）</param>
+            <param name="max">最大值</param>
+            <example>
+            protected void Application_BeginRequest(object sender, EventArgs e)
+            {
+                var ip = ....;
+                var url = ...;
+                if (VisitCounter.IsOverFreqency(ip, url, 10, 100))
+                {
+                    HttpContext.Current.Request.Abort();
+                }
+            }
+            </example>
+        </member>
+        <member name="T:App.HttpApi.Parser">
+            <summary>
+            负责各种类型转换、列表类型转换
+            ParseXXXX(string) 负责将字符串解析为对应的类型
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.GetTypeCode(System.Type)">
+            <summary>获取类型编码</summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseBasicType``1(System.String)">
+            <summary>将文本解析为数字及衍生类型(枚举、布尔、日期）</summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseBasicType(System.String,System.Type)">
+            <summary>将文本转化为数字及衍生类型(枚举、布尔、日期）</summary>
+            <remarks>ParseBasicType, ParseSimpleType, ParseValue, ParseNumber</remarks>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseEnum(System.String,System.Type)">
+            <summary>Parse string to enum object</summary>
+            <param name="text"></param>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseEnum``1(System.String)">
+            <summary>Parse string to enum? </summary>
+            <param name="text">Enum text(name or value). Eg. "Male" or "0"</param>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseEnums``1(System.String,System.Char)">
+            <summary>解析枚举字符串列表（支持枚举名或值，如Male,Female 或 0,1）</summary>
+            <param name="text">Enum texts, eg. "Male,Female" or "0,1"</param>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseDate(System.String)">
+            <summary>Parse string to DateTime?</summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseDecimal(System.String)">
+            <summary>Parse string to decimal?</summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseDouble(System.String)">
+            <summary>Parse string to double?</summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseFloat(System.String)">
+            <summary>Parse string to float?</summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseInt(System.String)">
+            <summary>Parse string to int?</summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseLong(System.String)">
+            <summary>Parse string to int64?</summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseShort(System.String)">
+            <summary>Parse string to short?</summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseULong(System.String)">
+            <summary>Parse string to ulong?</summary>
+        </member>
+        <member name="M:App.HttpApi.Parser.ParseBool(System.String)">
+            <summary>Parse string to bool?</summary>
+        </member>
+        <member name="T:App.HttpApi.StringHelper">
+            <summary>
+            字符串操作辅助类
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.StringHelper.ToIntArray(System.String)">
+            <summary>解析逗号表达式</summary>
+        </member>
+        <member name="M:App.HttpApi.StringHelper.ClearSpace(System.String)">
+            <summary>去除空白字符</summary>
+        </member>
+        <member name="M:App.HttpApi.StringHelper.ClearTag(System.String)">
+            <summary>去除HTML标签</summary>
+        </member>
+        <member name="M:App.HttpApi.StringHelper.ClearHtml(System.String)">
+            <summary>去除所有HTML痕迹（包括脚本、标签、注释、转义符等）</summary>
+        </member>
+        <member name="M:App.HttpApi.StringHelper.Repeat(System.String,System.Int32)">
+            <summary>重复字符串</summary>
+        </member>
+        <member name="M:App.HttpApi.StringHelper.GetMask(System.String,System.Int32,System.String)">
+            <summary>获取遮掩文本</summary>
+        </member>
+        <member name="M:App.HttpApi.StringHelper.GetSummary(System.String,System.Int32)">
+            <summary>获取摘要</summary>
+        </member>
+        <member name="M:App.HttpApi.StringHelper.ToLowCamel(System.String)">
+            <summary>转化为首字母小写字符串</summary>
+        </member>
+        <member name="M:App.HttpApi.StringHelper.ToHighCamel(System.String)">
+            <summary>转化为首字母大写字符串</summary>
+        </member>
+        <member name="T:App.HttpApi.XmlSerializerException">
+            <summary>XML序列化异常</summary>
+        </member>
+        <member name="T:App.HttpApi.ElementType">
+            <summary>元素类型</summary>
+        </member>
+        <member name="T:App.HttpApi.XmlSerializer">
+            <summary>
+            Xml序列及反序列化操作（以后请改用App.Core.Xmlizer）
+            History:
+                2017-04-13 | Created  | Jackie Lee（天宇遊龍）http://www.cnblogs.com/dralee
+                2019-10-22 | 改为非泛型版本，更为通用，很多情况我们并不知道要序列化的对象的类型 | surfsky.cnblogs.com
+            Todo:
+                检测和避免无限循环引用
+                更精确的控制需要构建一个 XmlDocument 对象，最后再根据格式参数生成 xml 文本
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:App.HttpApi.XmlSerializer.#ctor(System.Boolean,App.HttpApi.EnumFomatting,System.String,System.Boolean)" -->
+        <member name="M:App.HttpApi.XmlSerializer.ToXml(System.Object,System.Type,System.String)">
+            <summary>序列化报文为xml</summary>
+        </member>
+        <member name="M:App.HttpApi.XmlSerializer.VisitObject(System.Text.StringBuilder,System.Object,System.String)">
+            <summary>访问对象</summary>
+        </member>
+        <member name="M:App.HttpApi.XmlSerializer.GetNodeName(System.Type)">
+            <summary>获取节点名</summary>
+        </member>
+        <member name="M:App.HttpApi.XmlSerializer.GetXmlSafeText(System.Object,System.Boolean)">
+            <summary>获取Xml安全文本</summary>
+        </member>
+        <member name="T:App.HttpApi.APIResult">
+            <summary>
+            API 返回值
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.APIResult.Result">
+            <summary>结果（字符串类型）</summary>
+        </member>
+        <member name="P:App.HttpApi.APIResult.Code">
+            <summary>错误编码</summary>
+        </member>
+        <member name="P:App.HttpApi.APIResult.Info">
+            <summary>详细信息（文本类型，一些说明性的文字）</summary>
+        </member>
+        <member name="P:App.HttpApi.APIResult.CreateDt">
+            <summary>数据创建时间</summary>
+        </member>
+        <member name="P:App.HttpApi.APIResult.Data">
+            <summary>详细数据（自定义类型，可为数组、对象）</summary>
+        </member>
+        <member name="P:App.HttpApi.APIResult.Extra">
+            <summary>附加数据（自定义类型，如分页信息DataPager）</summary>
+        </member>
+        <member name="T:App.HttpApi.DataPager">
+            <summary>
+            数据分页描述信息
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.DataPager.Total">
+            <summary>总记录数</summary>
+        </member>
+        <member name="P:App.HttpApi.DataPager.PageSize">
+            <summary>分页大小</summary>
+        </member>
+        <member name="P:App.HttpApi.DataPager.PageCount">
+            <summary>总页数</summary>
+        </member>
+        <member name="P:App.HttpApi.DataPager.PageIndex">
+            <summary>当前页</summary>
+        </member>
+        <member name="T:App.HttpApi.HttpApiConfig">
+            <summary>
+            HttpApi 配置（可在Web.Config中配置）
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.JsonSetting">
+            <summary>Json Serializer Settings</summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiConfig.GetJsonSetting">
+            <summary>从配置中获取 Json 序列化信息</summary>
+        </member>
+        <member name="E:App.HttpApi.HttpApiConfig.OnVisit">
+            <summary>访问事件（有异常请直接抛出 HttpApiException 异常）</summary>
+        </member>
+        <member name="E:App.HttpApi.HttpApiConfig.OnAuth">
+            <summary>鉴权事件（有异常请直接抛出 HttpApiException 异常）</summary>
+        </member>
+        <member name="E:App.HttpApi.HttpApiConfig.OnEnd">
+            <summary>结束事件（有异常请直接抛出 HttpApiException 异常）</summary>
+        </member>
+        <member name="E:App.HttpApi.HttpApiConfig.OnException">
+            <summary>异常时间</summary>
+        </member>
+        <member name="E:App.HttpApi.HttpApiConfig.OnBan">
+            <summary>禁止事件</summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiConfig.DoAuth(System.Web.HttpContext,System.Reflection.MethodInfo,App.HttpApi.HttpApiAttribute,System.String)">
+            <summary>授权事件</summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiConfig.DoEnd(System.Web.HttpContext)">
+            <summary>结束</summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiConfig.DoException(System.Reflection.MethodInfo,System.Exception)">
+            <summary>异常处理</summary>
+            <returns>若有自定义异常处理程序，则返回true；否则返回false</returns>
+        </member>
+        <member name="M:App.HttpApi.HttpApiConfig.DoBan(System.String,System.String)">
+            <summary>禁止访问</summary>
+        </member>
+        <member name="T:App.HttpApi.HttpApiHelper">
+            <summary>
+            HttpApi 的逻辑实现。
+            </summary>
+            <summary>
+            HttpApi 的逻辑实现。
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHelper.BuildApiListHtml(App.HttpApi.TypeAPI)">
+            <summary>
+            构造接口清单页面
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHelper.BuildApiHtml(App.HttpApi.API)">
+            <summary>
+            构造接口页面
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHelper.BuildApiTestHtml(App.HttpApi.API)">
+            <summary>
+            构造API测试页面
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHelper.RegistJsType(System.String,System.String)">
+            <summary>
+            注册Js对应的Namespace（请重载ProcessRequest中调用该函数）
+            太麻烦了，写webconfig吧，以后再说，先移除
+            </summary>
+            <example>
+              public override void ProcessRequest(HttpContext context)
+              {
+                  RegistJsNamespace("MyNamespace", "MyClass");
+                  base.ProcessRequest(context);
+              }
+            </example>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHelper.GetJs(System.Type,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            生成客户端调用服务器端方法的脚本
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHelper.GetFunctionScript(System.String,System.String,System.Reflection.MethodInfo,App.HttpApi.ResponseType,System.Boolean)">
+            <summary>
+            取得函数调用代码段
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHelper.ProcessRequest(System.Web.HttpContext,System.Object)">
+            <summary>处理 Web 方法调用请求</summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHelper.GetRequestTypeName">
+            <summary>获取请求类型名</summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHelper.CheckMethod(System.Web.HttpContext,System.Reflection.MethodInfo,App.HttpApi.HttpApiAttribute,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>方法可访问性校验</summary>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHelper.GetMethodParams(System.Reflection.MethodInfo,App.HttpApi.HttpApiAttribute)">
+            <summary>获取方法参数信息</summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:App.HttpApi.HttpApiModule" -->
+        <member name="T:App.HttpApi.Properties.Resources">
+            <summary>
+              一个强类型的资源类，用于查找本地化的字符串等。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.ResourceManager">
+            <summary>
+              返回此类使用的缓存的 ResourceManager 实例。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Culture">
+            <summary>
+              重写当前线程的 CurrentUICulture 属性
+              重写当前线程的 CurrentUICulture 属性。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.AuthIP">
+            <summary>
+              查找类似 AuthIP 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.AuthLogin">
+            <summary>
+              查找类似 AuthLogin 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.AuthRole">
+            <summary>
+              查找类似 AuthRole 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.AuthToken">
+            <summary>
+              查找类似 AuthToken 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.AuthTraffic">
+            <summary>
+              查找类似 AuthTraffic 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.AuthUser">
+            <summary>
+              查找类似 AuthUser 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.AuthVerbs">
+            <summary>
+              查找类似 AuthVerbs 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.CacheSeconds">
+            <summary>
+              查找类似 CacheSeconds 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.DefaultValue">
+            <summary>
+              查找类似 DefaultValue 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Description">
+            <summary>
+              查找类似 Description 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Expire">
+            <summary>
+              查找类似 ExpireDate 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Group">
+            <summary>
+              查找类似 Group 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Log">
+            <summary>
+              查找类似 Log 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Name">
+            <summary>
+              查找类似 Name 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Parameters">
+            <summary>
+              查找类似 Parameters 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.ParamName">
+            <summary>
+              查找类似 Name 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.ParamValue">
+            <summary>
+              查找类似 Value 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.PostFile">
+            <summary>
+              查找类似 PostFile 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Property">
+            <summary>
+              查找类似 Property 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Remark">
+            <summary>
+              查找类似 Remark 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.ReturnType">
+            <summary>
+              查找类似 ReturnType 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Status">
+            <summary>
+              查找类似 Status 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Submit">
+            <summary>
+              查找类似 Submit 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Type">
+            <summary>
+              查找类似 Type 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.Url">
+            <summary>
+              查找类似 Url 的本地化字符串。
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.ResponseType">
+            <summary>
+            返回的数据类型类型
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.RequestDecoder">
+            <summary>请求解码器基类</summary>
+        </member>
+        <member name="M:App.HttpApi.RequestDecoder.CreateInstance(System.Web.HttpContext)">
+            <summary>创建解码器（尝试根据ContentType来构造解析器，但往往不准确，客户端没那么乖）</summary>
+        </member>
+        <member name="P:App.HttpApi.RequestDecoder.MethodName">
+            <summary>取得方法名（以url最后一部分作为方法名。如：..\Handler1.ashx\GetData）</summary>
+        </member>
+        <member name="M:App.HttpApi.RequestDecoder.ParseArguments">
+            <summary>解析请求参数</summary>
+        </member>
+        <member name="T:App.HttpApi.UrlDecoder">
+            -----------------------------------------------
+             URL
+            -----------------------------------------------
+             <summary>URL 解码器</summary>
+        </member>
+        <member name="T:App.HttpApi.JsonDecoder">
+            -----------------------------------------------
+             JSON POST
+            -----------------------------------------------
+             <summary>JSON 解码器</summary>
+        </member>
+        <member name="M:App.HttpApi.JsonDecoder.ParseArguments">
+            <summary>解析参数</summary>
+        </member>
+        <member name="T:App.HttpApi.MultipartFormDecoder">
+            -----------------------------------------------
+             <summary> Multipart Form 解码器（带附件）</summary>
+        </member>
+        <member name="M:App.HttpApi.MultipartFormDecoder.ParseArguments">
+            <summary>解析参数</summary>
+        </member>
+        <member name="T:App.HttpApi.ResourceHelper">
+            <summary>
+            获取Web内嵌资源的辅助函数
+            创建内嵌资源
+            （1）将内嵌资源的编译类型改为：嵌入的资源（enbeded resource）
+            （2）在Assembly.cs中注册该资源，如：
+                [Assembly: WebResource("SampleProject.Sample.jpg", "image/png")]
+                [Assembly: WebResource("SampleProject.SamplePicture.png", "image/png")]
+                [assembly: WebResource("SampleProject.Help.htm", "text/html")]
+                [assembly: WebResource("SampleProject.MyStyleSheet.css", "text/css")]
+                [assembly: WebResource("SampleProject.smallFail.gif", "image/gif")]
+                [assembly: WebResource("SampleProject.smallSuccess.gif", "image/gif")]
+                [assembly: WebResource("SampleProject.MyScript.js", "text/javascript", PerformSubstitution = true)]
+            （3）使用内嵌资源，如：
+                image1.ImageUrl = GetResourceUrl("SampleProject.Sample.jpg");
+                RegistCss("SampleProject.MyStyleSheet.css");
+                RegistScript("SampleProject.MyScript.js");
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.ResourceHelper.GetResource(System.Reflection.Assembly,System.String,System.Boolean)">
+            <summary>获取数据集中的资源流</summary>
+            <param name="assembly">数据集</param>
+            <param name="resourceName">资源名称</param>
+            <param name="caseSensitive">是否大小写敏感</param>
+            <returns></returns>
+        </member>
+        <member name="M:App.HttpApi.ResourceHelper.RenderImage(System.Web.HttpResponse,System.Reflection.Assembly,System.String)">
+            <summary>输出图像资源</summary>
+            <param name="response"></param>
+            <param name="assembly"></param>
+            <param name="resourceName"></param>
+            <param name="type">jpg, png, gif, etc</param>
+            <param name="caseSensitive"></param>
+        </member>
+        <member name="M:App.HttpApi.ResourceHelper.RenderText(System.Web.HttpResponse,System.Reflection.Assembly,System.String)">
+            <summary>输出文本资源</summary>
+            <param name="context"></param>
+            <param name="assembly"></param>
+            <param name="resourceName">资源名称。如Kingsow.Web.Handlers.WebHandlers.Help.txt</param>
+            <param name="type">plain, css, html, xml, javascript</param>
+        </member>
+        <member name="M:App.HttpApi.ResourceHelper.RenderBinary(System.Web.HttpResponse,System.Reflection.Assembly,System.String,System.String,System.Boolean)">
+            <summary>输出二进制资源</summary>
+            <param name="context"></param>
+            <param name="assembly"></param>
+            <param name="resourceName">资源名称。如Kingsow.Web.Handlers.WebHandlers.Help.txt</param>
+            <param name="type"></param>
+        </member>
+        <member name="M:App.HttpApi.ResourceHelper.GetResourceUrl(System.String)">
+            <summary>获取资源url</summary>
+            <param name="resourceName"></param>
+            <returns>
+            类似：WebResource.axd?a=pWebCtrl&amp;r=WebCtrl.cutecat.jpg&amp;t=632390947985312500
+            a  - assembly
+            r  - resourceName
+            t  - assembly's timeStamp
+            </returns>
+        </member>
+        <member name="M:App.HttpApi.ResourceHelper.RegistCss(System.String)">
+            <summary>将资源注册为css</summary>
+            <param name="resourceName"></param>
+        </member>
+        <member name="M:App.HttpApi.ResourceHelper.RegistScript(System.String)">
+            <summary>将资源注册为script</summary>
+            <param name="resourceName"></param>
+        </member>
+        <member name="T:App.HttpApi.ResponseEncoder">
+            <summary>
+            响应编码器
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.ResponseEncoder.Write(System.Object)">
+            <summary>
+            将输出对象写到输出流中
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.ResponseEncoder.SetCache(System.Web.HttpResponse,System.Int32,System.Web.HttpCacheability,System.String)">
+            <summary>设置页面缓存</summary>
+            <param name="context">网页上下文</param>
+            <param name="cacheSeconds">缓存秒数</param>
+            <param name="varyByParam">缓存参数名称</param>
+        </member>
+        <member name="T:App.HttpApi.ReflectHelper">
+            <summary>
+            反射相关辅助方法
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.IsType(System.Type,System.Type)">
+            <summary>是否是某个类型（或子类型）</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.IsType(System.Type,System.String)">
+            <summary>是否属于某个类型</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.IsGenericType(System.Type)">
+            <summary>是否是泛型类型</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.IsNullable(System.Type)">
+            <summary>是否是可空类型</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetNullableDataType(System.Type)">
+            <summary>获取可空类型中的值类型</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetGenericDataType(System.Type)">
+            <summary>获取泛型中的数据类型</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetRealType(System.Type)">
+            <summary>获取（可空类型的）真实类型</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetTypeString(System.Type,System.Boolean)">
+            <summary>获取类型字符串（可处理可空类型）</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetTypeSummary(System.Type)">
+            <summary>获取类型的概述信息（可解析枚举类型）</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetDescription(System.Object)">
+            <summary>获取枚举值的文本说明。RoleType.Admin.GetDescription()</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetDescription(System.Reflection.MemberInfo)">
+            <summary>获取字段说明（来自 AppCore.UIAttribute 或 DescriptionAttribute）</summary>
+            <remarks>此处用反射的方式获取属性值，以废除对 App.Core 的依赖</remarks>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetPropertyValue(System.Object,System.String)">
+            <summary>获取对象的属性值。也可考虑用dynamic实现。</summary>
+            <param name="propertyName">属性名。可考虑用nameof()表达式来实现强类型。</param>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetEnumField(System.Object)">
+            <summary>获取枚举值对应的字段</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetDescription(System.Type)">
+            <summary>获取DescriptionAttribute</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetDescription(System.Reflection.MethodInfo)">
+            <summary>获取DescriptionAttribute</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetHistories(System.Type)">
+            <summary>获取历史信息特性元数据</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetParamAttributes(System.Reflection.MethodInfo)">
+            <summary>获取参数信息元数据</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetCacheDuration(System.Type)">
+            <summary>获取类型文件的缓存时间</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetHttpApiAttribute(System.Reflection.MethodInfo)">
+            <summary>取得HttpApiAttribute</summary>
+        </member>
+        <member name="M:App.HttpApi.ReflectHelper.GetParameters(System.Reflection.MethodInfo,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>构造匹配方法的参数值列表（若方法名重名怎么处理？）</summary>
+            <param name="methodName">方法名</param>
+            <param name="args">参数名-值字典</param>
+            <returns>排序后的参数值数组</returns>
+        </member>
+        <member name="T:App.HttpApi.CacheHelper">
+            <summary>
+            缓存辅助类
+            </summary>
+        </member>
+        <member name="M:App.HttpApi.CacheHelper.SetCachePolicy(System.Web.HttpContext,System.Int32,System.Boolean)">
+            <summary>
+            设置缓存策略（使用context.Response.Cache来缓存输出）
+            </summary>
+            <param name="context"></param>
+            <param name="attr"></param>
+        </member>
+        <member name="T:App.HttpApi.LongNumberToStringConverter">
+            <summary>
+            长数字（如long、decimal）字符串序列化。
+            Javascript 的整数是32位的，number类型的安全整数是53位，如果超过53位会被截断。
+            可统一将数据（Int64, UInt64, Decimal）转化为字符串传递给客户端。
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.SerializeHelper">
+            <summary>
+            序列化方法类
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.TypeAPI">
+            <summary>
+            类拥有的 API 清单
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.API">
+            <summary>
+            API信息（可考虑继承或与 HttpApiAttribute 合并）
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.HttpApiException">
+            <summary>
+            HttpApi 异常
+            </summary>
+        </member>
+        <member name="T:App.HttpApi.HttpApiHandler">
+            <summary>
+            Web方法调用，可调用任何类（包括动态编译的）中标记了[HttpApi]特性标签的方法。
+            </summary>
+            <example>
+            (1)注册 HttpApiModule: 
+            (2)编写类：
+                using System;
+                using System.Collections.Generic;
+                using System.Web;
+                using App.HttpApi;
+                namespace App
+                {
+                    public class MyClass
+                    {
+                        [HttpApi(Type = ResponseDataType.Text)]
+                        public string HelloWorld(string info)
+                        {
+                            System.Threading.Thread.Sleep(200);
+                            return "hello world " + info;
+                        }
+                        
+                        [HttpApi(Type = ResponseDataType.JSON)]
+                        public static object GetStaticObject()
+                        {
+                            return new { h = "3", a = "1", b = "2", c = "3" };
+                        }
+                    }
+                }
+            (2)使用: 
+                查看js：  HttpApi/App.MyClass/js
+                查看api： HttpApi/App.MyClass/api
+                调用函数：HttpApi/App.MyClass/HelloWorld?info=xxx
+            </example>
+        </member>
+        <member name="M:App.HttpApi.HttpApiHandler.TryCreateHandlerFromAssemblies(System.String)">
+            <summary>尝试根据类型名称，从当前程序集中创建对象</summary>
+        </member>
+    </members>
+</doc>

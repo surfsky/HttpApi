@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\HttpApiCore.Test.csproj": {}
+    "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\HttpApiCore.Test.csproj": {}
   },
   "projects": {
-    "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\HttpApiCore.Test.csproj": {
+    "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\HttpApiCore.Test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\HttpApiCore.Test.csproj",
+        "projectUniqueName": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\HttpApiCore.Test.csproj",
         "projectName": "HttpApiCore.Test",
-        "projectPath": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\HttpApiCore.Test.csproj",
+        "projectPath": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\HttpApiCore.Test.csproj",
         "packagesPath": "C:\\Users\\CJH\\.nuget\\packages\\",
-        "outputPath": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\obj\\",
+        "outputPath": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore.Test\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
@@ -32,8 +32,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj": {
-                "projectPath": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj"
+              "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj": {
+                "projectPath": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj"
               }
             }
           }
@@ -84,14 +84,14 @@
         }
       }
     },
-    "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj": {
-      "version": "3.2.0",
+    "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj": {
+      "version": "3.2.3",
       "restore": {
-        "projectUniqueName": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
+        "projectUniqueName": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
         "projectName": "HttpApiCore",
-        "projectPath": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
+        "projectPath": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
         "packagesPath": "C:\\Users\\CJH\\.nuget\\packages\\",
-        "outputPath": "\\\\Mac\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\obj\\",
+        "outputPath": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",

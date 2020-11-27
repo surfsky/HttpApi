@@ -49,7 +49,9 @@ namespace App
             return new { h = "3", a = "1", b = "2", c = "3" };
         }
 
-        [HttpApi("默认方法参数示例", Remark = "p2的默认值为a", Status = ApiStatus.Delete, AuthVerbs ="GET")]
+        [HttpApi("默认方法参数示例", Status = ApiStatus.Delete, AuthVerbs ="GET")]
+        [HttpParam("p2", "default value is a")]
+        [Description("p2的默认值为a")]
         public static object TestDefaultParameter(string p1, string p2="a")
         {
             return new { p1 = p1, p2 = p2};

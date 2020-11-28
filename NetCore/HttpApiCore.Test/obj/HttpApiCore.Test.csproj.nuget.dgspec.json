@@ -85,7 +85,7 @@
       }
     },
     "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj": {
-      "version": "3.2.3",
+      "version": "3.2.4",
       "restore": {
         "projectUniqueName": "\\\\Mac\\Home\\Downloads\\Dev\\AppPlat\\App.HttpApi\\HttpApi-GitHub\\NetCore\\HttpApiCore\\HttpApiCore.csproj",
         "projectName": "HttpApiCore",

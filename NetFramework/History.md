@@ -96,3 +96,5 @@
 2.8.4
 + Parameter mismatch check
 
+2.8.5
++ Friendly exception

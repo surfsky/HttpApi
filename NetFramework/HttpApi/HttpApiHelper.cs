@@ -109,20 +109,31 @@ namespace App.HttpApi
             {
                 if (ex is HttpApiException)
                 {
+                    // HttpApi 调用异常
                     var err = ex as HttpApiException;
                     WriteError(context, err.Code, err.Message);
+                    HttpApiConfig.Instance.DoException(method, ex);
                 }
                 else
                 {
-                    var info = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message;
-                    WriteError(context, 400, info);
+                    // 方法内部异常
+                    var ex2 = GetInnerException(ex);
+                    WriteError(context, 500, ex2.Message);
+                    HttpApiConfig.Instance.DoException(method, ex2);
                 }
-                HttpApiConfig.Instance.DoException(method, ex);
             }
             finally
             {
                 HttpApiConfig.Instance.DoEnd(context);
             }
+        }
+
+        /// <summary>递归获取内部异常</summary>
+        static Exception GetInnerException(Exception ex)
+        {
+            if (ex.InnerException != null)
+                return GetInnerException(ex.InnerException);
+            return ex;
         }
 
         //----------------------------------------------
@@ -339,8 +350,7 @@ namespace App.HttpApi
             }
             else
             {
-                var result = new APIResult(false, info, "", null);
-                result.Code = errorCode.ToString();
+                var result = new APIResult(false, info, null, null, errorCode.ToString());
                 WriteResult(context, result, ResponseType.JSON);
             }
         }

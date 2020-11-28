@@ -2,22 +2,23 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>3.2.3</Version>
+    <Version>3.2.4</Version>
     <Description>HttpApiCore is a convinent framework to provide data by http, It can be the upgrating replacement for WebAPI. It supports aspnetcore v3.1.
 HttpApiCore 是一种便利的提供数据服务接口的框架，可作为 WebAPI 的升级方案，此类库支持 aspnetcore v3.1.
 </Description>
     <Authors>surfsky</Authors>
     <Copyright>MIT</Copyright>
-    <PackageProjectUrl>https://github.com/surfsky/AppPlat.HttpApi</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/surfsky/AppPlat.HttpApi</RepositoryUrl>
-    <PackageReleaseNotes>+ httpapi add group property
+    <PackageProjectUrl>https://github.com/surfsky/HttpApi</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/surfsky/HttpApi</RepositoryUrl>
+    <PackageReleaseNotes>+ Add group property
 + app.UseHttpApi(options =&gt; ....)
-+ Add DescritionAttribute to method
-+ Parameter mismatch check</PackageReleaseNotes>
++ Support DescritionAttribute to method
++ Parameter mismatch check
++ Friendly exception</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>3.2.3.0</AssemblyVersion>
+    <AssemblyVersion>3.2.4.0</AssemblyVersion>
     <RepositoryType>git</RepositoryType>
-    <FileVersion>3.2.3.0</FileVersion>
+    <FileVersion>3.2.4.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

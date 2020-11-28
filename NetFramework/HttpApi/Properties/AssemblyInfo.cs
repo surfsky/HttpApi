@@ -33,5 +33,5 @@ using System.Runtime.InteropServices;
 // 方法是按如下所示使用“*”:
 // 为了避免混淆：NetFramework 版本号一直为 2.x.x， NetCore 版本号为 3.x.x
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.8.4.*")]
-[assembly: AssemblyFileVersion("2.8.4.0")]
+[assembly: AssemblyVersion("2.8.5.*")]
+[assembly: AssemblyFileVersion("2.8.5.0")]

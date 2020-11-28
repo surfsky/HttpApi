@@ -560,6 +560,9 @@
         <member name="M:App.HttpApi.HttpApiHelper.ProcessRequest(System.Web.HttpContext,System.Object)">
             <summary>处理 Web 方法调用请求</summary>
         </member>
+        <member name="M:App.HttpApi.HttpApiHelper.GetInnerException(System.Exception)">
+            <summary>递归获取内部异常</summary>
+        </member>
         <member name="M:App.HttpApi.HttpApiHelper.GetRequestTypeName">
             <summary>获取请求类型名</summary>
         </member>

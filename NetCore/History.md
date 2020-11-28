@@ -16,3 +16,6 @@
 
 + Parameter mismatch check
 
+3.2.4
+
++ Friendly exception

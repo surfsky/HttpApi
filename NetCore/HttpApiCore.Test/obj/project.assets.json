@@ -1127,7 +1127,7 @@
           "lib/netstandard2.0/ZKWeb.System.Drawing.dll": {}
         }
       },
-      "HttpApiCore/3.2.3": {
+      "HttpApiCore/3.2.4": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
@@ -3979,7 +3979,7 @@
         "zkweb.system.drawing.nuspec"
       ]
     },
-    "HttpApiCore/3.2.3": {
+    "HttpApiCore/3.2.4": {
       "type": "project",
       "path": "../HttpApiCore/HttpApiCore.csproj",
       "msbuildProject": "../HttpApiCore/HttpApiCore.csproj"
@@ -3987,7 +3987,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
-      "HttpApiCore >= 3.2.3",
+      "HttpApiCore >= 3.2.4",
       "Microsoft.AspNetCore.Authentication.OpenIdConnect >= 3.1.3"
     ]
   },

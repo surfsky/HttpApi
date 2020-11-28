@@ -25,13 +25,14 @@ namespace App.HttpApi
         /// <summary>附加数据（自定义类型，如分页信息DataPager）</summary>
         public object Extra { get; set; }
 
-        public APIResult(bool result, String info="", object data=null, object extra=null)
+        public APIResult(bool result, string info=null, object data=null, object extra=null, string code=null)
         {
             Result = result;
             Info = info;
             Data = data;
             Extra = extra;
-            this.CreateDt = DateTime.Now;
+            Code = code;
+            CreateDt = DateTime.Now;
         }
 
         // 转化为字符串输出

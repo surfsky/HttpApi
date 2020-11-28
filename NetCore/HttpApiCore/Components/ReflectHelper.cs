@@ -304,8 +304,9 @@ namespace App.HttpApi
                     else if (pi.ParameterType.IsNullable())
                         array.Add(null);
                     else
-                        throw new HttpApiException(501, "Missing parameter " + pi.Name);
-                    //continue;
+                        throw new HttpApiException(400, "Missing parameter : " + pi.Name);
+
+                    continue;
                 }
 
                 // 找到匹配的输入参数
@@ -340,7 +341,7 @@ namespace App.HttpApi
                 catch (Exception ex)
                 {
                     var txt = string.Format("Parameter {0} ({1}) is wrong: {2}", pi.Name, type.Name, ex.Message);
-                    throw new HttpApiException(502, txt);
+                    throw new HttpApiException(400, txt);
                 }
             }
             return array.ToArray();

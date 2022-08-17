@@ -156,8 +156,14 @@
   <data name="Log" xml:space="preserve">
     <value>记录日志</value>
   </data>
+  <data name="MaxLen" xml:space="preserve">
+    <value>最大长度</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>名称</value>
+  </data>
+  <data name="NeedClean" xml:space="preserve">
+    <value>需净化</value>
   </data>
   <data name="Parameters" xml:space="preserve">
     <value>参数</value>

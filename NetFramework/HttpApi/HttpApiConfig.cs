@@ -25,6 +25,7 @@ namespace App.HttpApi
         //--------------------------------------------------
         // 序列化控制配置
         //--------------------------------------------------
+        /// <summary>属性用小写开头的 Camel 方式</summary>
         [ConfigurationProperty("formatLowCamel", DefaultValue = false)]
         public bool FormatLowCamel
         {
@@ -32,6 +33,7 @@ namespace App.HttpApi
             set { this["formatLowCamel"] = value; }
         }
 
+        /// <summary>缩进方式</summary>
         [ConfigurationProperty("formatIndented", DefaultValue = Formatting.Indented)]
         public Formatting FormatIndented
         {
@@ -39,6 +41,7 @@ namespace App.HttpApi
             set { this["formatIndented"] = value; }
         }
 
+        /// <summary>枚举输出格式</summary>
         [ConfigurationProperty("formatEnum", DefaultValue = EnumFomatting.Text)]
         public EnumFomatting FormatEnum
         {
@@ -46,6 +49,7 @@ namespace App.HttpApi
             set { this["formatEnum"] = value; }
         }
 
+        /// <summary>时间日期输出格式</summary>
         [ConfigurationProperty("formatDateTime", DefaultValue = "yyyy-MM-dd HH:mm:ss")]
         public string FormatDateTime
         {
@@ -53,6 +57,7 @@ namespace App.HttpApi
             set { this["formatDateTime"] = value; }
         }
 
+        /// <summary>长整型输出格式</summary>
         [ConfigurationProperty("formatLongNumber", DefaultValue = "Int64,UInt64,Decimal")]
         public string FormatLongNumber
         {
@@ -60,6 +65,7 @@ namespace App.HttpApi
             set { this["formatLongNumber"] = value; }
         }
 
+        /// <summary>遇到错误时的反馈方式</summary>
         [ConfigurationProperty("errorResponse", DefaultValue=ErrorResponse.APIResult)]
         public ErrorResponse ErrorResponse
         {
@@ -67,6 +73,7 @@ namespace App.HttpApi
             set { this["errorResponse"] = value; }
         }
 
+        /// <summary>可省略的类型名前缀</summary>
         [ConfigurationProperty("typePrefix", DefaultValue = "App.API")]
         public string TypePrefix
         {
@@ -74,6 +81,7 @@ namespace App.HttpApi
             set { this["typePrefix"] = value; }
         }
 
+        /// <summary>是否自动将结果包裹为 APIResult</summary>
         [ConfigurationProperty("wrap")]
         public bool? Wrap
         {
@@ -81,6 +89,7 @@ namespace App.HttpApi
             set { this["wrap"] = value; }
         }
 
+        /// <summary>输出子属性的最大深度</summary>
         [ConfigurationProperty("maxDepth")]
         public int? MaxDepth
         {
@@ -88,6 +97,7 @@ namespace App.HttpApi
             set { this["maxDepth"] = value; }
         }
 
+        /// <summary>输出语言</summary>
         [ConfigurationProperty("language", DefaultValue="zh-CN")]
         public string Language
         {
@@ -95,6 +105,7 @@ namespace App.HttpApi
             set { this["language"] = value; }
         }
 
+        /// <summary>访问过于频繁时，客户端请求被封禁的分钟数</summary>
         [ConfigurationProperty("banMinutes", DefaultValue = "30")]
         public int? BanMinutes
         {

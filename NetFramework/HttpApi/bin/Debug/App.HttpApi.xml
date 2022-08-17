@@ -24,6 +24,27 @@
             参数信息
             </summary>
         </member>
+        <member name="P:App.HttpApi.HttpParamAttribute.Name">
+            <summary>参数名</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpParamAttribute.Description">
+            <summary>描述</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpParamAttribute.Type">
+            <summary>类型</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpParamAttribute.DefaultValue">
+            <summary>默认值</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpParamAttribute.Remark">
+            <summary>备注</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpParamAttribute.MaxLen">
+            <summary>最大长度</summary>
+        </member>
+        <member name="M:App.HttpApi.HttpParamAttribute.#ctor(System.String,System.String,System.Int32)">
+            <summary>创建参数信息</summary>
+        </member>
         <member name="T:App.HttpApi.HttpApiAttribute">
             <summary>
             HttpApi特性，拥有该特性的方法都可以提供WebAPI服务
@@ -89,11 +110,11 @@
         <member name="P:App.HttpApi.HttpApiAttribute.AuthRoles">
             <summary>可访问的角色（用逗号隔开）</summary>
         </member>
-        <member name="P:App.HttpApi.HttpApiAttribute.PostFile">
-            <summary>是否上传文件</summary>
-        </member>
         <member name="P:App.HttpApi.HttpApiAttribute.AuthTraffic">
             <summary>访问流量限制（每秒最多访问次数）</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiAttribute.PostFile">
+            <summary>是否上传文件</summary>
         </member>
         <member name="P:App.HttpApi.HttpApiAttribute.VerbList">
             <summary>访问动作列表</summary>
@@ -477,6 +498,39 @@
             HttpApi 配置（可在Web.Config中配置）
             </summary>
         </member>
+        <member name="P:App.HttpApi.HttpApiConfig.FormatLowCamel">
+            <summary>属性用小写开头的 Camel 方式</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.FormatIndented">
+            <summary>缩进方式</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.FormatEnum">
+            <summary>枚举输出格式</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.FormatDateTime">
+            <summary>时间日期输出格式</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.FormatLongNumber">
+            <summary>长整型输出格式</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.ErrorResponse">
+            <summary>遇到错误时的反馈方式</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.TypePrefix">
+            <summary>可省略的类型名前缀</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.Wrap">
+            <summary>是否自动将结果包裹为 APIResult</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.MaxDepth">
+            <summary>输出子属性的最大深度</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.Language">
+            <summary>输出语言</summary>
+        </member>
+        <member name="P:App.HttpApi.HttpApiConfig.BanMinutes">
+            <summary>访问过于频繁时，客户端请求被封禁的分钟数</summary>
+        </member>
         <member name="P:App.HttpApi.HttpApiConfig.JsonSetting">
             <summary>Json Serializer Settings</summary>
         </member>
@@ -654,9 +708,19 @@
               查找类似 Log 的本地化字符串。
             </summary>
         </member>
+        <member name="P:App.HttpApi.Properties.Resources.MaxLen">
+            <summary>
+              查找类似 MaxLen 的本地化字符串。
+            </summary>
+        </member>
         <member name="P:App.HttpApi.Properties.Resources.Name">
             <summary>
               查找类似 Name 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:App.HttpApi.Properties.Resources.NeedClean">
+            <summary>
+              查找类似 NeedClean 的本地化字符串。
             </summary>
         </member>
         <member name="P:App.HttpApi.Properties.Resources.Parameters">

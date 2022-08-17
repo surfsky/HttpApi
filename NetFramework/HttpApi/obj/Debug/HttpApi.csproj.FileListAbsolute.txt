@@ -16,10 +16,10 @@ C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\HttpApi\obj\Debug\App.HttpApi.pdb
 \\Mac\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\obj\Debug\HttpApi.csproj.CopyComplete
 \\Mac\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\obj\Debug\App.HttpApi.dll
 \\Mac\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\obj\Debug\App.HttpApi.pdb
+\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\bin\Debug\App.HttpApi.xml
 \\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\bin\Debug\App.HttpApi.dll
 \\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\bin\Debug\App.HttpApi.pdb
 \\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\bin\Debug\zh-CN\App.HttpApi.resources.dll
-\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\bin\Debug\Newtonsoft.Json.xml
 \\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\obj\Debug\HttpApi.csprojAssemblyReference.cache
 \\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\obj\Debug\App.HttpApi.Properties.Resources.resources
 \\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\obj\Debug\App.HttpApi.Properties.Resources.zh-CN.resources
@@ -29,4 +29,3 @@ C:\Dev\Dev\Dev-Surfsky\AppPlat\App.HttpApi\HttpApi\obj\Debug\App.HttpApi.pdb
 \\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\obj\Debug\HttpApi.csproj.CopyComplete
 \\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\obj\Debug\App.HttpApi.dll
 \\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\obj\Debug\App.HttpApi.pdb
-\\Mac\Home\Downloads\Dev\AppPlat\App.HttpApi\HttpApi-GitHub\NetFramework\HttpApi\bin\Debug\App.HttpApi.xml

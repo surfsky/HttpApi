@@ -64,23 +64,36 @@ namespace App.HttpApi
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class HttpParamAttribute : Attribute
     {
+        /// <summary>参数名</summary>
         public string Name { get; set; }
+        /// <summary>描述</summary>
         public string Description { get; set; }
+        /// <summary>类型</summary>
         public string Type { get; set; }
+        /// <summary>默认值</summary>
         public string DefaultValue { get; set; }
+        /// <summary>备注</summary>
         public string Remark { get; set; }
+        /// <summary>最大长度</summary>
+        public int? MaxLen { get; set; } = null;
 
-        public HttpParamAttribute(string name, string description)
-            : this(name, description, "", "", "")
+        /// <summary>创建参数信息</summary>
+        public HttpParamAttribute(
+            string name, string description, int maxLen=-1)
+            : this(name, description, "", maxLen, "", "")
         {
         }
-        internal HttpParamAttribute(string name, string description, string type, string remark, string defaultValue)
+        internal HttpParamAttribute(
+            string name, string description, string type,
+            int? maxLen, 
+            string remark, string defaultValue)
         {
             this.Name = name;
             this.Description = description;
             this.Type = type;
             this.Remark = remark;
             this.DefaultValue = defaultValue;
+            this.MaxLen = maxLen;
         }
     }
 
@@ -154,11 +167,11 @@ namespace App.HttpApi
         /// <summary>可访问的角色（用逗号隔开）</summary>
         public string AuthRoles { get; set; }
 
-        /// <summary>是否上传文件</summary>
-        public bool PostFile { get; set; } = false;
-
         /// <summary>访问流量限制（每秒最多访问次数）</summary>
         public int AuthTraffic { get; set; }
+
+        /// <summary>是否上传文件</summary>
+        public bool PostFile { get; set; } = false;
 
 
         /// <summary>访问动作列表</summary>

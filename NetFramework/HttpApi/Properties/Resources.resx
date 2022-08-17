@@ -156,8 +156,14 @@
   <data name="Log" xml:space="preserve">
     <value>Log</value>
   </data>
+  <data name="MaxLen" xml:space="preserve">
+    <value>MaxLen</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
+  </data>
+  <data name="NeedClean" xml:space="preserve">
+    <value>NeedClean</value>
   </data>
   <data name="Parameters" xml:space="preserve">
     <value>Parameters</value>

@@ -178,11 +178,29 @@ namespace App.HttpApi.Properties {
         }
         
         /// <summary>
+        ///   查找类似 MaxLen 的本地化字符串。
+        /// </summary>
+        internal static string MaxLen {
+            get {
+                return ResourceManager.GetString("MaxLen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Name 的本地化字符串。
         /// </summary>
         internal static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 NeedClean 的本地化字符串。
+        /// </summary>
+        internal static string NeedClean {
+            get {
+                return ResourceManager.GetString("NeedClean", resourceCulture);
             }
         }
         

@@ -178,6 +178,7 @@ namespace App.HttpApi
             sb.AppendFormat("<td>{0}</td>", Resources.DefaultValue);
             sb.AppendFormat("<td>{0}</td>", Resources.Description);
             sb.AppendFormat("<td>{0}</td>", Resources.Remark);
+            sb.AppendFormat("<td>{0}</td>", Resources.MaxLen);
             sb.AppendFormat("</tr></thead>");
 
             foreach (var p in api.Params)
@@ -192,6 +193,7 @@ namespace App.HttpApi
                 sb.AppendFormat("<td>{0}&nbsp;</td>", p.DefaultValue);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", p.Description);
                 sb.AppendFormat("<td>{0}&nbsp;</td>", p.Remark);
+                sb.AppendFormat("<td>{0}&nbsp;</td>", p.MaxLen);
                 sb.AppendFormat("</tr>");
             }
             sb.AppendFormat("</tr></table>");

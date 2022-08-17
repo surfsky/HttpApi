@@ -465,14 +465,15 @@ namespace App.HttpApi
                     p.Name,
                     desc,
                     ReflectHelper.GetTypeString(p.ParameterType),
+                    attr?.MaxLen,
                     ReflectHelper.GetTypeSummary(p.ParameterType),
                     GetObjectString(p.DefaultValue)
                     ));
             }
             if (attri.AuthToken)
-                items.Add(new HttpParamAttribute("token", "Token", "String", "", ""));
+                items.Add(new HttpParamAttribute("token", "Token", "String", -1, "", ""));
             if (attri.PostFile)
-                items.Add(new HttpParamAttribute("file", "File", "File", "", ""));
+                items.Add(new HttpParamAttribute("file", "File", "File", -1, "", ""));
             return items;
         }
 
